@@ -1,0 +1,409 @@
+@@ignorecase :: True
+
+be = "am" |
+	"are" |
+	"art" |
+	"be" |
+	"is";
+
+article = "a" |
+	"an" |
+	"the";
+
+first_person = "I" |
+	"me";
+
+second_person = "thee" |
+	"thou" |
+	"you";
+
+positive_comparative = "better" |
+	"bigger" |
+	"fresher" |
+	"friendlier" |
+	"nicer" |
+	"jollier";
+
+negative_comparative = "punier" |
+	"smaller" |
+	"worse";
+
+negative_adjective = "bad" |
+	"cowardly" |
+	"cursed" |
+	"damned" |
+	"dirty" |
+	"disgusting" |
+	"distasteful" |
+	"dusty" |
+	"evil" |
+	"fat" |
+	"fat-kidneyed" |
+	"fatherless" |
+	"foul" |
+	"hairy" |
+	"half-witted" |
+	"horrible" |
+	"horrid" |
+	"infected" |
+	"lying" |
+	"miserable" |
+	"misused" |
+	"oozing" |
+	"rotten" |
+	"rotten" |
+	"smelly" |
+	"snotty" |
+	"sorry" |
+	"stinking" |
+	"stuffed" |
+	"stupid" |
+	"vile" |
+	"villainous" |
+	"worried";
+
+neutral_adjective = "big" |
+	"black" |
+	"blue" |
+	"bluest" |
+	"bottomless" |
+	"furry" |
+	"green" |
+	"hard" |
+	"huge" |
+	"large" |
+	"little" |
+	"normal" |
+	"old" |
+	"purple" |
+	"red" |
+	"rural" |
+	"small" |
+	"tiny" |
+	"white" |
+	"yellow";
+
+positive_adjective = "amazing" |
+	"beautiful" |
+	"blossoming" |
+	"bold" |
+	"brave" |
+	"charming" |
+	"clearest" |
+	"cunning" |
+	"cute" |
+	"delicious" |
+	"embroidered" |
+	"fair" |
+	"fine" |
+	"gentle" |
+	"golden" |
+	"good" |
+	"handsome" |
+	"happy" |
+	"healthy" |
+	"honest" |
+	"lovely" |
+	"loving" |
+	"mighty" |
+	"noble" |
+	"peaceful" |
+	"pretty" |
+	"prompt" |
+	"proud" |
+	"reddest" |
+	"rich" |
+	"smooth" |
+	"sunny" |
+	"sweet" |
+	"sweetest" |
+	"trustworthy" |
+	"warm";
+
+negative_noun = "Hell" |
+	"Microsoft" |
+	"bastard" |
+	"beggar" |
+	"blister" |
+	"codpiece" |
+	"coward" |
+	"curse" |
+	"death" |
+	"devil" |
+	"draught" |
+	"famine" |
+	"flirt-gill" |
+	"goat" |
+	"hate" |
+	"hog" |
+	"hound" |
+	"leech" |
+	"lie" |
+	"pig" |
+	"plague" |
+	"starvation" |
+	"toad" |
+	"war" |
+	"wolf";
+
+neutral_noun = "animal" |
+	"aunt" |
+	"brother" |
+	"cat" |
+	"chihuahua" |
+	"cousin" |
+	"cow" |
+	"daughter" |
+	"door" |
+	"face" |
+	"father" |
+	"fellow" |
+	"granddaughter" |
+	"grandfather" |
+	"grandmother" |
+	"grandson" |
+	"hair" |
+	"hamster" |
+	"horse" |
+	"lamp" |
+	"lantern" |
+	"mistletoe" |
+	"moon" |
+	"morning" |
+	"mother" |
+	"nephew" |
+	"niece" |
+	"nose" |
+	"purse" |
+	"road" |
+	"roman" |
+	"sister" |
+	"sky" |
+	"son" |
+	"squirrel" |
+	"stone wall" |
+	"thing" |
+	"town" |
+	"tree" |
+	"uncle" |
+	"wind";
+
+positive_noun = "Heaven" |
+	"King" |
+	"Lord" |
+	"angel" |
+	"flower" |
+	"happiness" |
+	"joy" |
+	"plum" |
+	"summer's day" |
+	"hero" |
+	"rose" |
+	"kingdom" |
+	"pony";
+
+character = "Achilles" |
+	"Adonis" |
+	"Adriana" |
+	"Aegeon" |
+	"Aemilia" |
+	"Agamemnon" |
+	"Agrippa" |
+	"Ajax" |
+	"Alonso" |
+	"Andromache" |
+	"Angelo" |
+	"Antiochus" |
+	"Antonio" |
+	"Arthur" |
+	"Autolycus" |
+	"Balthazar" |
+	"Banquo" |
+	"Beatrice" |
+	"Benedick" |
+	"Benvolio" |
+	"Bianca" |
+	"Brabantio" |
+	"Brutus" |
+	"Capulet" |
+	"Cassandra" |
+	"Cassius" |
+	"Christopher Sly" |
+	"Cicero" |
+	"Claudio" |
+	"Claudius" |
+	"Cleopatra" |
+	"Cordelia" |
+	"Cornelius" |
+	"Cressida" |
+	"Cymberline" |
+	"Demetrius" |
+	"Desdemona" |
+	"Dionyza" |
+	"Doctor Caius" |
+	"Dogberry" |
+	"Don John" |
+	"Don Pedro" |
+	"Donalbain" |
+	"Dorcas" |
+	"Duncan" |
+	"Egeus" |
+	"Emilia" |
+	"Escalus" |
+	"Falstaff" |
+	"Fenton" |
+	"Ferdinand" |
+	"Ford" |
+	"Fortinbras" |
+	"Francisca" |
+	"Friar John" |
+	"Friar Laurence" |
+	"Gertrude" |
+	"Goneril" |
+	"Hamlet" |
+	"Hecate" |
+	"Hector" |
+	"Helen" |
+	"Helena" |
+	"Hermia" |
+	"Hermonie" |
+	"Hippolyta" |
+	"Horatio" |
+	"Imogen" |
+	"Isabella" |
+	"John of Gaunt" |
+	"John of Lancaster" |
+	"Julia" |
+	"Juliet" |
+	"Julius Caesar" |
+	"King Henry" |
+	"King John" |
+	"King Lear" |
+	"King Richard" |
+	"Lady Capulet" |
+	"Lady Macbeth" |
+	"Lady Macduff" |
+	"Lady Montague" |
+	"Lennox" |
+	"Leonato" |
+	"Luciana" |
+	"Lucio" |
+	"Lychorida" |
+	"Lysander" |
+	"Macbeth" |
+	"Macduff" |
+	"Malcolm" |
+	"Mariana" |
+	"Mark Antony" |
+	"Mercutio" |
+	"Miranda" |
+	"Mistress Ford" |
+	"Mistress Overdone" |
+	"Mistress Page" |
+	"Montague" |
+	"Mopsa" |
+	"Oberon" |
+	"Octavia" |
+	"Octavius Caesar" |
+	"Olivia" |
+	"Ophelia" |
+	"Orlando" |
+	"Orsino" |
+	"Othello" |
+	"Page" |
+	"Pantino" |
+	"Paris" |
+	"Pericles" |
+	"Pinch" |
+	"Polonius" |
+	"Pompeius" |
+	"Portia" |
+	"Priam" |
+	"Prince Henry" |
+	"Prospero" |
+	"Proteus" |
+	"Publius" |
+	"Puck" |
+	"Queen Elinor" |
+	"Regan" |
+	"Robin" |
+	"Romeo" |
+	"Rosalind" |
+	"Sebastian" |
+	"Shallow" |
+	"Shylock" |
+	"Slender" |
+	"Solinus" |
+	"Stephano" |
+	"Thaisa" |
+	"The Abbot of Westminster" |
+	"The Apothecary" |
+	"The Archbishop of Canterbury" |
+	"The Duke of Milan" |
+	"The Duke of Venice" |
+	"The Ghost" |
+	"Theseus" |
+	"Thurio" |
+	"Timon" |
+	"Titania" |
+	"Titus" |
+	"Troilus" |
+	"Tybalt" |
+	"Ulysses" |
+	"Valentine" |
+	"Venus" |
+	"Vincentio" |
+	"Viola";
+
+nothing = "nothing" | "zero";
+
+positive_or_neutral_adjective = positive_adjective | neutral_adjective;
+
+positive_or_neutral_noun = positive_noun | neutral_noun;
+
+neutral_comparative = "as" (negative_adjective | positive_or_neutral_adjective) "as";
+
+negative_noun_phrase = [article] adjectives:{negative_adjective}* noun:negative_noun;
+
+positive_noun_phrase = [article] adjectives:{positive_or_neutral_adjective}* noun:positive_or_neutral_noun;
+
+noun_phrase = negative_noun_phrase |
+	positive_noun_phrase;
+
+value = first_person:first_person |
+	second_person:second_person |
+	noun_phrase:noun_phrase |
+	character:character |
+	nothing:nothing |
+	expression:expression;
+
+binary_operation = "the difference between" |
+	"the product of" |
+	"the quotient between" |
+	"the remainder of the quotient between" |
+	"the sum of";
+
+binary_expression = first_value:value operation:binary_operation second_value:value;
+
+unary_operation = "the cube of" |
+	"the factorial of" |
+	"the square of" |
+	"the square root of" |
+	"twice";
+
+unary_expression = operation:unary_operation value:value;
+
+expression = binary_expression | unary_expression;
+
+negative_if = "If not,";
+
+positive_if = "If so,";
+
+question = be first_value:value (positive_comparative:positive_comparative | neutral_comparative:neutral_comparative | negative_comparative:negative_comparative) "than" second_value:value "?";
+
+assignment = second_person [be] ["as" [(positive_or_neutral_adjective | negative_adjective) "as"]] value:value ("!" | ".");
+
+goto = condition:(negative_if |
+	positive_if) ("Let us" | "let us" | "We shall" | "we shall" | "We must" | "we must") ("return to" | "proceed to") "scene" destination:/"^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$"/;
+
+sentence = question | assignment | goto;
