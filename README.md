@@ -1,2 +1,4 @@
 # shakespeare
-An interpreter for the Shakespeare Programming Language, implemented in Python
+An interpreter for the Shakespeare Programming Language, implemented in Python.
+
+WIP!
