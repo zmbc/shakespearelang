@@ -17,7 +17,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 3, 19, 23, 16, 58, 5)
+__version__ = (2016, 3, 20, 2, 23, 12, 6)
 
 __all__ = [
     'shakespeareParser',
@@ -85,6 +85,19 @@ class shakespeareParser(Parser):
             self._error('expecting one of: I me')
 
     @graken()
+    def _first_person_reflexive_(self):
+        self._token('myself')
+
+    @graken()
+    def _first_person_possessive_(self):
+        with self._choice():
+            with self._option():
+                self._token('mine')
+            with self._option():
+                self._token('my')
+            self._error('expecting one of: mine my')
+
+    @graken()
     def _second_person_(self):
         with self._choice():
             with self._option():
@@ -96,32 +109,80 @@ class shakespeareParser(Parser):
             self._error('expecting one of: thee thou you')
 
     @graken()
-    def _positive_comparative_(self):
+    def _second_person_reflexive_(self):
         with self._choice():
             with self._option():
-                self._token('better')
+                self._token('thyself')
             with self._option():
-                self._token('bigger')
+                self._token('yourself')
+            self._error('expecting one of: thyself yourself')
+
+    @graken()
+    def _second_person_possessive_(self):
+        with self._choice():
             with self._option():
-                self._token('fresher')
+                self._token('thine')
             with self._option():
-                self._token('friendlier')
+                self._token('thy')
             with self._option():
-                self._token('nicer')
+                self._token('your')
+            self._error('expecting one of: thine thy your')
+
+    @graken()
+    def _third_person_possessive_(self):
+        with self._choice():
             with self._option():
-                self._token('jollier')
-            self._error('expecting one of: better bigger fresher friendlier jollier nicer')
+                self._token('his')
+            with self._option():
+                self._token('her')
+            with self._option():
+                self._token('its')
+            with self._option():
+                self._token('their')
+            self._error('expecting one of: her his its their')
+
+    @graken()
+    def _possessive_(self):
+        with self._choice():
+            with self._option():
+                self._first_person_possessive_()
+            with self._option():
+                self._second_person_possessive_()
+            with self._option():
+                self._third_person_possessive_()
+            self._error('no available options')
+
+    @graken()
+    def _positive_comparative_(self):
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._token('better')
+                with self._option():
+                    self._token('bigger')
+                with self._option():
+                    self._token('fresher')
+                with self._option():
+                    self._token('friendlier')
+                with self._option():
+                    self._token('nicer')
+                with self._option():
+                    self._token('jollier')
+                self._error('expecting one of: better bigger fresher friendlier jollier nicer')
+        self._token('than')
 
     @graken()
     def _negative_comparative_(self):
-        with self._choice():
-            with self._option():
-                self._token('punier')
-            with self._option():
-                self._token('smaller')
-            with self._option():
-                self._token('worse')
-            self._error('expecting one of: punier smaller worse')
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._token('punier')
+                with self._option():
+                    self._token('smaller')
+                with self._option():
+                    self._token('worse')
+                self._error('expecting one of: punier smaller worse')
+        self._token('than')
 
     @graken()
     def _negative_adjective_(self):
@@ -840,11 +901,22 @@ class shakespeareParser(Parser):
     @graken()
     def _negative_noun_phrase_(self):
         with self._optional():
-            self._article_()
+            with self._choice():
+                with self._option():
+                    self._article_()
+                with self._option():
+                    self._possessive_()
+                self._error('no available options')
 
-        def block1():
-            self._negative_adjective_()
-        self._closure(block1)
+        def block2():
+            with self._group():
+                with self._choice():
+                    with self._option():
+                        self._negative_adjective_()
+                    with self._option():
+                        self._neutral_adjective_()
+                    self._error('no available options')
+        self._closure(block2)
         self.name_last_node('adjectives')
         self._negative_noun_()
         self.name_last_node('noun')
@@ -857,11 +929,16 @@ class shakespeareParser(Parser):
     @graken()
     def _positive_noun_phrase_(self):
         with self._optional():
-            self._article_()
+            with self._choice():
+                with self._option():
+                    self._article_()
+                with self._option():
+                    self._possessive_()
+                self._error('no available options')
 
-        def block1():
+        def block2():
             self._positive_or_neutral_adjective_()
-        self._closure(block1)
+        self._closure(block2)
         self.name_last_node('adjectives')
         self._positive_or_neutral_noun_()
         self.name_last_node('noun')
@@ -884,10 +961,25 @@ class shakespeareParser(Parser):
     def _value_(self):
         with self._choice():
             with self._option():
-                self._first_person_()
+                self._expression_()
+                self.name_last_node('expression')
+            with self._option():
+                with self._group():
+                    with self._choice():
+                        with self._option():
+                            self._first_person_()
+                        with self._option():
+                            self._first_person_reflexive_()
+                        self._error('no available options')
                 self.name_last_node('first_person')
             with self._option():
-                self._second_person_()
+                with self._group():
+                    with self._choice():
+                        with self._option():
+                            self._second_person_()
+                        with self._option():
+                            self._second_person_reflexive_()
+                        self._error('no available options')
                 self.name_last_node('second_person')
             with self._option():
                 self._noun_phrase_()
@@ -898,13 +990,10 @@ class shakespeareParser(Parser):
             with self._option():
                 self._nothing_()
                 self.name_last_node('nothing')
-            with self._option():
-                self._expression_()
-                self.name_last_node('expression')
             self._error('no available options')
 
         self.ast._define(
-            ['first_person', 'second_person', 'noun_phrase', 'character', 'nothing', 'expression'],
+            ['expression', 'first_person', 'second_person', 'noun_phrase', 'character', 'nothing'],
             []
         )
 
@@ -925,15 +1014,16 @@ class shakespeareParser(Parser):
 
     @graken()
     def _binary_expression_(self):
-        self._value_()
-        self.name_last_node('first_value')
         self._binary_operation_()
         self.name_last_node('operation')
+        self._value_()
+        self.name_last_node('first_value')
+        self._token('and')
         self._value_()
         self.name_last_node('second_value')
 
         self.ast._define(
-            ['first_value', 'operation', 'second_value'],
+            ['operation', 'first_value', 'second_value'],
             []
         )
 
@@ -969,9 +1059,16 @@ class shakespeareParser(Parser):
         with self._choice():
             with self._option():
                 self._binary_expression_()
+                self.name_last_node('binary_expression')
             with self._option():
                 self._unary_expression_()
+                self.name_last_node('unary_expression')
             self._error('no available options')
+
+        self.ast._define(
+            ['binary_expression', 'unary_expression'],
+            []
+        )
 
     @graken()
     def _negative_if_(self):
@@ -998,7 +1095,6 @@ class shakespeareParser(Parser):
                     self._negative_comparative_()
                     self.name_last_node('negative_comparative')
                 self._error('no available options')
-        self._token('than')
         self._value_()
         self.name_last_node('second_value')
         self._token('?')
@@ -1040,56 +1136,325 @@ class shakespeareParser(Parser):
         )
 
     @graken()
+    def _let_us_(self):
+        with self._choice():
+            with self._option():
+                self._token('Let us')
+            with self._option():
+                self._token('We shall')
+            with self._option():
+                self._token('We must')
+            self._error('expecting one of: Let us We must We shall')
+
+    @graken()
+    def _proceed_to_(self):
+        with self._choice():
+            with self._option():
+                self._token('proceed to')
+            with self._option():
+                self._token('return to')
+            self._error('expecting one of: proceed to return to')
+
+    @graken()
+    def _roman_numeral_(self):
+        self._pattern(r'M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})')
+
+    @graken()
     def _goto_(self):
-        with self._group():
+        with self._optional():
             with self._choice():
                 with self._option():
                     self._negative_if_()
+                    self.name_last_node('negative_condition')
                 with self._option():
                     self._positive_if_()
+                    self.name_last_node('positive_condition')
                 self._error('no available options')
-        self.name_last_node('condition')
-        with self._group():
-            with self._choice():
-                with self._option():
-                    self._token('Let us')
-                with self._option():
-                    self._token('let us')
-                with self._option():
-                    self._token('We shall')
-                with self._option():
-                    self._token('we shall')
-                with self._option():
-                    self._token('We must')
-                with self._option():
-                    self._token('we must')
-                self._error('expecting one of: Let us We must We shall let us we must we shall')
-        with self._group():
-            with self._choice():
-                with self._option():
-                    self._token('return to')
-                with self._option():
-                    self._token('proceed to')
-                self._error('expecting one of: proceed to return to')
+        self._let_us_()
+        self._proceed_to_()
         self._token('scene')
-        self._pattern(r'"^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$"')
+        self._roman_numeral_()
         self.name_last_node('destination')
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._token('!')
+                with self._option():
+                    self._token('.')
+                self._error('expecting one of: ! .')
 
         self.ast._define(
-            ['condition', 'destination'],
+            ['negative_condition', 'positive_condition', 'destination'],
             []
         )
+
+    @graken()
+    def _output_(self):
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._token('open')
+                    self._second_person_possessive_()
+                    self._token('heart')
+                with self._option():
+                    self._token('speak')
+                    self._second_person_possessive_()
+                    self._token('mind')
+                self._error('no available options')
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._token('!')
+                with self._option():
+                    self._token('.')
+                self._error('expecting one of: ! .')
+
+    @graken()
+    def _input_(self):
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._token('listen to')
+                    self._second_person_possessive_()
+                    self._token('heart')
+                with self._option():
+                    self._token('open')
+                    self._second_person_possessive_()
+                    self._token('mind')
+                self._error('no available options')
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._token('!')
+                with self._option():
+                    self._token('.')
+                self._error('expecting one of: ! .')
 
     @graken()
     def _sentence_(self):
         with self._choice():
             with self._option():
                 self._question_()
+                self.name_last_node('question')
             with self._option():
                 self._assignment_()
+                self.name_last_node('assignment')
             with self._option():
                 self._goto_()
+                self.name_last_node('goto')
+            with self._option():
+                self._output_()
+                self.name_last_node('output')
+            with self._option():
+                self._input_()
+                self.name_last_node('input')
             self._error('no available options')
+
+        self.ast._define(
+            ['question', 'assignment', 'goto', 'output', 'input'],
+            []
+        )
+
+    @graken()
+    def _line_(self):
+        self._character_()
+        self.name_last_node('character')
+        self._token(':')
+        with self._group():
+
+            def block2():
+                self._sentence_()
+            self._closure(block2)
+        self.name_last_node('contents')
+
+        self.ast._define(
+            ['character', 'contents'],
+            []
+        )
+
+    @graken()
+    def _character_list_(self):
+        with self._choice():
+            with self._option():
+                self._character_()
+                self.add_last_node_to_name('@')
+
+                def block1():
+                    self._token(',')
+                    self._character_()
+                    self.add_last_node_to_name('@')
+                self._closure(block1)
+                self._token('and')
+                self._character_()
+                self.add_last_node_to_name('@')
+            with self._option():
+                self._character_()
+                self.add_last_node_to_name('@')
+            self._error('no available options')
+
+    @graken()
+    def _entrance_(self):
+        self._token('[')
+        self._token('Enter')
+        self._character_list_()
+        self.name_last_node('character_list')
+        self._token(']')
+
+        self.ast._define(
+            ['character_list'],
+            []
+        )
+
+    @graken()
+    def _exit_(self):
+        self._token('[')
+        self._token('Exit')
+        self._character_()
+        self.name_last_node('character')
+        self._token(']')
+
+        self.ast._define(
+            ['character'],
+            []
+        )
+
+    @graken()
+    def _exeunt_(self):
+        self._token('[')
+        self._token('Exeunt')
+        with self._optional():
+            self._character_list_()
+            self.name_last_node('character_list')
+        self._token(']')
+
+        self.ast._define(
+            ['character_list'],
+            []
+        )
+
+    @graken()
+    def _event_(self):
+        with self._choice():
+            with self._option():
+                self._line_()
+                self.name_last_node('line')
+            with self._option():
+                self._entrance_()
+                self.name_last_node('entrance')
+            with self._option():
+                self._exit_()
+                self.name_last_node('exit')
+            with self._option():
+                self._exeunt_()
+                self.name_last_node('exeunt')
+            self._error('no available options')
+
+        self.ast._define(
+            ['line', 'entrance', 'exit', 'exeunt'],
+            []
+        )
+
+    @graken()
+    def _scene_(self):
+        self._token('Scene')
+        self._roman_numeral_()
+        self.name_last_node('number')
+        self._token(':')
+        self._pattern(r'[^!\.]*')
+        self.name_last_node('name')
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._token('!')
+                with self._option():
+                    self._token('.')
+                self._error('expecting one of: ! .')
+        with self._group():
+
+            def block4():
+                self._event_()
+            self._closure(block4)
+        self.name_last_node('events')
+
+        self.ast._define(
+            ['number', 'name', 'events'],
+            []
+        )
+
+    @graken()
+    def _act_(self):
+        self._token('Act')
+        self._roman_numeral_()
+        self.name_last_node('number')
+        self._token(':')
+        self._pattern(r'[^!\.]*')
+        self.name_last_node('name')
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._token('!')
+                with self._option():
+                    self._token('.')
+                self._error('expecting one of: ! .')
+        with self._group():
+
+            def block4():
+                self._scene_()
+            self._closure(block4)
+        self.name_last_node('scenes')
+
+        self.ast._define(
+            ['number', 'name', 'scenes'],
+            []
+        )
+
+    @graken()
+    def _dramatis_personae_(self):
+        self._character_()
+        self.name_last_node('character')
+        self._token(',')
+        self._pattern(r'[^!\.]*')
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._token('!')
+                with self._option():
+                    self._token('.')
+                self._error('expecting one of: ! .')
+
+        self.ast._define(
+            ['character'],
+            []
+        )
+
+    @graken()
+    def _play_(self):
+        self._pattern(r'[^!\.]*')
+        self.name_last_node('title')
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._token('!')
+                with self._option():
+                    self._token('.')
+                self._error('expecting one of: ! .')
+        with self._group():
+
+            def block3():
+                self._dramatis_personae_()
+            self._closure(block3)
+        self.name_last_node('dramatis_personae')
+        with self._group():
+
+            def block5():
+                self._act_()
+            self._closure(block5)
+        self.name_last_node('acts')
+
+        self.ast._define(
+            ['title', 'dramatis_personae', 'acts'],
+            []
+        )
 
 
 class shakespeareSemantics(object):
@@ -1102,7 +1467,25 @@ class shakespeareSemantics(object):
     def first_person(self, ast):
         return ast
 
+    def first_person_reflexive(self, ast):
+        return ast
+
+    def first_person_possessive(self, ast):
+        return ast
+
     def second_person(self, ast):
+        return ast
+
+    def second_person_reflexive(self, ast):
+        return ast
+
+    def second_person_possessive(self, ast):
+        return ast
+
+    def third_person_possessive(self, ast):
+        return ast
+
+    def possessive(self, ast):
         return ast
 
     def positive_comparative(self, ast):
@@ -1183,10 +1566,55 @@ class shakespeareSemantics(object):
     def assignment(self, ast):
         return ast
 
+    def let_us(self, ast):
+        return ast
+
+    def proceed_to(self, ast):
+        return ast
+
+    def roman_numeral(self, ast):
+        return ast
+
     def goto(self, ast):
         return ast
 
+    def output(self, ast):
+        return ast
+
+    def input(self, ast):
+        return ast
+
     def sentence(self, ast):
+        return ast
+
+    def line(self, ast):
+        return ast
+
+    def character_list(self, ast):
+        return ast
+
+    def entrance(self, ast):
+        return ast
+
+    def exit(self, ast):
+        return ast
+
+    def exeunt(self, ast):
+        return ast
+
+    def event(self, ast):
+        return ast
+
+    def scene(self, ast):
+        return ast
+
+    def act(self, ast):
+        return ast
+
+    def dramatis_personae(self, ast):
+        return ast
+
+    def play(self, ast):
         return ast
 
 
