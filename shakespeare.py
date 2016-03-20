@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+
 from shakespeare_parser import shakespeareParser
 import argparse
 
