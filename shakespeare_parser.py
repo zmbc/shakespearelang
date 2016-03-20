@@ -17,7 +17,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 3, 20, 2, 23, 12, 6)
+__version__ = (2016, 3, 20, 5, 41, 58, 6)
 
 __all__ = [
     'shakespeareParser',
@@ -1360,7 +1360,7 @@ class shakespeareParser(Parser):
         self._roman_numeral_()
         self.name_last_node('number')
         self._token(':')
-        self._pattern(r'[^!\.]*')
+        self._pattern(r'[^ !\.][^!\.]*')
         self.name_last_node('name')
         with self._group():
             with self._choice():
@@ -1387,7 +1387,7 @@ class shakespeareParser(Parser):
         self._roman_numeral_()
         self.name_last_node('number')
         self._token(':')
-        self._pattern(r'[^!\.]*')
+        self._pattern(r'[^ !\.][^!\.]*')
         self.name_last_node('name')
         with self._group():
             with self._choice():
@@ -1413,7 +1413,7 @@ class shakespeareParser(Parser):
         self._character_()
         self.name_last_node('character')
         self._token(',')
-        self._pattern(r'[^!\.]*')
+        self._pattern(r'[^ !\.][^!\.]*')
         with self._group():
             with self._choice():
                 with self._option():
@@ -1429,7 +1429,7 @@ class shakespeareParser(Parser):
 
     @graken()
     def _play_(self):
-        self._pattern(r'[^!\.]*')
+        self._pattern(r'[^ !\.][^!\.]*')
         self.name_last_node('title')
         with self._group():
             with self._choice():

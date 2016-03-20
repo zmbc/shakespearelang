@@ -441,10 +441,10 @@ exeunt = "[" "Exeunt" [character_list:character_list] "]";
 
 event = line:line | entrance:entrance | exit:exit | exeunt:exeunt;
 
-scene = "Scene" number:roman_numeral ":" name:?/[^!\.]*/? ("!" | ".") events:({event}*);
+scene = "Scene" number:roman_numeral ":" name:?/[^ !\.][^!\.]*/? ("!" | ".") events:({event}*);
 
-act = "Act" number:roman_numeral ":" name:?/[^!\.]*/? ("!" | ".") scenes:({scene}*);
+act = "Act" number:roman_numeral ":" name:?/[^ !\.][^!\.]*/? ("!" | ".") scenes:({scene}*);
 
-dramatis_personae = character:character ',' ?/[^!\.]*/? ("!" | ".");
+dramatis_personae = character:character ',' ?/[^ !\.][^!\.]*/? ("!" | ".");
 
-play = title:?/[^!\.]*/? ("!" | ".") dramatis_personae:({dramatis_personae}*) acts:({act}*);
+play = title:?/[^ !\.][^!\.]*/? ("!" | ".") dramatis_personae:({dramatis_personae}*) acts:({act}*);
