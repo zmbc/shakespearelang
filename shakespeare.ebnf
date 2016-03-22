@@ -437,11 +437,11 @@ line = character:character ":" contents:({sentence}*);
 
 character_list = @+:character {"," @+:character}* "and" @+:character | @+:character;
 
-entrance = "[" "Enter" @:character_list "]";
+entrance = "[" "Enter" characters:character_list "]";
 
-exit = "[" "Exit" @:character "]";
+exit = "[" "Exit" character:character "]";
 
-exeunt = "[" "Exeunt" [@:character_list] "]";
+exeunt = "[" action:"Exeunt" [character_list:character_list] "]";
 
 event = line | entrance | exit | exeunt;
 

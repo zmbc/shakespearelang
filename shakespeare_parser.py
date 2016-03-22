@@ -17,7 +17,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 3, 22, 4, 56, 35, 1)
+__version__ = (2016, 3, 22, 5, 9, 49, 1)
 
 __all__ = [
     'shakespeareParser',
@@ -1272,25 +1272,41 @@ class shakespeareParser(Parser):
         self._token('[')
         self._token('Enter')
         self._character_list_()
-        self.name_last_node('@')
+        self.name_last_node('characters')
         self._token(']')
+
+        self.ast._define(
+            ['characters'],
+            []
+        )
 
     @graken()
     def _exit_(self):
         self._token('[')
         self._token('Exit')
         self._character_()
-        self.name_last_node('@')
+        self.name_last_node('character')
         self._token(']')
+
+        self.ast._define(
+            ['character'],
+            []
+        )
 
     @graken()
     def _exeunt_(self):
         self._token('[')
         self._token('Exeunt')
+        self.name_last_node('action')
         with self._optional():
             self._character_list_()
-            self.name_last_node('@')
+            self.name_last_node('character_list')
         self._token(']')
+
+        self.ast._define(
+            ['action', 'character_list'],
+            []
+        )
 
     @graken()
     def _event_(self):
