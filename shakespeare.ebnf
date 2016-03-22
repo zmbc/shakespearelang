@@ -439,12 +439,13 @@ exit = "[" "Exit" character:character "]";
 
 exeunt = "[" "Exeunt" [character_list:character_list] "]";
 
+text_before_punctuation = ?/[^!\.]*/?;
 event = line:line | entrance:entrance | exit:exit | exeunt:exeunt;
 
-scene = "Scene" number:roman_numeral ":" name:?/[^ !\.][^!\.]*/? ("!" | ".") events:({event}*);
+scene = "Scene" number:roman_numeral ":" name:text_before_punctuation ("!" | ".") events:({event}*);
 
-act = "Act" number:roman_numeral ":" name:?/[^ !\.][^!\.]*/? ("!" | ".") scenes:({scene}*);
+act = "Act" number:roman_numeral ":" name:text_before_punctuation ("!" | ".") scenes:({scene}*);
 
-dramatis_personae = character:character ',' ?/[^ !\.][^!\.]*/? ("!" | ".");
+dramatis_personae = character:character ',' text_before_punctuation ("!" | ".");
 
-play = title:?/[^ !\.][^!\.]*/? ("!" | ".") dramatis_personae:({dramatis_personae}*) acts:({act}*);
+play = title:text_before_punctuation ("!" | ".") dramatis_personae:({dramatis_personae}*) acts:({act}*);
