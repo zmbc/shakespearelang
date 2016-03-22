@@ -7,11 +7,12 @@ argparser = argparse.ArgumentParser(description = "Run files in Shakespeare Prog
 argparser.add_argument('filename', type=str, help="SPL file location")
 
 args = argparser.parse_args()
+filename = args.filename
 
-if(args.filename):
-    with open(args.filename, 'r') as f:
+if(filename):
+    with open(filename, 'r') as f:
         text = f.read().replace('\n', ' ')
 
-    parser = shakespeareParser()
+    parser = shakespeareParser(parseinfo=True)
     ast = parser.parse(text, rule_name='play')
     print(ast)

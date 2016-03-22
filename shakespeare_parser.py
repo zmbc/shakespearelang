@@ -17,7 +17,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 3, 20, 5, 41, 58, 6)
+__version__ = (2016, 3, 22, 4, 56, 35, 1)
 
 __all__ = [
     'shakespeareParser',
@@ -958,44 +958,39 @@ class shakespeareParser(Parser):
             self._error('no available options')
 
     @graken()
+    def _first_person_value_(self):
+        with self._choice():
+            with self._option():
+                self._first_person_()
+            with self._option():
+                self._first_person_reflexive_()
+            self._error('no available options')
+
+    @graken()
+    def _second_person_value_(self):
+        with self._choice():
+            with self._option():
+                self._second_person_()
+            with self._option():
+                self._second_person_reflexive_()
+            self._error('no available options')
+
+    @graken()
     def _value_(self):
         with self._choice():
             with self._option():
                 self._expression_()
-                self.name_last_node('expression')
             with self._option():
-                with self._group():
-                    with self._choice():
-                        with self._option():
-                            self._first_person_()
-                        with self._option():
-                            self._first_person_reflexive_()
-                        self._error('no available options')
-                self.name_last_node('first_person')
+                self._first_person_value_()
             with self._option():
-                with self._group():
-                    with self._choice():
-                        with self._option():
-                            self._second_person_()
-                        with self._option():
-                            self._second_person_reflexive_()
-                        self._error('no available options')
-                self.name_last_node('second_person')
+                self._second_person_value_()
             with self._option():
                 self._noun_phrase_()
-                self.name_last_node('noun_phrase')
             with self._option():
                 self._character_()
-                self.name_last_node('character')
             with self._option():
                 self._nothing_()
-                self.name_last_node('nothing')
             self._error('no available options')
-
-        self.ast._define(
-            ['expression', 'first_person', 'second_person', 'noun_phrase', 'character', 'nothing'],
-            []
-        )
 
     @graken()
     def _binary_operation_(self):
@@ -1059,16 +1054,9 @@ class shakespeareParser(Parser):
         with self._choice():
             with self._option():
                 self._binary_expression_()
-                self.name_last_node('binary_expression')
             with self._option():
                 self._unary_expression_()
-                self.name_last_node('unary_expression')
             self._error('no available options')
-
-        self.ast._define(
-            ['binary_expression', 'unary_expression'],
-            []
-        )
 
     @graken()
     def _negative_if_(self):
@@ -1087,20 +1075,18 @@ class shakespeareParser(Parser):
             with self._choice():
                 with self._option():
                     self._positive_comparative_()
-                    self.name_last_node('positive_comparative')
                 with self._option():
                     self._neutral_comparative_()
-                    self.name_last_node('neutral_comparative')
                 with self._option():
                     self._negative_comparative_()
-                    self.name_last_node('negative_comparative')
                 self._error('no available options')
+        self.name_last_node('comparative')
         self._value_()
         self.name_last_node('second_value')
         self._token('?')
 
         self.ast._define(
-            ['first_value', 'positive_comparative', 'neutral_comparative', 'negative_comparative', 'second_value'],
+            ['first_value', 'comparative', 'second_value'],
             []
         )
 
@@ -1165,11 +1151,10 @@ class shakespeareParser(Parser):
             with self._choice():
                 with self._option():
                     self._negative_if_()
-                    self.name_last_node('negative_condition')
                 with self._option():
                     self._positive_if_()
-                    self.name_last_node('positive_condition')
                 self._error('no available options')
+        self.name_last_node('condition')
         self._let_us_()
         self._proceed_to_()
         self._token('scene')
@@ -1184,7 +1169,7 @@ class shakespeareParser(Parser):
                 self._error('expecting one of: ! .')
 
         self.ast._define(
-            ['negative_condition', 'positive_condition', 'destination'],
+            ['condition', 'destination'],
             []
         )
 
@@ -1235,25 +1220,15 @@ class shakespeareParser(Parser):
         with self._choice():
             with self._option():
                 self._question_()
-                self.name_last_node('question')
             with self._option():
                 self._assignment_()
-                self.name_last_node('assignment')
             with self._option():
                 self._goto_()
-                self.name_last_node('goto')
             with self._option():
                 self._output_()
-                self.name_last_node('output')
             with self._option():
                 self._input_()
-                self.name_last_node('input')
             self._error('no available options')
-
-        self.ast._define(
-            ['question', 'assignment', 'goto', 'output', 'input'],
-            []
-        )
 
     @graken()
     def _line_(self):
@@ -1297,26 +1272,16 @@ class shakespeareParser(Parser):
         self._token('[')
         self._token('Enter')
         self._character_list_()
-        self.name_last_node('character_list')
+        self.name_last_node('@')
         self._token(']')
-
-        self.ast._define(
-            ['character_list'],
-            []
-        )
 
     @graken()
     def _exit_(self):
         self._token('[')
         self._token('Exit')
         self._character_()
-        self.name_last_node('character')
+        self.name_last_node('@')
         self._token(']')
-
-        self.ast._define(
-            ['character'],
-            []
-        )
 
     @graken()
     def _exeunt_(self):
@@ -1324,35 +1289,25 @@ class shakespeareParser(Parser):
         self._token('Exeunt')
         with self._optional():
             self._character_list_()
-            self.name_last_node('character_list')
+            self.name_last_node('@')
         self._token(']')
-
-        self.ast._define(
-            ['character_list'],
-            []
-        )
 
     @graken()
     def _event_(self):
         with self._choice():
             with self._option():
                 self._line_()
-                self.name_last_node('line')
             with self._option():
                 self._entrance_()
-                self.name_last_node('entrance')
             with self._option():
                 self._exit_()
-                self.name_last_node('exit')
             with self._option():
                 self._exeunt_()
-                self.name_last_node('exeunt')
             self._error('no available options')
 
-        self.ast._define(
-            ['line', 'entrance', 'exit', 'exeunt'],
-            []
-        )
+    @graken()
+    def _text_before_punctuation_(self):
+        self._pattern(r'[^!\.]*')
 
     @graken()
     def _scene_(self):
@@ -1360,7 +1315,7 @@ class shakespeareParser(Parser):
         self._roman_numeral_()
         self.name_last_node('number')
         self._token(':')
-        self._pattern(r'[^ !\.][^!\.]*')
+        self._text_before_punctuation_()
         self.name_last_node('name')
         with self._group():
             with self._choice():
@@ -1387,7 +1342,7 @@ class shakespeareParser(Parser):
         self._roman_numeral_()
         self.name_last_node('number')
         self._token(':')
-        self._pattern(r'[^ !\.][^!\.]*')
+        self._text_before_punctuation_()
         self.name_last_node('name')
         with self._group():
             with self._choice():
@@ -1413,7 +1368,7 @@ class shakespeareParser(Parser):
         self._character_()
         self.name_last_node('character')
         self._token(',')
-        self._pattern(r'[^ !\.][^!\.]*')
+        self._text_before_punctuation_()
         with self._group():
             with self._choice():
                 with self._option():
@@ -1429,7 +1384,7 @@ class shakespeareParser(Parser):
 
     @graken()
     def _play_(self):
-        self._pattern(r'[^ !\.][^!\.]*')
+        self._text_before_punctuation_()
         self.name_last_node('title')
         with self._group():
             with self._choice():
@@ -1536,6 +1491,12 @@ class shakespeareSemantics(object):
     def noun_phrase(self, ast):
         return ast
 
+    def first_person_value(self, ast):
+        return ast
+
+    def second_person_value(self, ast):
+        return ast
+
     def value(self, ast):
         return ast
 
@@ -1603,6 +1564,9 @@ class shakespeareSemantics(object):
         return ast
 
     def event(self, ast):
+        return ast
+
+    def text_before_punctuation(self, ast):
         return ast
 
     def scene(self, ast):

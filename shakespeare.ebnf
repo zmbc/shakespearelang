@@ -382,12 +382,16 @@ positive_noun_phrase = [article | possessive] adjectives:{positive_or_neutral_ad
 noun_phrase = negative_noun_phrase |
 	positive_noun_phrase;
 
-value = expression:expression |
-	first_person:(first_person | first_person_reflexive) |
-	second_person:(second_person | second_person_reflexive) |
-	noun_phrase:noun_phrase |
-	character:character |
-	nothing:nothing;
+first_person_value = first_person | first_person_reflexive;
+
+second_person_value = second_person | second_person_reflexive;
+
+value = expression |
+	first_person_value |
+	second_person_value |
+	noun_phrase |
+	character |
+	nothing;
 
 binary_operation = "the difference between" |
 	"the product of" |
@@ -405,13 +409,13 @@ unary_operation = "the cube of" |
 
 unary_expression = operation:unary_operation value:value;
 
-expression = binary_expression:binary_expression | unary_expression:unary_expression;
+expression = binary_expression | unary_expression;
 
 negative_if = "If not,";
 
 positive_if = "If so,";
 
-question = be first_value:value (positive_comparative:positive_comparative | neutral_comparative:neutral_comparative | negative_comparative:negative_comparative) second_value:value "?";
+question = be first_value:value comparative:(positive_comparative | neutral_comparative | negative_comparative) second_value:value "?";
 
 assignment = second_person [be] ["as" [(positive_or_neutral_adjective | negative_adjective) "as"]] value:value ("!" | ".");
 
@@ -421,26 +425,27 @@ proceed_to = "proceed to" | "return to";
 
 roman_numeral = ?/M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})/?;
 
-goto = [negative_condition:negative_if | positive_condition:positive_if] let_us proceed_to "scene" destination:roman_numeral ("!" | ".");
+goto = condition:[negative_if | positive_if] let_us proceed_to "scene" destination:roman_numeral ("!" | ".");
 
 output = ("open" second_person_possessive "heart" | "speak" second_person_possessive "mind") ("!" | ".");
 
 input = ("listen to" second_person_possessive "heart" | "open" second_person_possessive "mind") ("!" | ".");
 
-sentence = question:question | assignment:assignment | goto:goto | output:output | input:input;
+sentence = question | assignment | goto | output | input;
 
 line = character:character ":" contents:({sentence}*);
 
 character_list = @+:character {"," @+:character}* "and" @+:character | @+:character;
 
-entrance = "[" "Enter" character_list:character_list "]";
+entrance = "[" "Enter" @:character_list "]";
 
-exit = "[" "Exit" character:character "]";
+exit = "[" "Exit" @:character "]";
 
-exeunt = "[" "Exeunt" [character_list:character_list] "]";
+exeunt = "[" "Exeunt" [@:character_list] "]";
+
+event = line | entrance | exit | exeunt;
 
 text_before_punctuation = ?/[^!\.]*/?;
-event = line:line | entrance:entrance | exit:exit | exeunt:exeunt;
 
 scene = "Scene" number:roman_numeral ":" name:text_before_punctuation ("!" | ".") events:({event}*);
 
