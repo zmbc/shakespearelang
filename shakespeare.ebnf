@@ -29,16 +29,11 @@ third_person_possessive = "his" | "her" | "its" | "their";
 
 possessive = first_person_possessive | second_person_possessive | third_person_possessive;
 
-positive_comparative = comparison:("better" |
-	"bigger" |
-	"fresher" |
-	"friendlier" |
-	"nicer" |
-	"jollier") "than";
+positive_comparative = comparison:("better" | "bigger" | "fresher" | "friendlier" | "nicer" | "jollier" | "more" positive_adjective) "than";
 
 negative_comparative = comparison:("punier" |
 	"smaller" |
-	"worse") "than";
+	"worse" | "more" negative_adjective) "than";
 
 negative_adjective = "bad" |
 	"cowardly" |
@@ -433,7 +428,11 @@ output = (output_number:("open" second_person_possessive "heart") | output_char:
 
 input = (input_number:("listen to" second_person_possessive "heart") | input_char:("open" second_person_possessive "mind")) ("!" | ".");
 
-sentence = question | assignment | goto | output | input;
+push = "Remember" value:value ("!" | ".");
+
+pop = "Recall" recall_string:text_before_punctuation ("!" | ".");
+
+sentence = question | assignment | goto | output | input | push | pop;
 
 line = character:character ":" contents:({sentence}*);
 

@@ -17,7 +17,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 3, 23, 7, 5, 57, 2)
+__version__ = (2016, 3, 23, 8, 35, 50, 2)
 
 __all__ = [
     'shakespeareParser',
@@ -168,6 +168,9 @@ class shakespeareParser(Parser):
                     self._token('nicer')
                 with self._option():
                     self._token('jollier')
+                with self._option():
+                    self._token('more')
+                    self._positive_adjective_()
                 self._error('expecting one of: better bigger fresher friendlier jollier nicer')
         self.name_last_node('comparison')
         self._token('than')
@@ -187,6 +190,9 @@ class shakespeareParser(Parser):
                     self._token('smaller')
                 with self._option():
                     self._token('worse')
+                with self._option():
+                    self._token('more')
+                    self._negative_adjective_()
                 self._error('expecting one of: punier smaller worse')
         self.name_last_node('comparison')
         self._token('than')
@@ -1295,6 +1301,42 @@ class shakespeareParser(Parser):
         )
 
     @graken()
+    def _push_(self):
+        self._token('Remember')
+        self._value_()
+        self.name_last_node('value')
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._token('!')
+                with self._option():
+                    self._token('.')
+                self._error('expecting one of: ! .')
+
+        self.ast._define(
+            ['value'],
+            []
+        )
+
+    @graken()
+    def _pop_(self):
+        self._token('Recall')
+        self._text_before_punctuation_()
+        self.name_last_node('recall_string')
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._token('!')
+                with self._option():
+                    self._token('.')
+                self._error('expecting one of: ! .')
+
+        self.ast._define(
+            ['recall_string'],
+            []
+        )
+
+    @graken()
     def _sentence_(self):
         with self._choice():
             with self._option():
@@ -1307,6 +1349,10 @@ class shakespeareParser(Parser):
                 self._output_()
             with self._option():
                 self._input_()
+            with self._option():
+                self._push_()
+            with self._option():
+                self._pop_()
             self._error('no available options')
 
     @graken()
@@ -1640,6 +1686,12 @@ class shakespeareSemantics(object):
         return ast
 
     def input(self, ast):
+        return ast
+
+    def push(self, ast):
+        return ast
+
+    def pop(self, ast):
         return ast
 
     def sentence(self, ast):
