@@ -17,7 +17,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 3, 22, 5, 9, 49, 1)
+__version__ = (2016, 3, 23, 7, 5, 57, 2)
 
 __all__ = [
     'shakespeareParser',
@@ -169,7 +169,13 @@ class shakespeareParser(Parser):
                 with self._option():
                     self._token('jollier')
                 self._error('expecting one of: better bigger fresher friendlier jollier nicer')
+        self.name_last_node('comparison')
         self._token('than')
+
+        self.ast._define(
+            ['comparison'],
+            []
+        )
 
     @graken()
     def _negative_comparative_(self):
@@ -182,7 +188,13 @@ class shakespeareParser(Parser):
                 with self._option():
                     self._token('worse')
                 self._error('expecting one of: punier smaller worse')
+        self.name_last_node('comparison')
         self._token('than')
+
+        self.ast._define(
+            ['comparison'],
+            []
+        )
 
     @graken()
     def _negative_adjective_(self):
@@ -861,12 +873,19 @@ class shakespeareParser(Parser):
 
     @graken()
     def _nothing_(self):
-        with self._choice():
-            with self._option():
-                self._token('nothing')
-            with self._option():
-                self._token('zero')
-            self._error('expecting one of: nothing zero')
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._token('nothing')
+                with self._option():
+                    self._token('zero')
+                self._error('expecting one of: nothing zero')
+        self.name_last_node('nothing_word')
+
+        self.ast._define(
+            ['nothing_word'],
+            []
+        )
 
     @graken()
     def _positive_or_neutral_adjective_(self):
@@ -896,7 +915,13 @@ class shakespeareParser(Parser):
                 with self._option():
                     self._positive_or_neutral_adjective_()
                 self._error('no available options')
+        self.name_last_node('comparison')
         self._token('as')
+
+        self.ast._define(
+            ['comparison'],
+            []
+        )
 
     @graken()
     def _negative_noun_phrase_(self):
@@ -959,21 +984,45 @@ class shakespeareParser(Parser):
 
     @graken()
     def _first_person_value_(self):
-        with self._choice():
-            with self._option():
-                self._first_person_()
-            with self._option():
-                self._first_person_reflexive_()
-            self._error('no available options')
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._first_person_()
+                with self._option():
+                    self._first_person_reflexive_()
+                self._error('no available options')
+        self.name_last_node('first_person_word')
+
+        self.ast._define(
+            ['first_person_word'],
+            []
+        )
 
     @graken()
     def _second_person_value_(self):
-        with self._choice():
-            with self._option():
-                self._second_person_()
-            with self._option():
-                self._second_person_reflexive_()
-            self._error('no available options')
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._second_person_()
+                with self._option():
+                    self._second_person_reflexive_()
+                self._error('no available options')
+        self.name_last_node('second_person_word')
+
+        self.ast._define(
+            ['second_person_word'],
+            []
+        )
+
+    @graken()
+    def _character_name_(self):
+        self._character_()
+        self.name_last_node('name')
+
+        self.ast._define(
+            ['name'],
+            []
+        )
 
     @graken()
     def _value_(self):
@@ -987,7 +1036,7 @@ class shakespeareParser(Parser):
             with self._option():
                 self._noun_phrase_()
             with self._option():
-                self._character_()
+                self._character_name_()
             with self._option():
                 self._nothing_()
             self._error('no available options')
@@ -1061,10 +1110,22 @@ class shakespeareParser(Parser):
     @graken()
     def _negative_if_(self):
         self._token('If not,')
+        self.name_last_node('if_')
+
+        self.ast._define(
+            ['if_'],
+            []
+        )
 
     @graken()
     def _positive_if_(self):
         self._token('If so,')
+        self.name_last_node('if_')
+
+        self.ast._define(
+            ['if_'],
+            []
+        )
 
     @graken()
     def _question_(self):
@@ -1178,13 +1239,17 @@ class shakespeareParser(Parser):
         with self._group():
             with self._choice():
                 with self._option():
-                    self._token('open')
-                    self._second_person_possessive_()
-                    self._token('heart')
+                    with self._group():
+                        self._token('open')
+                        self._second_person_possessive_()
+                        self._token('heart')
+                    self.name_last_node('output_number')
                 with self._option():
-                    self._token('speak')
-                    self._second_person_possessive_()
-                    self._token('mind')
+                    with self._group():
+                        self._token('speak')
+                        self._second_person_possessive_()
+                        self._token('mind')
+                    self.name_last_node('output_char')
                 self._error('no available options')
         with self._group():
             with self._choice():
@@ -1194,18 +1259,27 @@ class shakespeareParser(Parser):
                     self._token('.')
                 self._error('expecting one of: ! .')
 
+        self.ast._define(
+            ['output_number', 'output_char'],
+            []
+        )
+
     @graken()
     def _input_(self):
         with self._group():
             with self._choice():
                 with self._option():
-                    self._token('listen to')
-                    self._second_person_possessive_()
-                    self._token('heart')
+                    with self._group():
+                        self._token('listen to')
+                        self._second_person_possessive_()
+                        self._token('heart')
+                    self.name_last_node('input_number')
                 with self._option():
-                    self._token('open')
-                    self._second_person_possessive_()
-                    self._token('mind')
+                    with self._group():
+                        self._token('open')
+                        self._second_person_possessive_()
+                        self._token('mind')
+                    self.name_last_node('input_char')
                 self._error('no available options')
         with self._group():
             with self._choice():
@@ -1214,6 +1288,11 @@ class shakespeareParser(Parser):
                 with self._option():
                     self._token('.')
                 self._error('expecting one of: ! .')
+
+        self.ast._define(
+            ['input_number', 'input_char'],
+            []
+        )
 
     @graken()
     def _sentence_(self):
@@ -1300,11 +1379,11 @@ class shakespeareParser(Parser):
         self.name_last_node('action')
         with self._optional():
             self._character_list_()
-            self.name_last_node('character_list')
+            self.name_last_node('characters')
         self._token(']')
 
         self.ast._define(
-            ['action', 'character_list'],
+            ['action', 'characters'],
             []
         )
 
@@ -1409,11 +1488,10 @@ class shakespeareParser(Parser):
                 with self._option():
                     self._token('.')
                 self._error('expecting one of: ! .')
-        with self._group():
 
-            def block3():
-                self._dramatis_personae_()
-            self._closure(block3)
+        def block3():
+            self._dramatis_personae_()
+        self._closure(block3)
         self.name_last_node('dramatis_personae')
         with self._group():
 
@@ -1511,6 +1589,9 @@ class shakespeareSemantics(object):
         return ast
 
     def second_person_value(self, ast):
+        return ast
+
+    def character_name(self, ast):
         return ast
 
     def value(self, ast):
