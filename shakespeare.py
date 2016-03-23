@@ -2,6 +2,8 @@
 
 from shakespeare_parser import shakespeareParser
 import argparse
+import pdb
+import math
 
 class Character:
     def __init__(self, name):
@@ -14,7 +16,7 @@ class Character:
         self.stack.append(newValue)
 
     def pop(self):
-        return self.stack.pop()
+        self.value = self.stack.pop()
 
 class ShakespeareState:
     def __init__(self):
@@ -28,15 +30,14 @@ def create_characters_from_dramatis(dramatis_personae):
     return characters
 
 def character_opposite(character, state):
-    characters_opposite = [x for x in state.characters if x.on_stage and x.name != character]
+    characters_opposite = [x for x in state.characters if x.on_stage and x.name != character.name]
     if len(characters_opposite) > 1:
-        pdb.set_trace()
         raise Exception("Ambiguous second-person pronoun")
     return characters_opposite[0]
 
 def character_by_name(name, state):
     for x in state.characters:
-        if x.name == name:
+        if x.name.lower() == name.lower():
             return x
 
 def evaluate(value, character, state):
@@ -89,8 +90,8 @@ def evaluate_question(question, character, state):
         return first_value == second_value
 
 def scene_number_from_roman_numeral(roman_numeral, current_act):
-    for index, scene in current_act.scenes:
-        if scene.name == roman_numeral:
+    for index, scene in enumerate(current_act.scenes):
+        if scene.number == roman_numeral:
             return index
 
 def run_sentence(sentence, character, state, current_position, current_act):
@@ -99,8 +100,9 @@ def run_sentence(sentence, character, state, current_position, current_act):
     elif sentence.parseinfo.rule == 'question':
         state.global_boolean = evaluate_question(sentence, character, state)
     elif sentence.parseinfo.rule == 'goto':
-        if (sentence.condition.parseinfo.rule == 'negative_if' and not state.global_boolean) or (sentence.condition.parseinfo.rule == 'positive_if' and state.global_boolean):
+        if (not sentence.condition) or (sentence.condition.parseinfo.rule == 'negative_if' and not state.global_boolean) or (sentence.condition.parseinfo.rule == 'positive_if' and state.global_boolean):
             current_position['scene'] = scene_number_from_roman_numeral(sentence.destination, current_act)
+            current_position['event'] = 0
             return True
     elif sentence.parseinfo.rule == 'output':
         if sentence.output_number:
@@ -109,17 +111,25 @@ def run_sentence(sentence, character, state, current_position, current_act):
             print(chr(character_opposite(character, state).value), end="")
     elif sentence.parseinfo.rule == 'input':
         if sentence.input_number:
-            character_opposite(character, state).value = int(input("Enter a number: "))
+            character_opposite(character, state).value = int(input())
         elif sentence.input_char:
-            character_opposite(character, state).value = ord(input("Enter a character: ")[0])
+            input_char_code = input()
+            if input_char_code == '':
+                character_opposite(character, state).value = -1
+            else:
+                character_opposite(character, state).value = ord(input_char_code[0])
+    elif sentence.parseinfo.rule == 'push':
+        character_opposite(character, state).push(evaluate(sentence.value, character, state))
+    elif sentence.parseinfo.rule == 'pop':
+        character_opposite(character, state).pop()
 
 def run_event(event, state, current_position, current_act):
     if event.parseinfo.rule == 'line':
         for sentence in event.contents:
             # Returns whether to break-- e.g. after a goto
-            should_break = run_sentence(sentence, event.character, state, current_position, current_act)
+            should_break = run_sentence(sentence, character_by_name(event.character, state), state, current_position, current_act)
             if(should_break):
-                break
+                return should_break
     elif event.parseinfo.rule == 'entrance':
         for name in event.characters:
             character_by_name(name, state).on_stage = True
@@ -154,7 +164,9 @@ def run_play(ast):
             break
 
         event_to_run = ast.acts[current_position['act']].scenes[current_position['scene']].events[current_position['event']]
-        run_event(event_to_run, state, current_position, current_act)
+        should_continue = run_event(event_to_run, state, current_position, current_act)
+        if should_continue:
+            continue
         current_position['event'] += 1
 
 def main():
