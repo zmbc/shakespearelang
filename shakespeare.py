@@ -2,7 +2,6 @@
 
 from shakespeare_parser import shakespeareParser
 import argparse
-import pdb
 import math
 
 class Shakespeare:
@@ -42,7 +41,7 @@ class Shakespeare:
         if x.name.lower() == name.lower():
             return x
             
-  def _scene_number_from_roman_numeral(roman_numeral):
+  def _scene_number_from_roman_numeral(self, roman_numeral):
     for index, scene in enumerate(self.current_act.scenes):
         if scene.number == roman_numeral:
             return index
@@ -86,7 +85,7 @@ class Shakespeare:
         elif value.operation == 'the sum of':
             return first_operand + second_operand
             
-  def evaluate_question(question, character):
+  def evaluate_question(self, question, character):
     first_value = self.evaluate_expression(question.first_value, character)
     second_value = self.evaluate_expression(question.second_value, character)
     if question.comparative.parseinfo.rule == 'positive_comparative':
@@ -103,7 +102,7 @@ class Shakespeare:
         self.global_boolean = self.evaluate_question(sentence, character)
     elif sentence.parseinfo.rule == 'goto':
         if (not sentence.condition) or (sentence.condition.parseinfo.rule == 'negative_if' and not self.global_boolean) or (sentence.condition.parseinfo.rule == 'positive_if' and self.global_boolean):
-            self.current_position['scene'] = self._scene_number_from_roman_numeral(sentence.destination, self.current_act)
+            self.current_position['scene'] = self._scene_number_from_roman_numeral(sentence.destination)
             self.current_position['event'] = 0
             return True
     elif sentence.parseinfo.rule == 'output':
@@ -146,7 +145,6 @@ class Shakespeare:
         self._character_by_name(event.character).on_stage = False
         
   def run_play(self, text):
-    pdb.set_trace()
     parser = shakespeareParser(parseinfo=True)
     self.ast = parser.parse(text, rule_name='play')
     self.characters = self._create_characters_from_dramatis(self.ast.dramatis_personae)
