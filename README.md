@@ -9,7 +9,7 @@ Note: Shakespeare's actual plays are not valid SPL. SPL does not aim to provide 
 
 #### What is this project?
 
-This is an interpreter I wrote for SPL. It's written in Python. The aim is to allow programmers to be able to understand how their SPL code is executing, with features like REPL and debugging. All previous implementations of SPL were either compilers or cross-compilers, which makes an already confusing language even harder to follow.
+This is an interpreter I wrote for SPL. It's written in Python. The aim is to help programmers better understand how their SPL code is executing, with features like REPL and debugging. All previous implementations of SPL were cross-compilers, which makes an already confusing language even harder to follow.
 
 #### What state is this project in?
 
