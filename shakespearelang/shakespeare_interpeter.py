@@ -10,7 +10,7 @@ class Shakespeare:
         self.global_boolean = False
         self.ast = None
         self.current_position = None
-  
+
   class Character:
     def __init__(self, name):
         self.value = 0
@@ -23,29 +23,29 @@ class Shakespeare:
 
     def pop(self):
         self.value = self.stack.pop()
-        
+
   def _create_characters_from_dramatis(self, dramatis_personae):
     characters = []
     for character_declaration in dramatis_personae:
         characters.append(self.Character(character_declaration.character))
     return characters
-    
+
   def _character_opposite(self, character):
     characters_opposite = [x for x in self.characters if x.on_stage and x.name != character.name]
     if len(characters_opposite) > 1:
         raise Exception("Ambiguous second-person pronoun")
     return characters_opposite[0]
-    
+
   def _character_by_name(self, name):
     for x in self.characters:
         if x.name.lower() == name.lower():
             return x
-            
+
   def _scene_number_from_roman_numeral(self, roman_numeral):
     for index, scene in enumerate(self.current_act.scenes):
         if scene.number == roman_numeral:
             return index
-            
+
   def evaluate_expression(self, value, character):
     if value.parseinfo.rule == 'first_person_value':
         return character.value
@@ -84,7 +84,7 @@ class Shakespeare:
             return first_operand % second_operand
         elif value.operation == 'the sum of':
             return first_operand + second_operand
-            
+
   def evaluate_question(self, question, character):
     first_value = self.evaluate_expression(question.first_value, character)
     second_value = self.evaluate_expression(question.second_value, character)
@@ -94,7 +94,7 @@ class Shakespeare:
         return first_value < second_value
     elif question.comparative.parseinfo.rule == 'neutral_comparative':
         return first_value == second_value
-        
+
   def run_sentence(self, sentence, character):
     if sentence.parseinfo.rule == 'assignment':
         self._character_opposite(character).value = self.evaluate_expression(sentence.value, character)
@@ -123,7 +123,7 @@ class Shakespeare:
         self._character_opposite(character).push(self.evaluate_expression(sentence.value, character))
     elif sentence.parseinfo.rule == 'pop':
         self._character_opposite(character).pop()
-        
+
   def run_event(self, event):
     if event.parseinfo.rule == 'line':
         for sentence in event.contents:
@@ -143,7 +143,7 @@ class Shakespeare:
                 character.on_stage = False
     elif event.parseinfo.rule == 'exit':
         self._character_by_name(event.character).on_stage = False
-        
+
   def run_play(self, text):
     parser = shakespeareParser(parseinfo=True)
     self.ast = parser.parse(text, rule_name='play')
@@ -170,19 +170,3 @@ class Shakespeare:
         if should_continue:
             continue
         self.current_position['event'] += 1
-
-def main():
-    argparser = argparse.ArgumentParser(description = "Run files in Shakespeare Programming Language.")
-    argparser.add_argument('filename', type=str, help="SPL file location")
-
-    args = argparser.parse_args()
-    filename = args.filename
-
-    if filename:
-        with open(filename, 'r') as f:
-            text = f.read().replace('\n', ' ')
-        interpreter = Shakespeare()
-        interpreter.run_play(text)
-
-if __name__ == "__main__":
-    main()
