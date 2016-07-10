@@ -13,6 +13,7 @@ setup(
     version = "0.0.1",
     author = "Zeb Burke-Conte",
     author_email = "zmbc@uw.edu",
+    url = 'http://github.com/zmbc/shakespearelang',
     description = "An interpreter for the Shakespeare Programming Language.",
     license = "MIT",
     keywords = "shakespeare interpreter",
