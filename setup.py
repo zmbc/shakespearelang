@@ -17,7 +17,7 @@ setup(
     license = "MIT",
     keywords = "shakespeare interpreter",
     packages=['shakespearelang'],
-    long_description=read('README'),
+    long_description=read('README.md'),
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Topic :: Software Development :: Interpreters",

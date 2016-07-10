@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-from shakespeare_parser import shakespeareParser
+from .shakespeare_parser import shakespeareParser
 import argparse
 import math
 

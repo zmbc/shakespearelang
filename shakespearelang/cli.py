@@ -1,5 +1,7 @@
+#! /usr/bin/env python
+
 import click
-import shakespeare_interpreter
+from .shakespeare_interpreter import Shakespeare
 
 @click.group(invoke_without_command=True)
 @click.pass_context
@@ -7,12 +9,12 @@ def main(ctx):
     if ctx.invoked_subcommand is None:
         repl()
 
-@click.command()
+@main.command()
 def repl():
     # Implement repl here
     raise NotImplementedError('REPL is not implemented yet')
 
-@click.command()
+@main.command()
 @click.argument('file')
 def run(file):
     with open(file, 'r') as f:
