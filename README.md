@@ -1,4 +1,4 @@
-# shakespeare
+# shakespearelang
 An interpreter for the Shakespeare Programming Language, implemented in Python.
 
 #### What is the Shakespeare Programming Language?
