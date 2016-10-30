@@ -18,6 +18,6 @@ def repl():
 @click.argument('file')
 def run(file):
     with open(file, 'r') as f:
-        text = f.read().replace('\n', ' ')
+        play = f.read()
         interpreter = Shakespeare()
-        interpreter.run_play(text)
+        interpreter.run_play(play)

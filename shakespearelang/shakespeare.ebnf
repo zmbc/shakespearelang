@@ -188,7 +188,7 @@ neutral_noun = "animal" |
 	"sky" |
 	"son" |
 	"squirrel" |
-	"stone wall" |
+	"stone" "wall" |
 	"thing" |
 	"town" |
 	"tree" |
@@ -203,7 +203,7 @@ positive_noun = "Heaven" |
 	"happiness" |
 	"joy" |
 	"plum" |
-	"summer's day" |
+	"summer's" "day" |
 	"hero" |
 	"rose" |
 	"kingdom" |
@@ -235,7 +235,7 @@ character = "Achilles" |
 	"Capulet" |
 	"Cassandra" |
 	"Cassius" |
-	"Christopher Sly" |
+	"Christopher" "Sly" |
 	"Cicero" |
 	"Claudio" |
 	"Claudius" |
@@ -247,10 +247,10 @@ character = "Achilles" |
 	"Demetrius" |
 	"Desdemona" |
 	"Dionyza" |
-	"Doctor Caius" |
+	"Doctor" "Caius" |
 	"Dogberry" |
-	"Don John" |
-	"Don Pedro" |
+	"Don" "John" |
+	"Don" "Pedro" |
 	"Donalbain" |
 	"Dorcas" |
 	"Duncan" |
@@ -263,8 +263,8 @@ character = "Achilles" |
 	"Ford" |
 	"Fortinbras" |
 	"Francisca" |
-	"Friar John" |
-	"Friar Laurence" |
+	"Friar" "John" |
+	"Friar" "Laurence" |
 	"Gertrude" |
 	"Goneril" |
 	"Hamlet" |
@@ -278,19 +278,19 @@ character = "Achilles" |
 	"Horatio" |
 	"Imogen" |
 	"Isabella" |
-	"John of Gaunt" |
-	"John of Lancaster" |
+	"John" "of" "Gaunt" |
+	"John" "of" "Lancaster" |
 	"Julia" |
 	"Juliet" |
-	"Julius Caesar" |
-	"King Henry" |
-	"King John" |
-	"King Lear" |
-	"King Richard" |
-	"Lady Capulet" |
-	"Lady Macbeth" |
-	"Lady Macduff" |
-	"Lady Montague" |
+	"Julius" "Caesar" |
+	"King" "Henry" |
+	"King" "John" |
+	"King" "Lear" |
+	"King" "Richard" |
+	"Lady" "Capulet" |
+	"Lady" "Macbeth" |
+	"Lady" "Macduff" |
+	"Lady" "Montague" |
 	"Lennox" |
 	"Leonato" |
 	"Luciana" |
@@ -301,17 +301,17 @@ character = "Achilles" |
 	"Macduff" |
 	"Malcolm" |
 	"Mariana" |
-	"Mark Antony" |
+	"Mark" "Antony" |
 	"Mercutio" |
 	"Miranda" |
-	"Mistress Ford" |
-	"Mistress Overdone" |
-	"Mistress Page" |
+	"Mistress" "Ford" |
+	"Mistress" "Overdone" |
+	"Mistress" "Page" |
 	"Montague" |
 	"Mopsa" |
 	"Oberon" |
 	"Octavia" |
-	"Octavius Caesar" |
+	"Octavius" "Caesar" |
 	"Olivia" |
 	"Ophelia" |
 	"Orlando" |
@@ -326,12 +326,12 @@ character = "Achilles" |
 	"Pompeius" |
 	"Portia" |
 	"Priam" |
-	"Prince Henry" |
+	"Prince" "Henry" |
 	"Prospero" |
 	"Proteus" |
 	"Publius" |
 	"Puck" |
-	"Queen Elinor" |
+	"Queen" "Elinor" |
 	"Regan" |
 	"Robin" |
 	"Romeo" |
@@ -343,12 +343,12 @@ character = "Achilles" |
 	"Solinus" |
 	"Stephano" |
 	"Thaisa" |
-	"The Abbot of Westminster" |
-	"The Apothecary" |
-	"The Archbishop of Canterbury" |
-	"The Duke of Milan" |
-	"The Duke of Venice" |
-	"The Ghost" |
+	"The" "Abbot" "of" "Westminster" |
+	"The" "Apothecary" |
+	"The" "Archbishop" "of" "Canterbury" |
+	"The" "Duke" "of" "Milan" |
+	"The" "Duke" "of" "Venice" |
+	"The" "Ghost" |
 	"Theseus" |
 	"Thurio" |
 	"Timon" |
@@ -390,35 +390,35 @@ value = expression |
 	character_name |
 	nothing;
 
-binary_operation = "the difference between" |
-	"the product of" |
-	"the quotient between" |
-	"the remainder of the quotient between" |
-	"the sum of";
+binary_operation = "the" "difference" "between" |
+	"the" "product" "of" |
+	"the" "quotient" "between" |
+	"the" "remainder" "of" "the" "quotient" "between" |
+	"the" "sum" "of";
 
 binary_expression = operation:binary_operation first_value:value 'and' second_value:value;
 
-unary_operation = "the cube of" |
-	"the factorial of" |
-	"the square of" |
-	"the square root of" |
+unary_operation = "the" "cube" "of" |
+	"the" "factorial" "of" |
+	"the" "square" "of" |
+	"the" "square" "root" "of" |
 	"twice";
 
 unary_expression = operation:unary_operation value:value;
 
 expression = binary_expression | unary_expression;
 
-negative_if = if:"If not,";
+negative_if = if:("If" "not,");
 
-positive_if = if:"If so,";
+positive_if = if:("If" "so,");
 
 question = be first_value:value comparative:(positive_comparative | neutral_comparative | negative_comparative) second_value:value "?";
 
 assignment = second_person [be] ["as" [(positive_or_neutral_adjective | negative_adjective) "as"]] value:value ("!" | ".");
 
-let_us = "Let us" | "We shall" | "We must";
+let_us = "Let" "us" | "We" "shall" | "We" "must";
 
-proceed_to = "proceed to" | "return to";
+proceed_to = "proceed" "to" | "return" "to";
 
 roman_numeral = ?/M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})/?;
 
@@ -426,7 +426,7 @@ goto = condition:[negative_if | positive_if] let_us proceed_to "scene" destinati
 
 output = (output_number:("open" second_person_possessive "heart") | output_char:("speak" second_person_possessive "mind")) ("!" | ".");
 
-input = (input_number:("listen to" second_person_possessive "heart") | input_char:("open" second_person_possessive "mind")) ("!" | ".");
+input = (input_number:("listen" "to" second_person_possessive "heart") | input_char:("open" second_person_possessive "mind")) ("!" | ".");
 
 push = "Remember" value:value ("!" | ".");
 
@@ -454,4 +454,4 @@ act = "Act" number:roman_numeral ":" name:text_before_punctuation ("!" | ".") sc
 
 dramatis_personae = character:character ',' text_before_punctuation ("!" | ".");
 
-play = title:text_before_punctuation ("!" | ".") dramatis_personae:{dramatis_personae}* acts:({act}*);
+play = title:text_before_punctuation ("!" | ".") dramatis_personae:{dramatis_personae}* acts:({act}*) $;

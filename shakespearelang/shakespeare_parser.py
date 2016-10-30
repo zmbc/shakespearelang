@@ -17,7 +17,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 3, 23, 8, 35, 50, 2)
+__version__ = (2016, 10, 30, 7, 5, 16, 6)
 
 __all__ = [
     'shakespeareParser',
@@ -37,6 +37,7 @@ class shakespeareParser(Parser):
                  ignorecase=True,
                  left_recursion=True,
                  keywords=KEYWORDS,
+                 namechars='',
                  **kwargs):
         super(shakespeareParser, self).__init__(
             whitespace=whitespace,
@@ -46,6 +47,7 @@ class shakespeareParser(Parser):
             ignorecase=ignorecase,
             left_recursion=left_recursion,
             keywords=keywords,
+            namechars=namechars,
             **kwargs
         )
 
@@ -524,7 +526,8 @@ class shakespeareParser(Parser):
             with self._option():
                 self._token('squirrel')
             with self._option():
-                self._token('stone wall')
+                self._token('stone')
+                self._token('wall')
             with self._option():
                 self._token('thing')
             with self._option():
@@ -535,7 +538,7 @@ class shakespeareParser(Parser):
                 self._token('uncle')
             with self._option():
                 self._token('wind')
-            self._error('expecting one of: animal aunt brother cat chihuahua cousin cow daughter door face father fellow granddaughter grandfather grandmother grandson hair hamster horse lamp lantern mistletoe moon morning mother nephew niece nose purse road roman sister sky son squirrel stone wall thing town tree uncle wind')
+            self._error('expecting one of: animal aunt brother cat chihuahua cousin cow daughter door face father fellow granddaughter grandfather grandmother grandson hair hamster horse lamp lantern mistletoe moon morning mother nephew niece nose purse road roman sister sky son squirrel stone thing town tree uncle wind')
 
     @graken()
     def _positive_noun_(self):
@@ -557,7 +560,8 @@ class shakespeareParser(Parser):
             with self._option():
                 self._token('plum')
             with self._option():
-                self._token("summer's day")
+                self._token("summer's")
+                self._token('day')
             with self._option():
                 self._token('hero')
             with self._option():
@@ -566,7 +570,7 @@ class shakespeareParser(Parser):
                 self._token('kingdom')
             with self._option():
                 self._token('pony')
-            self._error("expecting one of: Heaven King Lord angel flower happiness hero joy kingdom plum pony rose summer's day")
+            self._error("expecting one of: Heaven King Lord angel flower happiness hero joy kingdom plum pony rose summer's")
 
     @graken()
     def _character_(self):
@@ -624,7 +628,8 @@ class shakespeareParser(Parser):
             with self._option():
                 self._token('Cassius')
             with self._option():
-                self._token('Christopher Sly')
+                self._token('Christopher')
+                self._token('Sly')
             with self._option():
                 self._token('Cicero')
             with self._option():
@@ -648,13 +653,16 @@ class shakespeareParser(Parser):
             with self._option():
                 self._token('Dionyza')
             with self._option():
-                self._token('Doctor Caius')
+                self._token('Doctor')
+                self._token('Caius')
             with self._option():
                 self._token('Dogberry')
             with self._option():
-                self._token('Don John')
+                self._token('Don')
+                self._token('John')
             with self._option():
-                self._token('Don Pedro')
+                self._token('Don')
+                self._token('Pedro')
             with self._option():
                 self._token('Donalbain')
             with self._option():
@@ -680,9 +688,11 @@ class shakespeareParser(Parser):
             with self._option():
                 self._token('Francisca')
             with self._option():
-                self._token('Friar John')
+                self._token('Friar')
+                self._token('John')
             with self._option():
-                self._token('Friar Laurence')
+                self._token('Friar')
+                self._token('Laurence')
             with self._option():
                 self._token('Gertrude')
             with self._option():
@@ -710,31 +720,44 @@ class shakespeareParser(Parser):
             with self._option():
                 self._token('Isabella')
             with self._option():
-                self._token('John of Gaunt')
+                self._token('John')
+                self._token('of')
+                self._token('Gaunt')
             with self._option():
-                self._token('John of Lancaster')
+                self._token('John')
+                self._token('of')
+                self._token('Lancaster')
             with self._option():
                 self._token('Julia')
             with self._option():
                 self._token('Juliet')
             with self._option():
-                self._token('Julius Caesar')
+                self._token('Julius')
+                self._token('Caesar')
             with self._option():
-                self._token('King Henry')
+                self._token('King')
+                self._token('Henry')
             with self._option():
-                self._token('King John')
+                self._token('King')
+                self._token('John')
             with self._option():
-                self._token('King Lear')
+                self._token('King')
+                self._token('Lear')
             with self._option():
-                self._token('King Richard')
+                self._token('King')
+                self._token('Richard')
             with self._option():
-                self._token('Lady Capulet')
+                self._token('Lady')
+                self._token('Capulet')
             with self._option():
-                self._token('Lady Macbeth')
+                self._token('Lady')
+                self._token('Macbeth')
             with self._option():
-                self._token('Lady Macduff')
+                self._token('Lady')
+                self._token('Macduff')
             with self._option():
-                self._token('Lady Montague')
+                self._token('Lady')
+                self._token('Montague')
             with self._option():
                 self._token('Lennox')
             with self._option():
@@ -756,17 +779,21 @@ class shakespeareParser(Parser):
             with self._option():
                 self._token('Mariana')
             with self._option():
-                self._token('Mark Antony')
+                self._token('Mark')
+                self._token('Antony')
             with self._option():
                 self._token('Mercutio')
             with self._option():
                 self._token('Miranda')
             with self._option():
-                self._token('Mistress Ford')
+                self._token('Mistress')
+                self._token('Ford')
             with self._option():
-                self._token('Mistress Overdone')
+                self._token('Mistress')
+                self._token('Overdone')
             with self._option():
-                self._token('Mistress Page')
+                self._token('Mistress')
+                self._token('Page')
             with self._option():
                 self._token('Montague')
             with self._option():
@@ -776,7 +803,8 @@ class shakespeareParser(Parser):
             with self._option():
                 self._token('Octavia')
             with self._option():
-                self._token('Octavius Caesar')
+                self._token('Octavius')
+                self._token('Caesar')
             with self._option():
                 self._token('Olivia')
             with self._option():
@@ -806,7 +834,8 @@ class shakespeareParser(Parser):
             with self._option():
                 self._token('Priam')
             with self._option():
-                self._token('Prince Henry')
+                self._token('Prince')
+                self._token('Henry')
             with self._option():
                 self._token('Prospero')
             with self._option():
@@ -816,7 +845,8 @@ class shakespeareParser(Parser):
             with self._option():
                 self._token('Puck')
             with self._option():
-                self._token('Queen Elinor')
+                self._token('Queen')
+                self._token('Elinor')
             with self._option():
                 self._token('Regan')
             with self._option():
@@ -840,17 +870,31 @@ class shakespeareParser(Parser):
             with self._option():
                 self._token('Thaisa')
             with self._option():
-                self._token('The Abbot of Westminster')
+                self._token('The')
+                self._token('Abbot')
+                self._token('of')
+                self._token('Westminster')
             with self._option():
-                self._token('The Apothecary')
+                self._token('The')
+                self._token('Apothecary')
             with self._option():
-                self._token('The Archbishop of Canterbury')
+                self._token('The')
+                self._token('Archbishop')
+                self._token('of')
+                self._token('Canterbury')
             with self._option():
-                self._token('The Duke of Milan')
+                self._token('The')
+                self._token('Duke')
+                self._token('of')
+                self._token('Milan')
             with self._option():
-                self._token('The Duke of Venice')
+                self._token('The')
+                self._token('Duke')
+                self._token('of')
+                self._token('Venice')
             with self._option():
-                self._token('The Ghost')
+                self._token('The')
+                self._token('Ghost')
             with self._option():
                 self._token('Theseus')
             with self._option():
@@ -875,7 +919,7 @@ class shakespeareParser(Parser):
                 self._token('Vincentio')
             with self._option():
                 self._token('Viola')
-            self._error('expecting one of: Achilles Adonis Adriana Aegeon Aemilia Agamemnon Agrippa Ajax Alonso Andromache Angelo Antiochus Antonio Arthur Autolycus Balthazar Banquo Beatrice Benedick Benvolio Bianca Brabantio Brutus Capulet Cassandra Cassius Christopher Sly Cicero Claudio Claudius Cleopatra Cordelia Cornelius Cressida Cymberline Demetrius Desdemona Dionyza Doctor Caius Dogberry Don John Don Pedro Donalbain Dorcas Duncan Egeus Emilia Escalus Falstaff Fenton Ferdinand Ford Fortinbras Francisca Friar John Friar Laurence Gertrude Goneril Hamlet Hecate Hector Helen Helena Hermia Hermonie Hippolyta Horatio Imogen Isabella John of Gaunt John of Lancaster Julia Juliet Julius Caesar King Henry King John King Lear King Richard Lady Capulet Lady Macbeth Lady Macduff Lady Montague Lennox Leonato Luciana Lucio Lychorida Lysander Macbeth Macduff Malcolm Mariana Mark Antony Mercutio Miranda Mistress Ford Mistress Overdone Mistress Page Montague Mopsa Oberon Octavia Octavius Caesar Olivia Ophelia Orlando Orsino Othello Page Pantino Paris Pericles Pinch Polonius Pompeius Portia Priam Prince Henry Prospero Proteus Publius Puck Queen Elinor Regan Robin Romeo Rosalind Sebastian Shallow Shylock Slender Solinus Stephano Thaisa The Abbot of Westminster The Apothecary The Archbishop of Canterbury The Duke of Milan The Duke of Venice The Ghost Theseus Thurio Timon Titania Titus Troilus Tybalt Ulysses Valentine Venus Vincentio Viola')
+            self._error('expecting one of: Achilles Adonis Adriana Aegeon Aemilia Agamemnon Agrippa Ajax Alonso Andromache Angelo Antiochus Antonio Arthur Autolycus Balthazar Banquo Beatrice Benedick Benvolio Bianca Brabantio Brutus Capulet Cassandra Cassius Christopher Cicero Claudio Claudius Cleopatra Cordelia Cornelius Cressida Cymberline Demetrius Desdemona Dionyza Doctor Dogberry Don Donalbain Dorcas Duncan Egeus Emilia Escalus Falstaff Fenton Ferdinand Ford Fortinbras Francisca Friar Gertrude Goneril Hamlet Hecate Hector Helen Helena Hermia Hermonie Hippolyta Horatio Imogen Isabella John Julia Juliet Julius King Lady Lennox Leonato Luciana Lucio Lychorida Lysander Macbeth Macduff Malcolm Mariana Mark Mercutio Miranda Mistress Montague Mopsa Oberon Octavia Octavius Olivia Ophelia Orlando Orsino Othello Page Pantino Paris Pericles Pinch Polonius Pompeius Portia Priam Prince Prospero Proteus Publius Puck Queen Regan Robin Romeo Rosalind Sebastian Shallow Shylock Slender Solinus Stephano Thaisa The Theseus Thurio Timon Titania Titus Troilus Tybalt Ulysses Valentine Venus Vincentio Viola')
 
     @graken()
     def _nothing_(self):
@@ -1051,16 +1095,29 @@ class shakespeareParser(Parser):
     def _binary_operation_(self):
         with self._choice():
             with self._option():
-                self._token('the difference between')
+                self._token('the')
+                self._token('difference')
+                self._token('between')
             with self._option():
-                self._token('the product of')
+                self._token('the')
+                self._token('product')
+                self._token('of')
             with self._option():
-                self._token('the quotient between')
+                self._token('the')
+                self._token('quotient')
+                self._token('between')
             with self._option():
-                self._token('the remainder of the quotient between')
+                self._token('the')
+                self._token('remainder')
+                self._token('of')
+                self._token('the')
+                self._token('quotient')
+                self._token('between')
             with self._option():
-                self._token('the sum of')
-            self._error('expecting one of: the difference between the product of the quotient between the remainder of the quotient between the sum of')
+                self._token('the')
+                self._token('sum')
+                self._token('of')
+            self._error('expecting one of: the')
 
     @graken()
     def _binary_expression_(self):
@@ -1081,16 +1138,25 @@ class shakespeareParser(Parser):
     def _unary_operation_(self):
         with self._choice():
             with self._option():
-                self._token('the cube of')
+                self._token('the')
+                self._token('cube')
+                self._token('of')
             with self._option():
-                self._token('the factorial of')
+                self._token('the')
+                self._token('factorial')
+                self._token('of')
             with self._option():
-                self._token('the square of')
+                self._token('the')
+                self._token('square')
+                self._token('of')
             with self._option():
-                self._token('the square root of')
+                self._token('the')
+                self._token('square')
+                self._token('root')
+                self._token('of')
             with self._option():
                 self._token('twice')
-            self._error('expecting one of: the cube of the factorial of the square of the square root of twice')
+            self._error('expecting one of: the twice')
 
     @graken()
     def _unary_expression_(self):
@@ -1115,7 +1181,9 @@ class shakespeareParser(Parser):
 
     @graken()
     def _negative_if_(self):
-        self._token('If not,')
+        with self._group():
+            self._token('If')
+            self._token('not,')
         self.name_last_node('if_')
 
         self.ast._define(
@@ -1125,7 +1193,9 @@ class shakespeareParser(Parser):
 
     @graken()
     def _positive_if_(self):
-        self._token('If so,')
+        with self._group():
+            self._token('If')
+            self._token('so,')
         self.name_last_node('if_')
 
         self.ast._define(
@@ -1192,21 +1262,26 @@ class shakespeareParser(Parser):
     def _let_us_(self):
         with self._choice():
             with self._option():
-                self._token('Let us')
+                self._token('Let')
+                self._token('us')
             with self._option():
-                self._token('We shall')
+                self._token('We')
+                self._token('shall')
             with self._option():
-                self._token('We must')
-            self._error('expecting one of: Let us We must We shall')
+                self._token('We')
+                self._token('must')
+            self._error('expecting one of: Let We')
 
     @graken()
     def _proceed_to_(self):
         with self._choice():
             with self._option():
-                self._token('proceed to')
+                self._token('proceed')
+                self._token('to')
             with self._option():
-                self._token('return to')
-            self._error('expecting one of: proceed to return to')
+                self._token('return')
+                self._token('to')
+            self._error('expecting one of: proceed return')
 
     @graken()
     def _roman_numeral_(self):
@@ -1276,7 +1351,8 @@ class shakespeareParser(Parser):
             with self._choice():
                 with self._option():
                     with self._group():
-                        self._token('listen to')
+                        self._token('listen')
+                        self._token('to')
                         self._second_person_possessive_()
                         self._token('heart')
                     self.name_last_node('input_number')
@@ -1545,6 +1621,7 @@ class shakespeareParser(Parser):
                 self._act_()
             self._closure(block5)
         self.name_last_node('acts')
+        self._check_eof()
 
         self.ast._define(
             ['title', 'dramatis_personae', 'acts'],
@@ -1745,6 +1822,7 @@ def main(
 
     with open(filename) as f:
         text = f.read()
+    whitespace = whitespace or None
     parser = shakespeareParser(parseinfo=False)
     ast = parser.parse(
         text,

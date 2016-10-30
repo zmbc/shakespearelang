@@ -27,6 +27,9 @@ class Shakespeare:
   def _create_characters_from_dramatis(self, dramatis_personae):
     characters = []
     for character_declaration in dramatis_personae:
+        name = character_declaration.character
+        if not isinstance(name, str):
+            name = " ".join(name)
         characters.append(self.Character(character_declaration.character))
     return characters
 
@@ -61,28 +64,28 @@ class Shakespeare:
         return 0
     elif value.parseinfo.rule == 'unary_expression':
         operand = self.evaluate_expression(value.value, character)
-        if value.operation == 'the cube of':
+        if value.operation == ['the', 'cube', 'of']:
             return pow(operand, 3)
-        elif value.operation == 'the factorial of':
+        elif value.operation == ['the', 'factorial', 'of']:
             return math.factorial(operand)
-        elif value.operation == 'the square of':
+        elif value.operation == ['the', 'square', 'of']:
             return pow(operand, 2)
-        elif value.operation == 'the square root of':
+        elif value.operation == ['the', 'square', 'root', 'of']:
             return math.sqrt(operand)
         elif value.operation == 'twice':
             return 2 * operand
     elif value.parseinfo.rule == 'binary_expression':
         first_operand = self.evaluate_expression(value.first_value, character)
         second_operand = self.evaluate_expression(value.second_value, character)
-        if value.operation == 'the difference between':
+        if value.operation == ['the', 'difference', 'between']:
             return first_operand - second_operand
-        elif value.operation == 'the product of':
+        elif value.operation == ['the', 'product', 'of']:
             return first_operand * second_operand
-        elif value.operation == 'the quotient between':
+        elif value.operation == ['the', 'quotient', 'between']:
             return first_operand // second_operand
-        elif value.operation == 'the remainder of the quotient between':
+        elif value.operation == ['the', 'remainder', 'of', 'the', 'quotient', 'between']:
             return first_operand % second_operand
-        elif value.operation == 'the sum of':
+        elif value.operation == ['the', 'sum', 'of']:
             return first_operand + second_operand
 
   def evaluate_question(self, question, character):
