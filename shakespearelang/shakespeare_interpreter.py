@@ -3,6 +3,7 @@
 from .shakespeare_parser import shakespeareParser
 import argparse
 import math
+import pdb
 
 class Shakespeare:
   def __init__(self):
@@ -30,7 +31,7 @@ class Shakespeare:
         name = character_declaration.character
         if not isinstance(name, str):
             name = " ".join(name)
-        characters.append(self.Character(character_declaration.character))
+        characters.append(self.Character(name))
     return characters
 
   def _character_opposite(self, character):
@@ -40,7 +41,10 @@ class Shakespeare:
     return characters_opposite[0]
 
   def _character_by_name(self, name):
+    if not isinstance(name, str):
+      name = " ".join(name)
     for x in self.characters:
+        #pdb.set_trace()
         if x.name.lower() == name.lower():
             return x
 
