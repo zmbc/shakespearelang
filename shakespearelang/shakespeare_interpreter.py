@@ -3,7 +3,6 @@
 from .shakespeare_parser import shakespeareParser
 import argparse
 import math
-import pdb
 
 class Shakespeare:
   def __init__(self):
@@ -44,7 +43,6 @@ class Shakespeare:
     if not isinstance(name, str):
       name = " ".join(name)
     for x in self.characters:
-        #pdb.set_trace()
         if x.name.lower() == name.lower():
             return x
 
