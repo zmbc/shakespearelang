@@ -24,19 +24,24 @@ class Shakespeare:
     def pop(self):
         self.value = self.stack.pop()
 
+  def _create_character_from_dramatis_entry(self, character_declaration):
+    name = character_declaration.character
+    if not isinstance(name, str):
+        name = " ".join(name)
+    return self.Character(name)
+
   def _create_characters_from_dramatis(self, dramatis_personae):
     characters = []
     for character_declaration in dramatis_personae:
-        name = character_declaration.character
-        if not isinstance(name, str):
-            name = " ".join(name)
-        characters.append(self.Character(name))
+        characters.append(self._create_character_from_dramatis_entry(character_declaration))
     return characters
 
   def _character_opposite(self, character):
     characters_opposite = [x for x in self.characters if x.on_stage and x.name != character.name]
     if len(characters_opposite) > 1:
         raise Exception("Ambiguous second-person pronoun")
+    elif len(characters_opposite) == 0:
+        raise Exception(character.name + ' is talking to nobody!')
     return characters_opposite[0]
 
   def _character_by_name(self, name):
@@ -101,6 +106,8 @@ class Shakespeare:
         return first_value == second_value
 
   def run_sentence(self, sentence, character):
+    if not character.on_stage:
+        raise Exception(character.name + " isn't on stage.")
     if sentence.parseinfo.rule == 'assignment':
         self._character_opposite(character).value = self.evaluate_expression(sentence.value, character)
     elif sentence.parseinfo.rule == 'question':

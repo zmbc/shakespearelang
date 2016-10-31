@@ -446,6 +446,8 @@ exeunt = "[" action:"Exeunt" [characters:character_list] "]";
 
 event = line | entrance | exit | exeunt;
 
+repl_input =  event:event | sentence:sentence | character:character;
+
 text_before_punctuation = ?/[^!\.]*/?;
 
 scene = "Scene" number:roman_numeral ":" name:text_before_punctuation ("!" | ".") events:({event}*);

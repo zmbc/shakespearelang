@@ -17,7 +17,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 10, 30, 7, 5, 16, 6)
+__version__ = (2016, 10, 31, 0, 44, 44, 0)
 
 __all__ = [
     'shakespeareParser',
@@ -1523,6 +1523,25 @@ class shakespeareParser(Parser):
             self._error('no available options')
 
     @graken()
+    def _repl_input_(self):
+        with self._choice():
+            with self._option():
+                self._event_()
+                self.name_last_node('event')
+            with self._option():
+                self._sentence_()
+                self.name_last_node('sentence')
+            with self._option():
+                self._character_()
+                self.name_last_node('character')
+            self._error('no available options')
+
+        self.ast._define(
+            ['event', 'sentence', 'character'],
+            []
+        )
+
+    @graken()
     def _text_before_punctuation_(self):
         self._pattern(r'[^!\.]*')
 
@@ -1790,6 +1809,9 @@ class shakespeareSemantics(object):
         return ast
 
     def event(self, ast):
+        return ast
+
+    def repl_input(self, ast):
         return ast
 
     def text_before_punctuation(self, ast):
