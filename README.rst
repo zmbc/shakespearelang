@@ -9,6 +9,13 @@ How do I get this?
 
 :code:`pip install shakespearelang`
 
+How do I use this?
+^^^^^^^^^^^^^^^^^
+
+Running a file is :code:`shakespeare run <file-name>`.
+
+Entering a REPL/console is :code:`shakespeare repl` or simply :code:`shakespeare`.
+
 What is the Shakespeare Programming Language?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
