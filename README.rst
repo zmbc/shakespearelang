@@ -5,16 +5,28 @@ An interpreter for the Shakespeare Programming Language, implemented in
 Python.
 
 How do I get this?
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^
 
-`pip install shakespearelang`
+.. code-block::
+
+  pip install shakespearelang`
 
 How do I use this?
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^
 
-Running a file is `shakespeare run file-name`.
+Running a file:
 
-Entering a REPL/console is `shakespeare repl` or simply `shakespeare`.
+.. code-block::
+
+  shakespeare run file-name
+
+Entering a REPL/console:
+
+.. code-block::
+
+  shakespeare repl
+  # or
+  shakespeare
 
 What is the Shakespeare Programming Language?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -41,7 +53,14 @@ What state is this project in?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 I haven't written any tests yet, but it will *probably* run any valid
-SPL program. Try running `shakespeare` or `shakespeare repl`
+SPL program. Try running
+
+.. code-block::
+
+  shakespeare repl
+  # or
+  shakespeare
+
 to play with a fun REPL. Debugging is coming Soon :superscript:`TM`.
 
 .. _on Wikipedia: https://en.wikipedia.org/wiki/Shakespeare_Programming_Language
