@@ -9,24 +9,14 @@ How do I get this?
 
 .. code-block::
 
-  pip install shakespearelang`
+  pip install shakespearelang
 
 How do I use this?
 ^^^^^^^^^^^^^^^^^^
 
-Running a file:
+Running a file is :code:`shakespeare run file-name`.
 
-.. code-block::
-
-  shakespeare run file-name
-
-Entering a REPL/console:
-
-.. code-block::
-
-  shakespeare repl
-  # or
-  shakespeare
+Entering a REPL/console is :code:`shakespeare repl` or just :code:`shakespeare`.
 
 What is the Shakespeare Programming Language?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -53,14 +43,7 @@ What state is this project in?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 I haven't written any tests yet, but it will *probably* run any valid
-SPL program. Try running
-
-.. code-block::
-
-  shakespeare repl
-  # or
-  shakespeare
-
-to play with a fun REPL. Debugging is coming Soon :superscript:`TM`.
+SPL program. Try running :code:`shakespeare repl` or :code:`shakespeare`
+to play with a fun REPL. Debugging is coming Soon\ :superscript:`TM`.
 
 .. _on Wikipedia: https://en.wikipedia.org/wiki/Shakespeare_Programming_Language
