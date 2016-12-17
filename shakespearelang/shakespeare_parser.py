@@ -17,7 +17,7 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__version__ = (2016, 10, 31, 0, 44, 44, 0)
+__version__ = (2016, 12, 17, 2, 8, 6, 5)
 
 __all__ = [
     'shakespeareParser',
@@ -1440,7 +1440,7 @@ class shakespeareParser(Parser):
 
             def block2():
                 self._sentence_()
-            self._closure(block2)
+            self._positive_closure(block2)
         self.name_last_node('contents')
 
         self.ast._define(
@@ -1526,18 +1526,42 @@ class shakespeareParser(Parser):
     def _repl_input_(self):
         with self._choice():
             with self._option():
-                self._event_()
-                self.name_last_node('event')
-            with self._option():
-                self._sentence_()
-                self.name_last_node('sentence')
-            with self._option():
+                with self._ifnot():
+                    with self._group():
+                        self._character_()
+                        self._token(':')
                 self._character_()
                 self.name_last_node('character')
+                self._check_eof()
+            with self._option():
+                with self._ifnot():
+                    with self._group():
+                        self._character_()
+                        self._token(':')
+                        self._pattern(r'.*\.')
+                with self._optional():
+                    self._character_()
+                    self.name_last_node('character')
+                    self._token(':')
+                self._value_()
+                self.name_last_node('value')
+                self._check_eof()
+            with self._option():
+                self._event_()
+                self.name_last_node('event')
+                self._check_eof()
+            with self._option():
+                with self._group():
+
+                    def block5():
+                        self._sentence_()
+                    self._positive_closure(block5)
+                self.name_last_node('sentences')
+                self._check_eof()
             self._error('no available options')
 
         self.ast._define(
-            ['event', 'sentence', 'character'],
+            ['character', 'value', 'event', 'sentences'],
             []
         )
 

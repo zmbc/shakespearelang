@@ -434,7 +434,7 @@ pop = "Recall" recall_string:text_before_punctuation ("!" | ".");
 
 sentence = question | assignment | goto | output | input | push | pop;
 
-line = character:character ":" contents:({sentence}*);
+line = character:character ":" contents:({sentence}+);
 
 character_list = @+:character {"," @+:character}* "and" @+:character | @+:character;
 
@@ -446,7 +446,7 @@ exeunt = "[" action:"Exeunt" [characters:character_list] "]";
 
 event = line | entrance | exit | exeunt;
 
-repl_input =  event:event | sentence:sentence | character:character;
+repl_input =  !(character ":") character:character $ | !(character ":" /.*\./) [character:character ":"] value:value $ | event:event $ | sentences:({sentence}+) $;
 
 text_before_punctuation = ?/[^!\.]*/?;
 

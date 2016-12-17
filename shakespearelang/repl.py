@@ -5,7 +5,9 @@ def _collect_characters(parser, interpreter):
     characters = []
     while True:
         name = input('Dramatis personae or "done">> ')
-        if name == 'done':
+        if name == 'exit' or name == 'quit':
+            return False
+        elif name == 'done':
             if not characters:
                 raise Exception('No characters!')
             interpreter.characters = interpreter._create_characters_from_dramatis(characters)
@@ -62,6 +64,28 @@ def _print_character(character_name, interpreter):
                 break
             print(item)
 
+def _run_sentences(sentences, speaking_character, opposite_character, interpreter):
+    for sentence in sentences:
+        _prefix_input_output(sentence, opposite_character)
+
+        try:
+            control_flow = interpreter.run_sentence(sentence, speaking_character)
+        except Exception as runtimeException:
+            print("Error:\n", runtimeException)
+            # Stop this entire line of sentences
+            return
+
+        # Newline after output for next input cycle
+        if sentence.parseinfo.rule == 'output':
+            print('\n')
+
+        _show_result_of_sentence(sentence, opposite_character, interpreter)
+
+        if control_flow:
+            print("Control flow isn't allowed in REPL.")
+            # Stop this entire line of sentences
+            return
+
 def start_repl():
     parser = shakespeareParser(parseinfo=True)
     interpreter = Shakespeare()
@@ -69,6 +93,9 @@ def start_repl():
     print('\n\nA REPL-tastic Adventure.\n\n')
 
     characters = _collect_characters(parser, interpreter)
+
+    if not characters:
+        return
 
     print('\n\n                    Act I: All the World\n\n')
     print('                    Scene I: A Stage\n\n')
@@ -89,19 +116,17 @@ def start_repl():
             continue
 
         event = ast.event
-        sentence = ast.sentence
+        sentences = ast.sentences
         character = ast.character
+        value = ast.value
 
-        # Single-sentence lines should output their results.
-        if event and event.parseinfo.rule == 'line' and len(event.contents) == 1:
+        # Events that are lines should be considered sets of sentences.
+        if event and event.parseinfo.rule == 'line':
             current_character = event.character
-            sentence = event.contents[0]
+            sentences = event.contents
             event = None
 
         if event:
-            if event.parseinfo.rule == 'line':
-                current_character = event.character
-
             try:
                 control_flow = interpreter.run_event(event)
             except Exception as runtimeException:
@@ -114,7 +139,7 @@ def start_repl():
             if control_flow:
                 print("Control flow isn't allowed in REPL.")
                 continue
-        elif sentence:
+        elif sentences:
             if not current_character:
                 print("Who's saying this?")
                 continue
@@ -126,18 +151,18 @@ def start_repl():
                 print("Error:\n", runtimeException)
                 continue
 
-            _prefix_input_output(sentence, opposite_character)
+            _run_sentences(sentences, speaking_character, opposite_character, interpreter)
+        elif value:
+            if character:
+                current_character = character
 
             try:
-                control_flow = interpreter.run_sentence(sentence, speaking_character)
+                speaking_character = interpreter._character_by_name(current_character)
+                result = interpreter.evaluate_expression(value, speaking_character)
             except Exception as runtimeException:
                 print("Error:\n", runtimeException)
                 continue
 
-            _show_result_of_sentence(sentence, opposite_character, interpreter)
-
-            if control_flow:
-                print("Control flow isn't allowed in REPL.")
-                continue
+            print(result, '\n')
         elif character:
             _print_character(character, interpreter)
