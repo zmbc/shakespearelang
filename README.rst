@@ -7,14 +7,14 @@ Python.
 How do I get this?
 ^^^^^^^^^^^^^^^^^
 
-:code:`pip install shakespearelang`
+`pip install shakespearelang`
 
 How do I use this?
 ^^^^^^^^^^^^^^^^^
 
-Running a file is :code:`shakespeare run <file-name>`.
+Running a file is `shakespeare run file-name`.
 
-Entering a REPL/console is :code:`shakespeare repl` or simply :code:`shakespeare`.
+Entering a REPL/console is `shakespeare repl` or simply `shakespeare`.
 
 What is the Shakespeare Programming Language?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -41,5 +41,5 @@ What state is this project in?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 I haven't written any tests yet, but it will *probably* run any valid
-SPL program. Try running :code:`shakespeare` or :code:`shakespeare repl`
+SPL program. Try running `shakespeare` or `shakespeare repl`
 to play with a fun REPL. Debugging is coming Soon :superscript:`TM`.
