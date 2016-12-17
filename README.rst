@@ -23,7 +23,7 @@ The Shakespeare Programming Language (SPL) is a programming language
 with source code that looks like Shakespeare's plays. The language is
 Turing complete, so theoretically just as powerful as any other
 language. It's a lot of fun to write but not practical for any large
-projects. More info can be found `on Wikipedia`_.
+projects. More info can be found `on Wikipedia <https://en.wikipedia.org/wiki/Shakespeare_Programming_Language>`_.
 
 Note: Shakespeare's actual plays are not valid SPL. SPL does not aim to
 provide backwards compatibility with legacy code written ~400 years ago.
@@ -43,5 +43,3 @@ What state is this project in?
 I haven't written any tests yet, but it will *probably* run any valid
 SPL program. Try running :code:`shakespeare` or :code:`shakespeare repl`
 to play with a fun REPL. Debugging is coming Soon :superscript:`TM`.
-
-.. _on Wikipedia: https://en.wikipedia.org/wiki/Shakespeare_Programming_Language
