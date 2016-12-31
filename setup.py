@@ -18,6 +18,7 @@ setup(
     license = "MIT",
     keywords = "shakespeare interpreter",
     packages=['shakespearelang'],
+    install_requires=['click'],
     long_description=read('README.rst'),
     classifiers=[
         "Development Status :: 3 - Alpha",
