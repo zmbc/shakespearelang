@@ -438,13 +438,15 @@ line = character:character ":" contents:({sentence}+);
 
 character_list = @+:character {"," @+:character}* "and" @+:character | @+:character;
 
+breakpoint = dummy:("[" "A" "pause" "]");
+
 entrance = "[" "Enter" characters:character_list "]";
 
 exit = "[" "Exit" character:character "]";
 
 exeunt = "[" action:"Exeunt" [characters:character_list] "]";
 
-event = line | entrance | exit | exeunt;
+event = line | breakpoint | entrance | exit | exeunt;
 
 repl_input =  !(character ":") character:character $ | !(character ":" /.*\./) [character:character ":"] value:value $ | event:event $ | sentences:({sentence}+) $;
 

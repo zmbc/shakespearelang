@@ -86,27 +86,44 @@ def _run_sentences(sentences, speaking_character, opposite_character, interprete
             # Stop this entire line of sentences
             return
 
-def start_repl():
+def start_console():
     parser = shakespeareParser(parseinfo=True)
     interpreter = Shakespeare()
 
     print('\n\nA REPL-tastic Adventure.\n\n')
 
-    characters = _collect_characters(parser, interpreter)
-
-    if not characters:
+    if not _collect_characters(parser, interpreter):
         return
 
     print('\n\n                    Act I: All the World\n\n')
     print('                    Scene I: A Stage\n\n')
 
+    run_repl(parser, interpreter)
+
+def debug_play(text):
+    parser = shakespeareParser(parseinfo=True)
+    interpreter = Shakespeare()
+
+    def on_breakpoint():
+        print(interpreter.current_event_text(), '\n')
+        run_repl(parser, interpreter, True)
+
+    interpreter.run_play(text, on_breakpoint)
+
+def run_repl(parser, interpreter, debug_mode = False):
     current_character = None
     while True:
         event = input('>> ')
-        if event == 'exit' or event == 'quit':
-            break
+        if event == 'exit' or event == 'quit' or (event == 'continue' and debug_mode):
+            return
         elif event == 'stage':
             _print_stage(interpreter)
+            continue
+        elif event == 'next' and debug_mode:
+            play_over = interpreter.step_forward()
+            if play_over:
+                return
+            print('\n', interpreter.current_event_text())
             continue
 
         try:

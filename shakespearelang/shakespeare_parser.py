@@ -13,11 +13,10 @@
 
 from __future__ import print_function, division, absolute_import, unicode_literals
 
+from grako.buffering import Buffer
 from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
-
-__version__ = (2016, 12, 17, 2, 8, 6, 5)
 
 __all__ = [
     'shakespeareParser',
@@ -25,20 +24,50 @@ __all__ = [
     'main'
 ]
 
-KEYWORDS = set([])
+KEYWORDS = {}
+
+
+class shakespeareBuffer(Buffer):
+    def __init__(
+        self,
+        text,
+        whitespace=None,
+        nameguard=None,
+        comments_re=None,
+        eol_comments_re=None,
+        ignorecase=True,
+        namechars='',
+        **kwargs
+    ):
+        super(shakespeareBuffer, self).__init__(
+            text,
+            whitespace=whitespace,
+            nameguard=nameguard,
+            comments_re=comments_re,
+            eol_comments_re=eol_comments_re,
+            ignorecase=ignorecase,
+            namechars=namechars,
+            **kwargs
+        )
 
 
 class shakespeareParser(Parser):
-    def __init__(self,
-                 whitespace=None,
-                 nameguard=None,
-                 comments_re=None,
-                 eol_comments_re=None,
-                 ignorecase=True,
-                 left_recursion=True,
-                 keywords=KEYWORDS,
-                 namechars='',
-                 **kwargs):
+    def __init__(
+        self,
+        whitespace=None,
+        nameguard=None,
+        comments_re=None,
+        eol_comments_re=None,
+        ignorecase=True,
+        left_recursion=False,
+        parseinfo=True,
+        keywords=None,
+        namechars='',
+        buffer_class=shakespeareBuffer,
+        **kwargs
+    ):
+        if keywords is None:
+            keywords = KEYWORDS
         super(shakespeareParser, self).__init__(
             whitespace=whitespace,
             nameguard=nameguard,
@@ -46,8 +75,10 @@ class shakespeareParser(Parser):
             eol_comments_re=eol_comments_re,
             ignorecase=ignorecase,
             left_recursion=left_recursion,
+            parseinfo=parseinfo,
             keywords=keywords,
             namechars=namechars,
+            buffer_class=buffer_class,
             **kwargs
         )
 
@@ -176,7 +207,6 @@ class shakespeareParser(Parser):
                 self._error('expecting one of: better bigger fresher friendlier jollier nicer')
         self.name_last_node('comparison')
         self._token('than')
-
         self.ast._define(
             ['comparison'],
             []
@@ -198,7 +228,6 @@ class shakespeareParser(Parser):
                 self._error('expecting one of: punier smaller worse')
         self.name_last_node('comparison')
         self._token('than')
-
         self.ast._define(
             ['comparison'],
             []
@@ -931,7 +960,6 @@ class shakespeareParser(Parser):
                     self._token('zero')
                 self._error('expecting one of: nothing zero')
         self.name_last_node('nothing_word')
-
         self.ast._define(
             ['nothing_word'],
             []
@@ -967,7 +995,6 @@ class shakespeareParser(Parser):
                 self._error('no available options')
         self.name_last_node('comparison')
         self._token('as')
-
         self.ast._define(
             ['comparison'],
             []
@@ -995,7 +1022,6 @@ class shakespeareParser(Parser):
         self.name_last_node('adjectives')
         self._negative_noun_()
         self.name_last_node('noun')
-
         self.ast._define(
             ['adjectives', 'noun'],
             []
@@ -1017,7 +1043,6 @@ class shakespeareParser(Parser):
         self.name_last_node('adjectives')
         self._positive_or_neutral_noun_()
         self.name_last_node('noun')
-
         self.ast._define(
             ['adjectives', 'noun'],
             []
@@ -1042,7 +1067,6 @@ class shakespeareParser(Parser):
                     self._first_person_reflexive_()
                 self._error('no available options')
         self.name_last_node('first_person_word')
-
         self.ast._define(
             ['first_person_word'],
             []
@@ -1058,7 +1082,6 @@ class shakespeareParser(Parser):
                     self._second_person_reflexive_()
                 self._error('no available options')
         self.name_last_node('second_person_word')
-
         self.ast._define(
             ['second_person_word'],
             []
@@ -1068,7 +1091,6 @@ class shakespeareParser(Parser):
     def _character_name_(self):
         self._character_()
         self.name_last_node('name')
-
         self.ast._define(
             ['name'],
             []
@@ -1128,9 +1150,8 @@ class shakespeareParser(Parser):
         self._token('and')
         self._value_()
         self.name_last_node('second_value')
-
         self.ast._define(
-            ['operation', 'first_value', 'second_value'],
+            ['first_value', 'operation', 'second_value'],
             []
         )
 
@@ -1164,7 +1185,6 @@ class shakespeareParser(Parser):
         self.name_last_node('operation')
         self._value_()
         self.name_last_node('value')
-
         self.ast._define(
             ['operation', 'value'],
             []
@@ -1185,7 +1205,6 @@ class shakespeareParser(Parser):
             self._token('If')
             self._token('not,')
         self.name_last_node('if_')
-
         self.ast._define(
             ['if_'],
             []
@@ -1197,7 +1216,6 @@ class shakespeareParser(Parser):
             self._token('If')
             self._token('so,')
         self.name_last_node('if_')
-
         self.ast._define(
             ['if_'],
             []
@@ -1221,9 +1239,8 @@ class shakespeareParser(Parser):
         self._value_()
         self.name_last_node('second_value')
         self._token('?')
-
         self.ast._define(
-            ['first_value', 'comparative', 'second_value'],
+            ['comparative', 'first_value', 'second_value'],
             []
         )
 
@@ -1252,7 +1269,6 @@ class shakespeareParser(Parser):
                 with self._option():
                     self._token('.')
                 self._error('expecting one of: ! .')
-
         self.ast._define(
             ['value'],
             []
@@ -1309,7 +1325,6 @@ class shakespeareParser(Parser):
                 with self._option():
                     self._token('.')
                 self._error('expecting one of: ! .')
-
         self.ast._define(
             ['condition', 'destination'],
             []
@@ -1339,9 +1354,8 @@ class shakespeareParser(Parser):
                 with self._option():
                     self._token('.')
                 self._error('expecting one of: ! .')
-
         self.ast._define(
-            ['output_number', 'output_char'],
+            ['output_char', 'output_number'],
             []
         )
 
@@ -1370,9 +1384,8 @@ class shakespeareParser(Parser):
                 with self._option():
                     self._token('.')
                 self._error('expecting one of: ! .')
-
         self.ast._define(
-            ['input_number', 'input_char'],
+            ['input_char', 'input_number'],
             []
         )
 
@@ -1388,7 +1401,6 @@ class shakespeareParser(Parser):
                 with self._option():
                     self._token('.')
                 self._error('expecting one of: ! .')
-
         self.ast._define(
             ['value'],
             []
@@ -1406,7 +1418,6 @@ class shakespeareParser(Parser):
                 with self._option():
                     self._token('.')
                 self._error('expecting one of: ! .')
-
         self.ast._define(
             ['recall_string'],
             []
@@ -1442,7 +1453,6 @@ class shakespeareParser(Parser):
                 self._sentence_()
             self._positive_closure(block2)
         self.name_last_node('contents')
-
         self.ast._define(
             ['character', 'contents'],
             []
@@ -1469,13 +1479,25 @@ class shakespeareParser(Parser):
             self._error('no available options')
 
     @graken()
+    def _breakpoint_(self):
+        with self._group():
+            self._token('[')
+            self._token('A')
+            self._token('pause')
+            self._token(']')
+        self.name_last_node('dummy')
+        self.ast._define(
+            ['dummy'],
+            []
+        )
+
+    @graken()
     def _entrance_(self):
         self._token('[')
         self._token('Enter')
         self._character_list_()
         self.name_last_node('characters')
         self._token(']')
-
         self.ast._define(
             ['characters'],
             []
@@ -1488,7 +1510,6 @@ class shakespeareParser(Parser):
         self._character_()
         self.name_last_node('character')
         self._token(']')
-
         self.ast._define(
             ['character'],
             []
@@ -1503,7 +1524,6 @@ class shakespeareParser(Parser):
             self._character_list_()
             self.name_last_node('characters')
         self._token(']')
-
         self.ast._define(
             ['action', 'characters'],
             []
@@ -1514,6 +1534,8 @@ class shakespeareParser(Parser):
         with self._choice():
             with self._option():
                 self._line_()
+            with self._option():
+                self._breakpoint_()
             with self._option():
                 self._entrance_()
             with self._option():
@@ -1559,9 +1581,8 @@ class shakespeareParser(Parser):
                 self.name_last_node('sentences')
                 self._check_eof()
             self._error('no available options')
-
         self.ast._define(
-            ['character', 'value', 'event', 'sentences'],
+            ['character', 'event', 'sentences', 'value'],
             []
         )
 
@@ -1590,9 +1611,8 @@ class shakespeareParser(Parser):
                 self._event_()
             self._closure(block4)
         self.name_last_node('events')
-
         self.ast._define(
-            ['number', 'name', 'events'],
+            ['events', 'name', 'number'],
             []
         )
 
@@ -1617,9 +1637,8 @@ class shakespeareParser(Parser):
                 self._scene_()
             self._closure(block4)
         self.name_last_node('scenes')
-
         self.ast._define(
-            ['number', 'name', 'scenes'],
+            ['name', 'number', 'scenes'],
             []
         )
 
@@ -1636,7 +1655,6 @@ class shakespeareParser(Parser):
                 with self._option():
                     self._token('.')
                 self._error('expecting one of: ! .')
-
         self.ast._define(
             ['character'],
             []
@@ -1665,9 +1683,8 @@ class shakespeareParser(Parser):
             self._closure(block5)
         self.name_last_node('acts')
         self._check_eof()
-
         self.ast._define(
-            ['title', 'dramatis_personae', 'acts'],
+            ['acts', 'dramatis_personae', 'title'],
             []
         )
 
@@ -1823,6 +1840,9 @@ class shakespeareSemantics(object):
     def character_list(self, ast):
         return ast
 
+    def breakpoint(self, ast):
+        return ast
+
     def entrance(self, ast):
         return ast
 
@@ -1854,32 +1874,12 @@ class shakespeareSemantics(object):
         return ast
 
 
-def main(
-        filename,
-        startrule,
-        trace=False,
-        whitespace=None,
-        nameguard=None,
-        comments_re=None,
-        eol_comments_re=None,
-        ignorecase=True,
-        left_recursion=True,
-        **kwargs):
-
+def main(filename, startrule, **kwargs):
     with open(filename) as f:
         text = f.read()
-    whitespace = whitespace or None
     parser = shakespeareParser(parseinfo=False)
-    ast = parser.parse(
-        text,
-        startrule,
-        filename=filename,
-        trace=trace,
-        whitespace=whitespace,
-        nameguard=nameguard,
-        ignorecase=ignorecase,
-        **kwargs)
-    return ast
+    return parser.parse(text, startrule, filename=filename, **kwargs)
+
 
 if __name__ == '__main__':
     import json
