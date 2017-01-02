@@ -55,6 +55,7 @@ Juliet: Thou art the sum of an amazing healthy honest noble peaceful fine Lord
 ```
 
 On the command line:
+
 ```
 $ shakespeare run first_program.spl
 HI
