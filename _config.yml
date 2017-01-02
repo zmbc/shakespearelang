@@ -1,1 +1,7 @@
+title: Shakespeare Programming Language
+email: zmbc@uw.edu
+github_username: zmbc
+
+# Build settings
+markdown: kramdown
 theme: jekyll-theme-minimal
