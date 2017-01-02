@@ -1,8 +1,6 @@
 ---
 ---
 
-# Shakespeare Programming Language
-
 ## ~~Literate~~ Literary Programming
 
 Shakespeare Programming Language (SPL) is an esoteric language designed with the
