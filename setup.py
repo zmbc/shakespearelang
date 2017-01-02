@@ -10,7 +10,7 @@ def read(fname):
 
 setup(
     name = "shakespearelang",
-    version = "0.1.0",
+    version = "0.2.0",
     author = "Zeb Burke-Conte",
     author_email = "zmbc@uw.edu",
     url = 'http://github.com/zmbc/shakespearelang',
