@@ -17,8 +17,8 @@ title: Shakespeare Programming Language
 email: zmbc@uw.edu
 description: >
   A programming language that looks like Shakespeare's plays.
-baseurl: "/shakespearelang" # the subpath of your site, e.g. /blog
-url: "http://zebburkeconte.com" # the base hostname & protocol for your site, e.g. http://example.com
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "http://shakespearelang.com" # the base hostname & protocol for your site, e.g. http://example.com
 github_username:  zmbc
 
 # Build settings
