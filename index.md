@@ -14,7 +14,7 @@ The specification came with a [reference implementation](http://shakespearelang.
 an SPL-to-C source-to-source compiler. Over the years, other implementations have been made:
 
 - [Lingua::Shakespeare](http://search.cpan.org/dist/Lingua-Shakespeare/lib/Lingua/Shakespeare.pod) in Perl
-- [Spl](https://github.com/drsam94/Spl), an SPL-to-C in Python
+- [Spl](https://github.com/drsam94/Spl), an SPL-to-C compiler in Python
 - [horatio](https://github.com/mileszim/horatio), an interpreter in Javascript
 - Probably others
 
