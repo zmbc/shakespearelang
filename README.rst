@@ -59,17 +59,17 @@ defining your characters first.
 
 Input to the console can be any of these:
 
-  - Entrances, exits, and spoken lines as they would normally appear in a play/program.
-  - Sentence(s) spoken by the last character who was speaking. For example,
-    if the previous line was :code:`Juliet: You are a fat pig.`, the sentences
-    :code:`Remember thyself! You are a fat fat pig.` could be tacked onto the
-    previous line.
-  - Expressions (standalone values without assignment), spoken implicitly by the
-    last speaking character or with an explicit character: :code:`Juliet: The difference between thyself and a fat pig`.
-    These cannot end with periods.
-  - A character's name, which displays that character's stack and current value.
-  - :code:`stage`, which displays which characters are on and off stage.
-  - :code:`exit` or :code:`quit`, which will leave the console.
+- Entrances, exits, and spoken lines as they would normally appear in a play/program.
+- Sentence(s) spoken by the last character who was speaking. For example,
+  if the previous line was :code:`Juliet: You are a fat pig.`, the sentences
+  :code:`Remember thyself! You are a fat fat pig.` could be tacked onto the
+  previous line.
+- Expressions (standalone values without assignment), spoken implicitly by the
+  last speaking character or with an explicit character: :code:`Juliet: The difference between thyself and a fat pig`.
+  These cannot end with periods.
+- A character's name, which displays that character's stack and current value.
+- :code:`stage`, which displays which characters are on and off stage.
+- :code:`exit` or :code:`quit`, which will leave the console.
 
 Debugging
 ---------
