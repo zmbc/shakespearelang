@@ -105,10 +105,13 @@ def debug_play(text):
     interpreter = Shakespeare()
 
     def on_breakpoint():
+        interpreter.skip_forward()
         print(interpreter.current_event_text(), '\n')
         run_repl(parser, interpreter, True)
 
-    interpreter.run_play(text, on_breakpoint)
+    interpreter.breakpoint_callback = on_breakpoint
+
+    interpreter.run_play(text)
 
 def run_repl(parser, interpreter, debug_mode = False):
     current_character = None
@@ -120,8 +123,8 @@ def run_repl(parser, interpreter, debug_mode = False):
             _print_stage(interpreter)
             continue
         elif event == 'next' and debug_mode:
-            play_over = interpreter.step_forward()
-            if play_over:
+            interpreter.step_forward()
+            if interpreter.current_position['act'] < len(interpreter.ast.acts):
                 return
             print('\n', interpreter.current_event_text())
             continue

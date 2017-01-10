@@ -56,6 +56,22 @@ class Shakespeare:
         if scene.number == roman_numeral:
             return index
 
+  def _current_event(self):
+    act_head = self.ast.acts[self.current_position['act']]
+    scene_head = act_head.scenes[self.current_position['scene']]
+    return scene_head.events[self.current_position['event']]
+
+  def _make_position_consistent(self):
+    self.current_act = self.ast.acts[self.current_position['act']]
+    current_scene = self.current_act.scenes[self.current_position['scene']]
+    if self.current_position['event'] >= len(current_scene.events):
+      self.current_position['event'] = 0
+      self.current_position['scene'] += 1
+
+    if self.current_position['scene'] >= len(self.current_act.scenes):
+      self.current_position['scene'] = 0
+      self.current_position['act'] += 1
+
   def evaluate_expression(self, value, character):
     if value.parseinfo.rule == 'first_person_value':
         return character.value
@@ -136,16 +152,17 @@ class Shakespeare:
     elif sentence.parseinfo.rule == 'pop':
         self._character_opposite(character).pop()
 
-  def run_event(self, event, breakpoint_callback = None):
+  def run_event(self, event):
+    has_goto = False
     if event.parseinfo.rule == 'line':
         for sentence in event.contents:
-            # Returns whether to break-- e.g. after a goto
-            should_break = self.run_sentence(sentence, self._character_by_name(event.character))
-            if should_break:
-                return should_break
+            # Returns whether this sentence caused a goto
+            has_goto = self.run_sentence(sentence, self._character_by_name(event.character))
+            if has_goto:
+                break
     elif event.parseinfo.rule == 'breakpoint':
-        if breakpoint_callback:
-            breakpoint_callback()
+        if self.breakpoint_callback:
+            self.breakpoint_callback()
     elif event.parseinfo.rule == 'entrance':
         for name in event.characters:
             self._character_by_name(name).on_stage = True
@@ -159,24 +176,9 @@ class Shakespeare:
     elif event.parseinfo.rule == 'exit':
         self._character_by_name(event.character).on_stage = False
 
-  def _current_event(self):
-    act_head = self.ast.acts[self.current_position['act']]
-    scene_head = act_head.scenes[self.current_position['scene']]
-    return scene_head.events[self.current_position['event']]
-
-  def _make_position_consistent(self):
-    self.current_act = self.ast.acts[self.current_position['act']]
-    current_scene = self.current_act.scenes[self.current_position['scene']]
-    if self.current_position['event'] >= len(current_scene.events):
-      self.current_position['event'] = 0
-      self.current_position['scene'] += 1
-
-    if self.current_position['scene'] >= len(self.current_act.scenes):
-      self.current_position['scene'] = 0
-      self.current_position['act'] += 1
-
-    if self.current_position['act'] >= len(self.ast.acts):
-      return True
+    if not has_goto:
+        self.current_position['event'] += 1
+        self._make_position_consistent()
 
   def current_event_text(self):
     current_event = self._current_event()
@@ -184,28 +186,20 @@ class Shakespeare:
     lines = buffer.get_lines(current_event.parseinfo.line, current_event.parseinfo.endline)
     return "".join(lines)
 
-  def step_forward(self, breakpoint_callback = None):
-    play_over = self._make_position_consistent()
-    if play_over:
-      return True
+  def skip_forward(self):
+    self.current_position['event'] += 1
+    self._make_position_consistent()
 
+  def step_forward(self):
     event_to_run = self._current_event()
-    shouldnt_advance = self.run_event(event_to_run, breakpoint_callback)
-    if not shouldnt_advance:
-      self.current_position['event'] += 1
+    self.run_event(event_to_run)
 
-    play_over = self._make_position_consistent()
-    if play_over:
-      return True
-
-  def run_play(self, text, breakpoint_callback = None):
+  def run_play(self, text):
       parser = shakespeareParser(parseinfo=True)
       self.ast = parser.parse(text, rule_name='play')
       self.characters = self._create_characters_from_dramatis(self.ast.dramatis_personae)
 
       self.current_position = {'act': 0, 'scene': 0, 'event': 0}
 
-      while True:
-          done = self.step_forward(breakpoint_callback)
-          if done:
-              break
+      while self.current_position['act'] < len(self.ast.acts):
+          self.step_forward()
