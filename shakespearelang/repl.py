@@ -1,6 +1,7 @@
 from .shakespeare_interpreter import Shakespeare
 from .shakespeare_parser import shakespeareParser
 
+
 def _collect_characters(parser, interpreter):
     characters = []
     while True:
@@ -10,15 +11,18 @@ def _collect_characters(parser, interpreter):
         elif name == 'done':
             if not characters:
                 raise Exception('No characters!')
-            interpreter.characters = interpreter._create_characters_from_dramatis(characters)
+            chars = interpreter._create_characters_from_dramatis(characters)
+            interpreter.characters = chars
             break
         try:
             dramatis_ast = parser.parse(name, rule_name='dramatis_personae')
         except Exception as parseException:
-            print("\n\nThat dramatis personae doesn't look right:\n", parseException)
+            print("\n\nThat dramatis personae doesn't look right:\n",
+                  parseException)
             continue
         characters.append(dramatis_ast)
     return characters
+
 
 def _print_stage(interpreter):
     print('On stage:')
@@ -30,6 +34,7 @@ def _print_stage(interpreter):
         if not x.on_stage:
             print(x.name)
 
+
 def _prefix_input_output(sentence, opposite_character):
     if sentence.parseinfo.rule == 'output' and sentence.output_number:
         print(opposite_character.name, 'outputted self as number:')
@@ -40,6 +45,7 @@ def _prefix_input_output(sentence, opposite_character):
     elif sentence.parseinfo.rule == 'input' and sentence.input_char:
         print(opposite_character.name, 'taking input character:')
 
+
 def _show_result_of_sentence(sentence, opposite_character, interpreter):
     if sentence.parseinfo.rule == 'question':
         print(interpreter.global_boolean)
@@ -49,6 +55,7 @@ def _show_result_of_sentence(sentence, opposite_character, interpreter):
         print(opposite_character.name, 'pushed', opposite_character.stack[0])
     elif sentence.parseinfo.rule == 'pop':
         print(opposite_character.name, 'popped', opposite_character.value)
+
 
 def _print_character(character_name, interpreter):
     character = interpreter._character_by_name(character_name)
@@ -64,12 +71,17 @@ def _print_character(character_name, interpreter):
                 break
             print(item)
 
-def _run_sentences(sentences, speaking_character, opposite_character, interpreter):
+
+def _run_sentences(sentences,
+                   speaking_character,
+                   opposite_character,
+                   interpreter):
     for sentence in sentences:
         _prefix_input_output(sentence, opposite_character)
 
         try:
-            control_flow = interpreter.run_sentence(sentence, speaking_character)
+            control_flow = interpreter.run_sentence(sentence,
+                                                    speaking_character)
         except Exception as runtimeException:
             print("Error:\n", runtimeException)
             # Stop this entire line of sentences
@@ -86,6 +98,7 @@ def _run_sentences(sentences, speaking_character, opposite_character, interprete
             # Stop this entire line of sentences
             return
 
+
 def start_console():
     parser = shakespeareParser(parseinfo=True)
     interpreter = Shakespeare()
@@ -100,6 +113,7 @@ def start_console():
 
     run_repl(parser, interpreter)
 
+
 def debug_play(text):
     parser = shakespeareParser(parseinfo=True)
     interpreter = Shakespeare()
@@ -113,11 +127,12 @@ def debug_play(text):
 
     interpreter.run_play(text)
 
-def run_repl(parser, interpreter, debug_mode = False):
+
+def run_repl(parser, interpreter, debug_mode=False):
     current_character = None
     while True:
         event = input('>> ')
-        if event == 'exit' or event == 'quit' or (event == 'continue' and debug_mode):
+        if event in ['exit', 'quit'] or (event == 'continue' and debug_mode):
             return
         elif event == 'stage':
             _print_stage(interpreter)
