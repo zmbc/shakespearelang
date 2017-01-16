@@ -1,6 +1,11 @@
 shakespearelang
 ===============
 
+.. image:: https://codeclimate.com/github/zmbc/shakespearelang/badges/gpa.svg
+   :target: https://codeclimate.com/github/zmbc/shakespearelang
+   :alt: Code Climate
+
+
 An interpreter for the Shakespeare Programming Language, implemented in
 Python.
 
