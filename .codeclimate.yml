@@ -14,4 +14,4 @@ engines:
 ratings:
   paths:
   - "**.py"
-exclude_paths: []
+exclude_paths: ['./shakespearelang/shakespeare_parser.py']
