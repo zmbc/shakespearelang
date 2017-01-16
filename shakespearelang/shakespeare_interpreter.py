@@ -67,6 +67,8 @@ class Shakespeare:
         return scene_head.events[self.current_position['event']]
 
     def _make_position_consistent(self):
+        if self.play_over():
+            return
         self.current_act = self.ast.acts[self.current_position['act']]
         current_scene = self.current_act.scenes[self.current_position['scene']]
         if self.current_position['event'] >= len(current_scene.events):
@@ -172,7 +174,7 @@ class Shakespeare:
         elif sentence.parseinfo.rule == 'pop':
             self._character_opposite(character).pop()
 
-    def run_event(self, event):
+    def run_event(self, event, breakpoint_callback=None):
         has_goto = False
         if event.parseinfo.rule == 'line':
             for sentence in event.contents:
@@ -182,8 +184,8 @@ class Shakespeare:
                 if has_goto:
                     break
         elif event.parseinfo.rule == 'breakpoint':
-            if self.breakpoint_callback:
-                self.breakpoint_callback()
+            if breakpoint_callback:
+                breakpoint_callback()
         elif event.parseinfo.rule == 'entrance':
             for name in event.characters:
                 self._character_by_name(name).on_stage = True
@@ -212,11 +214,14 @@ class Shakespeare:
         self.current_position['event'] += 1
         self._make_position_consistent()
 
-    def step_forward(self):
+    def step_forward(self, breakpoint_callback=None):
         event_to_run = self._current_event()
-        self.run_event(event_to_run)
+        self.run_event(event_to_run, breakpoint_callback)
 
-    def run_play(self, text):
+    def play_over(self):
+        return self.current_position['act'] >= len(self.ast.acts)
+
+    def run_play(self, text, breakpoint_callback=None):
         parser = shakespeareParser(parseinfo=True)
         self.ast = parser.parse(text, rule_name='play')
         dramatis = self.ast.dramatis_personae
@@ -224,5 +229,5 @@ class Shakespeare:
 
         self.current_position = {'act': 0, 'scene': 0, 'event': 0}
 
-        while self.current_position['act'] < len(self.ast.acts):
-            self.step_forward()
+        while not self.play_over():
+            self.step_forward(breakpoint_callback)
