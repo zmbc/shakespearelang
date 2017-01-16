@@ -8,6 +8,7 @@ import math
 class Shakespeare:
 
     def __init__(self):
+        self.parser = shakespeareParser(parseinfo=True)
         self.characters = []
         self.global_boolean = False
         self.ast = None
@@ -27,18 +28,11 @@ class Shakespeare:
         def pop(self):
             self.value = self.stack.pop()
 
-    def _create_character_from_dramatis_entry(self, character_declaration):
-        name = character_declaration.character
-        if not isinstance(name, str):
-            name = " ".join(name)
-        return self.Character(name)
-
-    def _create_characters_from_dramatis(self, dramatis_personae):
-        characters = []
-        for declaration in dramatis_personae:
-            character = self._create_character_from_dramatis_entry(declaration)
-            characters.append(character)
-        return characters
+    def _parse_if_necessary(self, item, rule_name):
+        if isinstance(item, str):
+            return self.parser.parse(item, rule_name=rule_name)
+        else:
+            return item
 
     def _character_opposite(self, character):
         characters_opposite = [x for x in self.characters
@@ -83,6 +77,16 @@ class Shakespeare:
         scene_number = self._scene_number_from_roman_numeral(numeral)
         self.current_position['scene'] = scene_number
         self.current_position['event'] = 0
+
+    def _advance_position(self):
+        self.current_position['event'] += 1
+        self._make_position_consistent()
+
+    def _character_from_dramatis_persona(self, persona):
+        name = persona.character
+        if not isinstance(name, str):
+            name = " ".join(name)
+        return self.Character(name)
 
     # EXPRESSION TYPES
 
@@ -188,7 +192,26 @@ class Shakespeare:
         character = self._character_by_name(exit.character)
         character.on_stage = False
 
+    # PUBLIC
+
+    def run_dramatis_persona(self, persona):
+        persona = self._parse_if_necessary(persona, 'dramatis_persona')
+        character = self._character_from_dramatis_persona(persona)
+        self.characters.append(character)
+
+    def run_dramatis_personae(self, personae, destructive=False):
+        personae = self._parse_if_necessary(personae, 'dramatis_personae')
+        characters = []
+        for persona in personae:
+            character = self._character_from_dramatis_persona(persona)
+            characters.append(character)
+        if destructive:
+            self.characters = characters
+        else:
+            self.characters += characters
+
     def evaluate_expression(self, value, character):
+        value = self._parse_if_necessary(value, 'value')
         if value.parseinfo.rule == 'first_person_value':
             return character.value
         elif value.parseinfo.rule == 'second_person_value':
@@ -207,6 +230,7 @@ class Shakespeare:
             return self._evaluate_binary_operation(value, character)
 
     def evaluate_question(self, question, character):
+        question = self._parse_if_necessary(question, 'question')
         values = map(self.evaluate_expression,
                      [question.first_value, question.second_value]
                      )
@@ -218,6 +242,7 @@ class Shakespeare:
             return values[0] == values[1]
 
     def run_sentence(self, sentence, character):
+        sentence = self._parse_if_necessary(sentence, 'sentence')
         if not character.on_stage:
             raise Exception(character.name + " isn't on stage.")
         if sentence.parseinfo.rule == 'assignment':
@@ -238,6 +263,7 @@ class Shakespeare:
                 return True
 
     def run_event(self, event, breakpoint_callback=None):
+        event = self._parse_if_necessary(event, 'event')
         has_goto = False
         if event.parseinfo.rule == 'line':
             has_goto = self._run_line(event)
@@ -251,9 +277,8 @@ class Shakespeare:
         elif event.parseinfo.rule == 'exit':
             self._run_exit(event)
 
-        if not has_goto:
-            self.current_position['event'] += 1
-            self._make_position_consistent()
+        if self.current_position and not has_goto:
+            self._advance_position()
 
     def current_event_text(self):
         current_event = self._current_event()
@@ -262,10 +287,6 @@ class Shakespeare:
                                  current_event.parseinfo.endline)
         return "".join(lines)
 
-    def skip_forward(self):
-        self.current_position['event'] += 1
-        self._make_position_consistent()
-
     def step_forward(self, breakpoint_callback=None):
         event_to_run = self._current_event()
         self.run_event(event_to_run, breakpoint_callback)
@@ -273,11 +294,10 @@ class Shakespeare:
     def play_over(self):
         return self.current_position['act'] >= len(self.ast.acts)
 
-    def run_play(self, text, breakpoint_callback=None):
-        parser = shakespeareParser(parseinfo=True)
-        self.ast = parser.parse(text, rule_name='play')
-        dramatis = self.ast.dramatis_personae
-        self.characters = self._create_characters_from_dramatis(dramatis)
+    def run_play(self, play, breakpoint_callback=None):
+        self.ast = self._parse_if_necessary(play, 'play')
+        self.run_dramatis_personae(self.ast.dramatis_personae,
+                                   destructive=True)
 
         self.current_position = {'act': 0, 'scene': 0, 'event': 0}
 

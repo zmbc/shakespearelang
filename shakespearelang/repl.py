@@ -1,27 +1,16 @@
 from .shakespeare_interpreter import Shakespeare
-from .shakespeare_parser import shakespeareParser
 
 
-def _collect_characters(parser, interpreter):
-    characters = []
+def _collect_characters(interpreter):
     while True:
-        name = input('Dramatis personae or "done">> ')
-        if name == 'exit' or name == 'quit':
+        persona = input('Dramatis persona or "done">> ')
+        if persona == 'exit' or persona == 'quit':
             return False
-        elif name == 'done':
-            if not characters:
+        elif persona == 'done':
+            if not interpreter.characters:
                 raise Exception('No characters!')
-            chars = interpreter._create_characters_from_dramatis(characters)
-            interpreter.characters = chars
             break
-        try:
-            dramatis_ast = parser.parse(name, rule_name='dramatis_personae')
-        except Exception as parseException:
-            print("\n\nThat dramatis personae doesn't look right:\n",
-                  parseException)
-            continue
-        characters.append(dramatis_ast)
-    return characters
+        interpreter.run_dramatis_persona(persona)
 
 
 def _print_stage(interpreter):
@@ -100,32 +89,29 @@ def _run_sentences(sentences,
 
 
 def start_console():
-    parser = shakespeareParser(parseinfo=True)
     interpreter = Shakespeare()
 
     print('\n\nA REPL-tastic Adventure.\n\n')
 
-    if not _collect_characters(parser, interpreter):
-        return
+    _collect_characters(interpreter)
 
     print('\n\n                    Act I: All the World\n\n')
     print('                    Scene I: A Stage\n\n')
 
-    run_repl(parser, interpreter)
+    run_repl(interpreter)
 
 
 def debug_play(text):
-    parser = shakespeareParser(parseinfo=True)
     interpreter = Shakespeare()
 
     def on_breakpoint():
         print(interpreter.current_event_text(), '\n')
-        run_repl(parser, interpreter, debug_mode=True)
+        run_repl(interpreter, debug_mode=True)
 
     interpreter.run_play(text, on_breakpoint)
 
 
-def run_repl(parser, interpreter, debug_mode=False):
+def run_repl(interpreter, debug_mode=False):
     current_character = None
     while True:
         event = input('>> ')
@@ -142,7 +128,7 @@ def run_repl(parser, interpreter, debug_mode=False):
             continue
 
         try:
-            ast = parser.parse(event, rule_name='repl_input')
+            ast = interpreter.parser.parse(event, rule_name='repl_input')
         except Exception as parseException:
             print("\n\nThat doesn't look right:\n", parseException)
             continue

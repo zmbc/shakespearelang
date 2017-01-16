@@ -44,11 +44,14 @@ Installation
   pip install shakespearelang
   # Or however else you install things. You do you.
 
-Instructions
-^^^^^^^^^^^^
+Usage
+^^^^^
 
 CLI
 ---
+
+Commands
+~~~~~~~~
 
 .. code-block::
 
@@ -57,7 +60,7 @@ CLI
   shakespeare console # or just "shakespeare" unadorned
 
 Console
--------
+~~~~~~~
 
 In the console, you'll essentially write an SPL program/play line-by-line,
 defining your characters first.
@@ -77,7 +80,7 @@ Input to the console can be any of these:
 - :code:`exit` or :code:`quit`, which will leave the console.
 
 Debugging
----------
+~~~~~~~~~
 
 Debugging and running are identical for many programs. In order to utilize the
 debugging feature, you'll need to place a breakpoint somewhere in your SPL code
@@ -92,4 +95,22 @@ and enter a REPL. This is just like the standalone console, except
 you can use the :code:`next` command to step forward, and the :code:`continue`
 command to exit the REPL and continue running the program/play.
 
+Programmatically
+----------------
+
+The interpreter's :code:`run_play` method can be used to run an entire play,
+and there are other methods for evaluating expressions and questions, running
+events and sentences, and adding characters. These all can take either a string
+or an AST (the former being easier to get from a user, the latter being easier
+to generate in code). These are named how you might expect them to be named.
+See :code:`repl.py` for a more complex example of deeply interfacing with the
+interpreter from Python.
+
+**Note:** It is recommended to do any necessary parsing using :code:`interpreter.parser.parse()`
+instead of using the parser directly, as the interpreter requires a specific
+setting on the parser to work correctly. Otherwise, information on :code:`parse()`
+can be found `at the Grako docs`_.
+
 .. _on Wikipedia: https://en.wikipedia.org/wiki/Shakespeare_Programming_Language
+
+.. _at the Grako docs: https://bitbucket.org/apalala/grako#markdown-header-using-the-generated-parser

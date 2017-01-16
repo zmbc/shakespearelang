@@ -1643,7 +1643,7 @@ class shakespeareParser(Parser):
         )
 
     @graken()
-    def _dramatis_personae_(self):
+    def _dramatis_persona_(self):
         self._character_()
         self.name_last_node('character')
         self._token(',')
@@ -1661,6 +1661,13 @@ class shakespeareParser(Parser):
         )
 
     @graken()
+    def _dramatis_personae_(self):
+
+        def block0():
+            self._dramatis_persona_()
+        self._closure(block0)
+
+    @graken()
     def _play_(self):
         self._text_before_punctuation_()
         self.name_last_node('title')
@@ -1671,16 +1678,13 @@ class shakespeareParser(Parser):
                 with self._option():
                     self._token('.')
                 self._error('expecting one of: ! .')
-
-        def block3():
-            self._dramatis_personae_()
-        self._closure(block3)
+        self._dramatis_personae_()
         self.name_last_node('dramatis_personae')
         with self._group():
 
-            def block5():
+            def block4():
                 self._act_()
-            self._closure(block5)
+            self._closure(block4)
         self.name_last_node('acts')
         self._check_eof()
         self.ast._define(
@@ -1865,6 +1869,9 @@ class shakespeareSemantics(object):
         return ast
 
     def act(self, ast):
+        return ast
+
+    def dramatis_persona(self, ast):
         return ast
 
     def dramatis_personae(self, ast):
