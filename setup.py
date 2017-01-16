@@ -8,15 +8,16 @@ from setuptools import setup
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
+
 setup(
-    name = "shakespearelang",
-    version = "0.2.0",
-    author = "Zeb Burke-Conte",
-    author_email = "zmbc@uw.edu",
-    url = 'http://github.com/zmbc/shakespearelang',
-    description = "An interpreter for the Shakespeare Programming Language.",
-    license = "MIT",
-    keywords = "shakespeare interpreter",
+    name="shakespearelang",
+    version="0.2.0",
+    author="Zeb Burke-Conte",
+    author_email="zmbc@uw.edu",
+    url='http://github.com/zmbc/shakespearelang',
+    description="An interpreter for the Shakespeare Programming Language.",
+    license="MIT",
+    keywords="shakespeare interpreter",
     packages=['shakespearelang'],
     install_requires=['click'],
     long_description=read('README.rst'),
@@ -25,7 +26,7 @@ setup(
         "Topic :: Software Development :: Interpreters",
         "License :: OSI Approved :: MIT License",
     ],
-    entry_points = {
+    entry_points={
         'console_scripts': ['shakespeare=shakespearelang.cli:main'],
     }
 )
