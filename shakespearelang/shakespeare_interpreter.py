@@ -84,6 +84,110 @@ class Shakespeare:
         self.current_position['scene'] = scene_number
         self.current_position['event'] = 0
 
+    # EXPRESSION TYPES
+
+    def _evaluate_unary_operation(self, op, character):
+        operand = self.evaluate_expression(op.value, character)
+        if op.operation == ['the', 'cube', 'of']:
+            return pow(operand, 3)
+        elif op.operation == ['the', 'factorial', 'of']:
+            return math.factorial(operand)
+        elif op.operation == ['the', 'square', 'of']:
+            return pow(operand, 2)
+        elif op.operation == ['the', 'square', 'root', 'of']:
+            return math.sqrt(operand)
+        elif op.operation == 'twice':
+            return operand * 2
+
+    def _evaluate_binary_operation(self, op, character):
+        first_operand = self.evaluate_expression(op.first_value, character)
+        second_operand = self.evaluate_expression(op.second_value, character)
+        if op.operation == ['the', 'difference', 'between']:
+            return first_operand - second_operand
+        elif op.operation == ['the', 'product', 'of']:
+            return first_operand * second_operand
+        elif op.operation == ['the', 'quotient', 'between']:
+            return first_operand // second_operand
+        elif op.operation == ['the', 'remainder', 'of',
+                              'the', 'quotient', 'between']:
+            return first_operand % second_operand
+        elif op.operation == ['the', 'sum', 'of']:
+            return first_operand + second_operand
+
+    # SENTENCE TYPES
+
+    def _run_assignment(self, sentence, character):
+        character_opposite = self._character_opposite(character)
+        character_opposite.value = self.evaluate_expression(sentence.value,
+                                                            character)
+
+    def _run_question(self, question, character):
+        self.global_boolean = self.evaluate_question(question, character)
+
+    def _run_goto(self, goto):
+        condition = goto.condition
+        condition_type = (condition and
+                          condition.parseinfo.rule == 'positive_if')
+        if (not condition) or (condition_type == self.global_boolean):
+            self._goto_scene(goto.destination)
+            return True
+
+    def _run_output(self, output, character):
+        if output.output_number:
+            number = self._character_opposite(character).value
+            print(number)
+        elif output.output_char:
+            char = chr(self._character_opposite(character).value)
+            # Chars don't get their own line
+            print(char, end="")
+
+    def _run_input(self, input_op, character):
+        user_input = input()
+        if input_op.input_number:
+            self._character_opposite(character).value = int(user_input)
+        elif input_op.input_char:
+            if user_input == '':
+                # Blank is considered to have a -1 ASCII code
+                self._character_opposite(character).value = -1
+            else:
+                input_char = ord(user_input[0])
+                self._character_opposite(character).value = input_char
+
+    def _run_push(self, push, speaking_character):
+        pushing_character = self._character_opposite(speaking_character)
+        value = self.evaluate_expression(push.value, speaking_character)
+        pushing_character.push(value)
+
+    def _run_pop(self, pop, speaking_character):
+        popping_character = self._character_opposite(speaking_character)
+        popping_character.pop()
+
+    # EVENT TYPES
+
+    def _run_line(self, line):
+        character = self._character_by_name(line.character)
+        for sentence in line.contents:
+            # Returns whether this sentence caused a goto
+            has_goto = self.run_sentence(sentence, character)
+            if has_goto:
+                return True
+
+    def _run_entrance(self, entrance):
+        for name in entrance.characters:
+            self._character_by_name(name).on_stage = True
+
+    def _run_exeunt(self, exeunt):
+        if exeunt.characters:
+            for name in exeunt.characters:
+                self._character_by_name(name).on_stage = False
+        else:
+            for character in self.characters:
+                character.on_stage = False
+
+    def _run_exit(self, exit):
+        character = self._character_by_name(exit.character)
+        character.on_stage = False
+
     def evaluate_expression(self, value, character):
         if value.parseinfo.rule == 'first_person_value':
             return character.value
@@ -98,33 +202,9 @@ class Shakespeare:
         elif value.parseinfo.rule == 'nothing':
             return 0
         elif value.parseinfo.rule == 'unary_expression':
-            operand = self.evaluate_expression(value.value, character)
-            if value.operation == ['the', 'cube', 'of']:
-                return pow(operand, 3)
-            elif value.operation == ['the', 'factorial', 'of']:
-                return math.factorial(operand)
-            elif value.operation == ['the', 'square', 'of']:
-                return pow(operand, 2)
-            elif value.operation == ['the', 'square', 'root', 'of']:
-                return math.sqrt(operand)
-            elif value.operation == 'twice':
-                return 2 * operand
+            return self._evaluate_unary_operation(value, character)
         elif value.parseinfo.rule == 'binary_expression':
-            first_operand = self.evaluate_expression(value.first_value,
-                                                     character)
-            second_operand = self.evaluate_expression(value.second_value,
-                                                      character)
-            if value.operation == ['the', 'difference', 'between']:
-                return first_operand - second_operand
-            elif value.operation == ['the', 'product', 'of']:
-                return first_operand * second_operand
-            elif value.operation == ['the', 'quotient', 'between']:
-                return first_operand // second_operand
-            elif value.operation == ['the', 'remainder', 'of',
-                                     'the', 'quotient', 'between']:
-                return first_operand % second_operand
-            elif value.operation == ['the', 'sum', 'of']:
-                return first_operand + second_operand
+            return self._evaluate_binary_operation(value, character)
 
     def evaluate_question(self, question, character):
         values = map(self.evaluate_expression,
@@ -141,63 +221,35 @@ class Shakespeare:
         if not character.on_stage:
             raise Exception(character.name + " isn't on stage.")
         if sentence.parseinfo.rule == 'assignment':
-            character_opposite = self._character_opposite(character)
-            character_opposite.value = self.evaluate_expression(sentence.value,
-                                                                character)
+            self._run_assignment(sentence, character)
         elif sentence.parseinfo.rule == 'question':
-            self.global_boolean = self.evaluate_question(sentence, character)
-        elif sentence.parseinfo.rule == 'goto':
-            condition = sentence.condition
-            condition_type = (condition and
-                              condition.parseinfo.rule == 'positive_if')
-            if (not condition) or (condition_type == self.global_boolean):
-                self._goto_scene(sentence.destination)
-                return True
+            self._run_question(sentence, character)
         elif sentence.parseinfo.rule == 'output':
-            if sentence.output_number:
-                print(self._character_opposite(character).value)
-            elif sentence.output_char:
-                print(chr(self._character_opposite(character).value), end="")
+            self._run_output(sentence, character)
         elif sentence.parseinfo.rule == 'input':
-            if sentence.input_number:
-                self._character_opposite(character).value = int(input())
-            elif sentence.input_char:
-                input_char_code = input()
-                if input_char_code == '':
-                    self._character_opposite(character).value = -1
-                else:
-                    input_value = ord(input_char_code[0])
-                    self._character_opposite(character).value = input_value
+            self._run_input(sentence, character)
         elif sentence.parseinfo.rule == 'push':
-            value = self.evaluate_expression(sentence.value, character)
-            self._character_opposite(character).push(value)
+            self._run_push(sentence, character)
         elif sentence.parseinfo.rule == 'pop':
-            self._character_opposite(character).pop()
+            self._run_pop(sentence, character)
+        elif sentence.parseinfo.rule == 'goto':
+            went_to = self._run_goto(sentence)
+            if went_to:
+                return True
 
     def run_event(self, event, breakpoint_callback=None):
         has_goto = False
         if event.parseinfo.rule == 'line':
-            for sentence in event.contents:
-                # Returns whether this sentence caused a goto
-                speaking_character = self._character_by_name(event.character)
-                has_goto = self.run_sentence(sentence, speaking_character)
-                if has_goto:
-                    break
+            has_goto = self._run_line(event)
         elif event.parseinfo.rule == 'breakpoint':
             if breakpoint_callback:
                 breakpoint_callback()
         elif event.parseinfo.rule == 'entrance':
-            for name in event.characters:
-                self._character_by_name(name).on_stage = True
+            self._run_entrance(event)
         elif event.parseinfo.rule == 'exeunt':
-            if event.characters:
-                for name in event.characters:
-                    self._character_by_name(name).on_stage = False
-            else:
-                for character in self.characters:
-                    character.on_stage = False
+            self._run_exeunt(event)
         elif event.parseinfo.rule == 'exit':
-            self._character_by_name(event.character).on_stage = False
+            self._run_exit(event)
 
         if not has_goto:
             self.current_position['event'] += 1
