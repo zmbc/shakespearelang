@@ -253,6 +253,12 @@ class Shakespeare:
             if x.name.lower() == name.lower():
                 return x
 
+    def _character_by_name_if_necessary(self, character):
+        if isinstance(character, str):
+            return self._character_by_name(character)
+        else:
+            return character
+
     def _scene_number_from_roman_numeral(self, roman_numeral):
         for index, scene in enumerate(self.current_act.scenes):
             if scene.number == roman_numeral:
