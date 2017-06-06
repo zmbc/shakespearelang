@@ -23,6 +23,9 @@ setup(
     install_requires=['click', 'grako'],
     long_description=read('README.rst'),
     classifiers=[
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3 :: Only",
         "Development Status :: 3 - Alpha",
         "Topic :: Software Development :: Interpreters",
         "License :: OSI Approved :: MIT License",
