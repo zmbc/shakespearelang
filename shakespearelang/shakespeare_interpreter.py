@@ -34,6 +34,7 @@ class Shakespeare:
         self.global_boolean = False
         self.ast = None
         self.current_position = None
+        self._input_buffer = ''
 
     class Character:
         """A character in an SPL play."""
@@ -348,23 +349,32 @@ class Shakespeare:
     def _run_output(self, output, character):
         if output.output_number:
             number = self._character_opposite(character).value
-            print(number)
+            print(number, end="")
         elif output.output_char:
             char = chr(self._character_opposite(character).value)
-            # Chars don't get their own line
             print(char, end="")
 
     def _run_input(self, input_op, character):
-        user_input = input()
+        if not self._input_buffer:
+            try:
+                self._input_buffer = input() + '\n'
+            except EOFError:
+                raise Exception('End of file encountered.')
+
         if input_op.input_number:
-            self._character_opposite(character).value = int(user_input)
+            number_input = ''
+            while self._input_buffer[0].isdigit():
+                number_input += self._input_buffer[0]
+                self._input_buffer = self._input_buffer[1:]
+
+            if len(number_input) == 0:
+                raise Exception('No numeric input was given.')
+
+            self._character_opposite(character).value = int(number_input)
         elif input_op.input_char:
-            if user_input == '':
-                # Blank is considered to have a -1 ASCII code
-                self._character_opposite(character).value = -1
-            else:
-                input_char = ord(user_input[0])
-                self._character_opposite(character).value = input_char
+            input_char = ord(self._input_buffer[0])
+            self._input_buffer = self._input_buffer[1:]
+            self._character_opposite(character).value = input_char
 
     def _run_push(self, push, speaking_character):
         pushing_character = self._character_opposite(speaking_character)
