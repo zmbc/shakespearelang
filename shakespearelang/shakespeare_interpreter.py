@@ -163,9 +163,9 @@ class Shakespeare:
                      character asking the question.
         """
         question = self._parse_if_necessary(question, 'question')
-        values = map(self.evaluate_expression,
-                     [question.first_value, question.second_value]
-                     )
+        values = [self.evaluate_expression(question.first_value, character), 
+                     self.evaluate_expression(question.second_value, character)
+                    ]
         if question.comparative.parseinfo.rule == 'positive_comparative':
             return values[0] > values[1]
         elif question.comparative.parseinfo.rule == 'negative_comparative':
