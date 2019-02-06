@@ -283,7 +283,7 @@ class Shakespeare:
             self.current_position['scene'] = 0
             self.current_position['act'] += 1
 
-    def _goto_scene(numeral):
+    def _goto_scene(self, numeral):
         scene_number = self._scene_number_from_roman_numeral(numeral)
         self.current_position['scene'] = scene_number
         self.current_position['event'] = 0
