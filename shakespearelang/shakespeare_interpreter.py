@@ -360,7 +360,11 @@ class Shakespeare:
             try:
                 self._input_buffer = input() + '\n'
             except EOFError:
-                raise Exception('End of file encountered.')
+                if input_op.input_char:
+                    self._character_opposite(character).value = -1
+                    return
+                else:
+                    raise Exception('End of file encountered.')
 
         if input_op.input_number:
             number_input = ''
