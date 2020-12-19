@@ -1,0 +1,33 @@
+[[package]]
+name = "click"
+version = "7.1.2"
+description = "Composable command line interface toolkit"
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+
+[[package]]
+name = "grako"
+version = "3.99.9"
+description = "Grako takes a grammar in a variation of EBNF as input, and outputs a memoizing PEG/Packrat parser in Python."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.extras]
+future-regex = ["regex"]
+
+[metadata]
+lock-version = "1.1"
+python-versions = "^3.9"
+content-hash = "d404341a19627f6a9db611f803ece2930abcfc91a8bc6dae84895549c2191e68"
+
+[metadata.files]
+click = [
+    {file = "click-7.1.2-py2.py3-none-any.whl", hash = "sha256:dacca89f4bfadd5de3d7489b7c8a566eee0d3676333fbb50030263894c38c0dc"},
+    {file = "click-7.1.2.tar.gz", hash = "sha256:d2b5255c7c6349bc1bd1e59e08cd12acbbd63ce649f2588755783aa94dfb6b1a"},
+]
+grako = [
+    {file = "grako-3.99.9-py2.py3-none-any.whl", hash = "sha256:28813fd09e31edf26761e2f814ef65adc073d432f0f1e4311ae5e5b1519978c2"},
+    {file = "grako-3.99.9.zip", hash = "sha256:fcc37309eab7cd0cbbb26cfd6a54303fbb80a00a58ab295d1e665bc69189c364"},
+]

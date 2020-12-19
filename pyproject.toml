@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "shakespearelang"
+version = "0.3.1"
+description = "An interpreter for the Shakespeare Programming Language."
+authors = ["Zeb Burke-Conte <zebburkeconte@gmail.com>"]
+readme = "README.rst"
+repository = "http://github.com/zmbc/shakespearelang"
+homepage = "http://shakespearelang.com"
+license = "MIT"
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Topic :: Software Development :: Interpreters",
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+click = "^7.1.2"
+grako = "^3.99.9"
+
+[tool.poetry.dev-dependencies]
+
+[tool.poetry.scripts]
+shakespeare = "shakespearelang.cli:main"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
