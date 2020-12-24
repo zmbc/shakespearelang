@@ -129,7 +129,7 @@ def run_repl(interpreter, debug_mode=False):
             continue
 
         try:
-            ast = interpreter.parser.parse(event, rule_name='repl_input')
+            ast = interpreter.parser.parse(event + "\n", rule_name='repl_input')
         except Exception as parseException:
             print("\n\nThat doesn't look right:\n", parseException)
             continue
