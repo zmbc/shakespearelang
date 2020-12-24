@@ -8,24 +8,9 @@ from .shakespeare_parser import shakespeareParser
 import argparse
 import math
 
-
 class Shakespeare:
     """
     Interpreter for the Shakespeare Programming Language.
-
-    Methods:
-    run_play -- Run an SPL play
-    play_over -- Return whether play has completed
-    step_forward -- Run the next event in the play
-    next_event_text -- Return the text of the next event
-    run_event -- Run a specified event in-place
-    run_sentence -- Run a specified sentence in-place
-    evaluate_question -- Return the boolean answer to a question
-    evaluate_expression -- Return the numeric value of an expression
-    run_dramatis_personae -- Run a dramatis personae, overwriting or adding to
-                             the characters of the play
-    run_dramatis_persona -- Run a dramatis persona, adding to the characters of
-                            the play
     """
 
     def __init__(self):
