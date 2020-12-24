@@ -94,7 +94,9 @@ def start_console():
 
     print('\n\nA REPL-tastic Adventure.\n\n')
 
-    _collect_characters(interpreter)
+    should_continue = _collect_characters(interpreter)
+    if should_continue == False:
+        return
 
     print('\n\n                    Act I: All the World\n\n')
     print('                    Scene I: A Stage\n\n')
