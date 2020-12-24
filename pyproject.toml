@@ -13,13 +13,14 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = ">= 3.6"
+python = "^3.6"
 click = "^7.1.2"
 grako = "^3.99.9"
 
 [tool.poetry.dev-dependencies]
 mkdocs = "^1.1.2"
 mkdocs-bootswatch = "^1.1"
+mkdocstrings = "^0.13.6"
 
 [tool.poetry.scripts]
 shakespeare = "shakespearelang.cli:main"

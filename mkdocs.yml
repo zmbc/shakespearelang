@@ -1,3 +1,5 @@
 site_name: shakespearelang
 theme:
   name: journal
+plugins:
+- mkdocstrings
