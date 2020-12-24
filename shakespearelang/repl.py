@@ -1,5 +1,6 @@
 from .shakespeare_interpreter import Shakespeare
 
+import readline
 
 def _collect_characters(interpreter):
     while True:
