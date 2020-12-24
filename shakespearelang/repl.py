@@ -182,6 +182,6 @@ def run_repl(interpreter, debug_mode=False):
                 print("Error:\n", runtimeException)
                 continue
 
-            print(result, '\n')
+            print(result)
         elif character:
             _print_character(character, interpreter)
