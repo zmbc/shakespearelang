@@ -16,10 +16,10 @@ classifiers = [
 python = ">= 3.6"
 click = "^7.1.2"
 grako = "^3.99.9"
-mkdocs-bootswatch = "^1.1"
 
 [tool.poetry.dev-dependencies]
 mkdocs = "^1.1.2"
+mkdocs-bootswatch = "^1.1"
 
 [tool.poetry.scripts]
 shakespeare = "shakespearelang.cli:main"
