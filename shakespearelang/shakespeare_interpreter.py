@@ -77,9 +77,22 @@ class Shakespeare:
         """Return the contents of the next event in the play."""
         current_event = self._next_event()
         buffer = current_event.parseinfo.buffer
-        lines = buffer.get_lines(current_event.parseinfo.line,
-                                 current_event.parseinfo.endline)
-        return "".join(lines)
+        before_context_lines = buffer.get_lines(
+            max(current_event.parseinfo.line - 4, 0),
+            current_event.parseinfo.line - 1
+        )
+        lines = buffer.get_lines(
+            current_event.parseinfo.line,
+            current_event.parseinfo.endline
+        )
+        after_context_lines = buffer.get_lines(
+            current_event.parseinfo.endline + 1,
+            current_event.parseinfo.endline + 4
+        )
+        return "\n\n-----\n\n" + "".join(before_context_lines) + \
+            "".join(["> " + l for l in lines]) + \
+            "".join(after_context_lines) + \
+            "\n-----"
 
     def run_event(self, event, breakpoint_callback=None):
         """
