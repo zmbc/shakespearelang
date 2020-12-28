@@ -185,6 +185,9 @@ Other options:
 
 - [The reference implementation](http://shakespearelang.sf.net/download/spl-1.2.1.tar.gz),
 an SPL-to-C source-to-source compiler
+  - Note: you may need to downgrade `flex` to version 2.5.4 to compile the
+    reference implementation due to [this issue](https://github.com/westes/flex/issues/193).
+    On Ubuntu, this can be easily achieved with the [flex-old package](https://launchpad.net/ubuntu/+source/flex-old).
 - [Lingua::Shakespeare](http://search.cpan.org/dist/Lingua-Shakespeare/lib/Lingua/Shakespeare.pod), a source filter in Perl
 - [Spl](https://github.com/drsam94/Spl), an SPL-to-C compiler in Python
 - [horatio](https://github.com/mileszim/horatio), an interpreter in Javascript
