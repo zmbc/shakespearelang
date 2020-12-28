@@ -18,7 +18,10 @@ jobs:
     - name: setup pyenv
       uses: gabrielfalcao/pyenv-action@v7
       with:
+        default: 3.9.0
         versions: 3.6.12, 3.7.9, 3.8.6, 3.9.0
-        command: pip install -U poetry
+        command: |
+          pip install -U pip
+          pip install -U poetry
     - name: Run tox
       run: tox
