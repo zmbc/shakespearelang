@@ -19,6 +19,7 @@ class Shakespeare:
         self.global_boolean = False
         self.ast = None
         self.current_position = None
+        self.current_act = None
         self._input_buffer = ''
 
     class Character:
