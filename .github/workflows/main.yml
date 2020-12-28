@@ -16,13 +16,9 @@ jobs:
     name: install pyenv
     steps:
     - name: setup pyenv
-      uses: gabrielfalcao/pyenv-action@v5
+      uses: gabrielfalcao/pyenv-action@v7
       with:
         versions: 3.6.12, 3.7.9, 3.8.6, 3.9.1
         command: pip install -U poetry
-      env:
-        # allow unsecure commands add-path and set-env until v7 is available
-        # see: https://github.com/gabrielfalcao/pyenv-action/issues/99
-        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     - name: Run tox
       run: tox
