@@ -69,8 +69,13 @@ def _run_sentences(sentences,
     for sentence in sentences:
         _prefix_input_output(sentence, opposite_character)
 
+        if sentence.parseinfo.rule == 'goto':
+            print("Control flow isn't allowed in REPL.")
+            # Stop this entire line of sentences
+            return
+
         try:
-            control_flow = interpreter.run_sentence(sentence,
+            interpreter.run_sentence(sentence,
                                                     speaking_character)
         except Exception as runtimeException:
             print("Error:\n", runtimeException)
@@ -82,11 +87,6 @@ def _run_sentences(sentences,
             print('\n')
 
         _show_result_of_sentence(sentence, opposite_character, interpreter)
-
-        if control_flow:
-            print("Control flow isn't allowed in REPL.")
-            # Stop this entire line of sentences
-            return
 
 
 def start_console():
