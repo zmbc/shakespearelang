@@ -24,4 +24,4 @@ jobs:
           pip install -U pip
           pip install -U poetry
     - name: Run tox
-      run: tox
+      run: poetry run tox
