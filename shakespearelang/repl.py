@@ -166,7 +166,7 @@ def run_repl(interpreter, debug_mode=False):
                 continue
 
             try:
-                speaking_character = interpreter._character_by_name(current_character)
+                speaking_character = interpreter._on_stage_character_by_name(current_character)
                 opposite_character = interpreter._character_opposite(speaking_character)
             except Exception as runtimeException:
                 print("Error:\n", runtimeException)
@@ -178,7 +178,7 @@ def run_repl(interpreter, debug_mode=False):
                 current_character = character
 
             try:
-                speaking_character = interpreter._character_by_name(current_character)
+                speaking_character = interpreter._on_stage_character_by_name(current_character)
                 result = interpreter.evaluate_expression(value, speaking_character)
             except Exception as runtimeException:
                 print("Error:\n", runtimeException)
