@@ -130,10 +130,8 @@ class Shakespeare:
         character -- A name or Shakespeare.Character representation of the
                      character speaking the sentence.
         """
-        character = self._character_by_name_if_necessary(character)
+        character = self._on_stage_character_by_name_if_necessary(character)
         sentence = self._parse_if_necessary(sentence, 'sentence')
-        if not character.on_stage:
-            raise Exception(character.name + " isn't on stage.")
         if sentence.parseinfo.rule == 'assignment':
             self._run_assignment(sentence, character)
         elif sentence.parseinfo.rule == 'question':
@@ -252,10 +250,23 @@ class Shakespeare:
         for x in self.characters:
             if x.name.lower() == name.lower():
                 return x
+        raise Exception(name + ' was not initialized!')
 
-    def _character_by_name_if_necessary(self, character):
+    def _on_stage_character_by_name(self, name):
+        character = self._character_by_name(name)
+        if character.on_stage == False:
+            raise Exception(name + ' is not on stage!')
+        return character
+
+    def _off_stage_character_by_name(self, name):
+        character = self._character_by_name(name)
+        if character.on_stage == True:
+            raise Exception(name + ' is already on stage!')
+        return character
+
+    def _on_stage_character_by_name_if_necessary(self, character):
         if isinstance(character, str):
-            return self._character_by_name(character)
+            return self._on_stage_character_by_name(character)
         else:
             return character
 
@@ -394,7 +405,7 @@ class Shakespeare:
     # EVENT TYPES
 
     def _run_line(self, line):
-        character = self._character_by_name(line.character)
+        character = self._on_stage_character_by_name(line.character)
         for sentence in line.contents:
             # Returns whether this sentence caused a goto
             has_goto = self.run_sentence(sentence, character)
@@ -403,16 +414,16 @@ class Shakespeare:
 
     def _run_entrance(self, entrance):
         for name in entrance.characters:
-            self._character_by_name(name).on_stage = True
+            self._off_stage_character_by_name(name).on_stage = True
 
     def _run_exeunt(self, exeunt):
         if exeunt.characters:
             for name in exeunt.characters:
-                self._character_by_name(name).on_stage = False
+                self._on_stage_character_by_name(name).on_stage = False
         else:
             for character in self.characters:
                 character.on_stage = False
 
     def _run_exit(self, exit):
-        character = self._character_by_name(exit.character)
+        character = self._on_stage_character_by_name(exit.character)
         character.on_stage = False
