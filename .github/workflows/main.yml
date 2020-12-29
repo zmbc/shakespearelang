@@ -31,3 +31,12 @@ jobs:
         poetry install -v
     - name: Run tests
       run: poetry run pytest
+    - name: Run unit tests with coverage
+      run: poetry run coverage run -m pytest shakespearelang/tests/unit/
+    - uses: paambaati/codeclimate-action@v2.7.5
+      if: ${{ matrix.python-version == 3.9 }}
+      env:
+        CC_TEST_REPORTER_ID: 5822386b50d7a5144fa9ea28cf5f0328d2f9df1fa7bde4a3ed6a82a6ac7f4ca8
+      with:
+        coverageCommand: poetry run coverage xml
+        debug: true

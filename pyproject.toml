@@ -23,6 +23,7 @@ mkdocs-bootswatch = "^1.1"
 mkdocstrings = "^0.13.6"
 pytest = "^6.2.1"
 tox = "^3.20.1"
+coverage = "^5.3.1"
 
 [tool.poetry.scripts]
 shakespeare = "shakespearelang.cli:main"
