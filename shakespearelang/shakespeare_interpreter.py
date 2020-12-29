@@ -369,7 +369,11 @@ class Shakespeare:
             number = self._character_opposite(character).value
             print(number, end="")
         elif output.output_char:
-            char = chr(self._character_opposite(character).value)
+            char_code = self._character_opposite(character).value
+            try:
+                char = chr(char_code)
+            except ValueError:
+                raise Exception('Invalid character code: ' + str(char_code))
             print(char, end="")
 
     def _run_input(self, input_op, character):
