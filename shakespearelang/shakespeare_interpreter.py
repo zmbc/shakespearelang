@@ -41,6 +41,18 @@ class Shakespeare:
 
     # PUBLIC METHODS
 
+    def load_play(self, play):
+        """
+        Load an SPL play without beginning execution.
+
+        Arguments:
+        play -- An AST or text representation of an SPL play
+        """
+        self.ast = self._parse_if_necessary(play, 'play')
+        self.run_dramatis_personae(self.ast.dramatis_personae, destructive=True)
+
+        self.current_position = {'act': 0, 'scene': 0, 'event': 0}
+
     def run_play(self, play, breakpoint_callback=None):
         """
         Run an SPL play.
@@ -50,12 +62,7 @@ class Shakespeare:
         breakpoint_callback -- An optional callback, to be called if a debug
                                breakpoint is hit
         """
-        self.ast = self._parse_if_necessary(play, 'play')
-        self.run_dramatis_personae(self.ast.dramatis_personae,
-                                   destructive=True)
-
-        self.current_position = {'act': 0, 'scene': 0, 'event': 0}
-
+        self.load_play(play)
         while not self.play_over():
             self.step_forward(breakpoint_callback)
 
