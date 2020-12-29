@@ -88,7 +88,7 @@ Juliet: Thou art the sum of thyself and a King. Speak your mind!
 >>
 ```
 
-### Understanding the debugger
+### Understanding the debugger and console
 
 The "H" at the top is the first letter of output from our play. Then, the
 stage direction causes the interpreter to pause. It shows us where in the play
@@ -170,11 +170,13 @@ event in the play, returning you to the interactive console afterwards. `continu
 simply continues running the play--it will not stop again unless it hits another
 breakpoint.
 
-## Console
+## Using the console outside the debugger
 
 If you don't have a play yet and just want to mess around, you can open the
 console in the context of an empty play with the `shakespeare console` command,
 or simply `shakespeare`.
+
+In this mode, use `quit` or `exit` to quit out of the console.
 
 ## Other implementations
 
