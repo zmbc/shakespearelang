@@ -168,6 +168,7 @@ class Shakespeare:
         character -- A name or Shakespeare.Character representation of the
                      character asking the question.
         """
+        character = self._on_stage_character_by_name_if_necessary(character)
         question = self._parse_if_necessary(question, 'question')
         values = [
             self.evaluate_expression(v, character) for v in
@@ -189,6 +190,7 @@ class Shakespeare:
         character -- A name or Shakespeare.Character representation of the
                      character speaking the expression.
         """
+        character = self._character_by_name_if_necessary(character)
         value = self._parse_if_necessary(value, 'value')
         if value.parseinfo.rule == 'first_person_value':
             return character.value
@@ -277,6 +279,12 @@ class Shakespeare:
     def _on_stage_character_by_name_if_necessary(self, character):
         if isinstance(character, str):
             return self._on_stage_character_by_name(character)
+        else:
+            return character
+
+    def _character_by_name_if_necessary(self, character):
+        if isinstance(character, str):
+            return self._character_by_name(character)
         else:
             return character
 
