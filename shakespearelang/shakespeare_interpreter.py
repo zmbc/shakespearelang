@@ -5,6 +5,7 @@ Shakespeare -- An interpreter for the Shakespeare Programming Language
 """
 
 from .shakespeare_parser import shakespeareParser
+from .errors import ShakespeareRuntimeError
 import argparse
 import math
 
@@ -29,6 +30,10 @@ class Shakespeare:
             self.stack = []
             self.on_stage = False
             self.name = name
+            if isinstance(self.name, str):
+                self.display_name = name
+            else:
+                self.display_name = " ".join(name)
 
         def push(self, newValue):
             """Push a value onto the character's stack."""
@@ -37,6 +42,8 @@ class Shakespeare:
         def pop(self):
             """Pop a value off the character's stack, and set the character to
             that value."""
+            if len(self.stack) == 0:
+                raise ShakespeareRuntimeError('Tried to pop from an empty stack. Character: ' + self.display_name)
             self.value = self.stack.pop()
 
     # PUBLIC METHODS
@@ -117,19 +124,24 @@ class Shakespeare:
         """
         event = self._parse_if_necessary(event, 'event')
         has_goto = False
-        if event.parseinfo.rule == 'line':
-            has_goto = self._run_line(event)
-        elif event.parseinfo.rule == 'breakpoint':
-            if breakpoint_callback:
-                breakpoint_callback()
-        elif event.parseinfo.rule == 'entrance':
-            self._run_entrance(event)
-        elif event.parseinfo.rule == 'exeunt':
-            self._run_exeunt(event)
-        elif event.parseinfo.rule == 'exit':
-            self._run_exit(event)
+        try:
+            if event.parseinfo.rule == 'line':
+                has_goto = self._run_line(event)
+            elif event.parseinfo.rule == 'breakpoint':
+                if breakpoint_callback:
+                    breakpoint_callback()
+            elif event.parseinfo.rule == 'entrance':
+                self._run_entrance(event)
+            elif event.parseinfo.rule == 'exeunt':
+                self._run_exeunt(event)
+            elif event.parseinfo.rule == 'exit':
+                self._run_exit(event)
 
-        return has_goto
+            return has_goto
+        except ShakespeareRuntimeError as exc:
+            if exc.parseinfo:
+                raise exc
+            raise ShakespeareRuntimeError(exc.message, event.parseinfo) from None
 
     def run_sentence(self, sentence, character):
         """
@@ -208,7 +220,7 @@ class Shakespeare:
             return self._evaluate_unary_operation(value, character)
         elif value.parseinfo.rule == 'binary_expression':
             return self._evaluate_binary_operation(value, character)
-        raise Exception('Unknown expression type: ' + value.parseinfo.rule)
+        raise ShakespeareRuntimeError('Unknown expression type: ' + value.parseinfo.rule, value.parseinfo)
 
     def run_dramatis_personae(self, personae, destructive=False):
         """
@@ -252,9 +264,9 @@ class Shakespeare:
         characters_opposite = [x for x in self.characters
                                if x.on_stage and x.name != character.name]
         if len(characters_opposite) > 1:
-            raise Exception("Ambiguous second-person pronoun")
+            raise ShakespeareRuntimeError("Ambiguous second-person pronoun")
         elif len(characters_opposite) == 0:
-            raise Exception(character.name + ' is talking to nobody!')
+            raise ShakespeareRuntimeError(character.display_name + ' is talking to nobody!')
         return characters_opposite[0]
 
     def _character_by_name(self, name):
@@ -263,18 +275,22 @@ class Shakespeare:
         for x in self.characters:
             if x.name.lower() == name.lower():
                 return x
-        raise Exception(name + ' was not initialized!')
+        raise ShakespeareRuntimeError(name + ' was not initialized!')
 
     def _on_stage_character_by_name(self, name):
+        if not isinstance(name, str):
+            name = " ".join(name)
         character = self._character_by_name(name)
         if character.on_stage == False:
-            raise Exception(name + ' is not on stage!')
+            raise ShakespeareRuntimeError(name + ' is not on stage!')
         return character
 
     def _off_stage_character_by_name(self, name):
+        if not isinstance(name, str):
+            name = " ".join(name)
         character = self._character_by_name(name)
         if character.on_stage == True:
-            raise Exception(name + ' is already on stage!')
+            raise ShakespeareRuntimeError(name + ' is already on stage!')
         return character
 
     def _on_stage_character_by_name_if_necessary(self, character):
@@ -293,7 +309,7 @@ class Shakespeare:
         for index, scene in enumerate(self.current_act.scenes):
             if scene.number == roman_numeral:
                 return index
-        raise Exception('Scene ' + roman_numeral + ' does not exist.')
+        raise ShakespeareRuntimeError('Scene ' + roman_numeral + ' does not exist.')
 
     def _next_event(self):
         act_head = self.ast.acts[self.current_position['act']]
@@ -336,13 +352,13 @@ class Shakespeare:
             return pow(operand, 3)
         elif op.operation == ['the', 'factorial', 'of']:
             if operand < 0:
-                raise Exception('Cannot take the factorial of a negative number: ' + str(operand))
+                raise ShakespeareRuntimeError('Cannot take the factorial of a negative number: ' + str(operand), op.parseinfo)
             return math.factorial(operand)
         elif op.operation == ['the', 'square', 'of']:
             return pow(operand, 2)
         elif op.operation == ['the', 'square', 'root', 'of']:
             if operand < 0:
-                raise Exception('Cannot take the square root of a negative number: ' + str(operand))
+                raise ShakespeareRuntimeError('Cannot take the square root of a negative number: ' + str(operand), op.parseinfo)
             # Truncates (does not round) result -- this is equivalent to C
             # implementation's cast.
             return int(math.sqrt(operand))
@@ -358,7 +374,7 @@ class Shakespeare:
             return first_operand * second_operand
         elif op.operation == ['the', 'quotient', 'between']:
             if second_operand == 0:
-                raise Exception('Cannot divide by zero')
+                raise ShakespeareRuntimeError('Cannot divide by zero', op.parseinfo)
             # Python's built-in integer division operator does not behave the
             # same as C for negative numbers, using floor instead of truncated
             # division
@@ -366,7 +382,7 @@ class Shakespeare:
         elif op.operation == ['the', 'remainder', 'of',
                               'the', 'quotient', 'between']:
             if second_operand == 0:
-                raise Exception('Cannot divide by zero')
+                raise ShakespeareRuntimeError('Cannot divide by zero', op.parseinfo)
             # See note above. math.fmod replicates C behavior.
             return int(math.fmod(first_operand, second_operand))
         elif op.operation == ['the', 'sum', 'of']:
@@ -399,7 +415,7 @@ class Shakespeare:
             try:
                 char = chr(char_code)
             except ValueError:
-                raise Exception('Invalid character code: ' + str(char_code))
+                raise ShakespeareRuntimeError('Invalid character code: ' + str(char_code), output.parseinfo)
             print(char, end="")
 
     def _run_input(self, input_op, character):
@@ -411,7 +427,7 @@ class Shakespeare:
                     self._character_opposite(character).value = -1
                     return
                 else:
-                    raise Exception('End of file encountered.')
+                    raise ShakespeareRuntimeError('End of file encountered.', input_op.parseinfo)
 
         if input_op.input_number:
             number_input = ''
@@ -420,7 +436,7 @@ class Shakespeare:
                 self._input_buffer = self._input_buffer[1:]
 
             if len(number_input) == 0:
-                raise Exception('No numeric input was given.')
+                raise ShakespeareRuntimeError('No numeric input was given.', input_op.parseinfo)
 
             if (self._input_buffer[0] == '\n'):
                 self._input_buffer = self._input_buffer[1:]
