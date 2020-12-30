@@ -335,11 +335,17 @@ class Shakespeare:
         if op.operation == ['the', 'cube', 'of']:
             return pow(operand, 3)
         elif op.operation == ['the', 'factorial', 'of']:
+            if operand < 0:
+                raise Exception('Cannot take the factorial of a negative number: ' + str(operand))
             return math.factorial(operand)
         elif op.operation == ['the', 'square', 'of']:
             return pow(operand, 2)
         elif op.operation == ['the', 'square', 'root', 'of']:
-            return math.sqrt(operand)
+            if operand < 0:
+                raise Exception('Cannot take the square root of a negative number: ' + str(operand))
+            # Truncates (does not round) result -- this is equivalent to C
+            # implementation's cast.
+            return int(math.sqrt(operand))
         elif op.operation == 'twice':
             return operand * 2
 
@@ -351,10 +357,18 @@ class Shakespeare:
         elif op.operation == ['the', 'product', 'of']:
             return first_operand * second_operand
         elif op.operation == ['the', 'quotient', 'between']:
-            return first_operand // second_operand
+            if second_operand == 0:
+                raise Exception('Cannot divide by zero')
+            # Python's built-in integer division operator does not behave the
+            # same as C for negative numbers, using floor instead of truncated
+            # division
+            return int(first_operand / second_operand)
         elif op.operation == ['the', 'remainder', 'of',
                               'the', 'quotient', 'between']:
-            return first_operand % second_operand
+            if second_operand == 0:
+                raise Exception('Cannot divide by zero')
+            # See note above. math.fmod replicates C behavior.
+            return int(math.fmod(first_operand, second_operand))
         elif op.operation == ['the', 'sum', 'of']:
             return first_operand + second_operand
 
