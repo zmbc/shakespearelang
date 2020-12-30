@@ -52,3 +52,29 @@ def test_runs_reverse(monkeypatch, capsys):
     captured = capsys.readouterr()
     assert captured.out == '\ndriht\ndnoces\ntsrif'
     assert captured.err == ''
+
+def test_runs_sierpinski(monkeypatch, capsys):
+    monkeypatch.setattr('sys.stdin', StringIO('4'))
+    path = Path(__file__).parent / "sample_plays/sierpinski.spl"
+    with path.open() as f:
+        Shakespeare().run_play(f.read())
+    captured = capsys.readouterr()
+    assert captured.out == """\
+>               *               \n\
+              * *              \n\
+             *   *             \n\
+            * * * *            \n\
+           *       *           \n\
+          * *     * *          \n\
+         *   *   *   *         \n\
+        * * * * * * * *        \n\
+       *               *       \n\
+      * *             * *      \n\
+     *   *           *   *     \n\
+    * * * *         * * * *    \n\
+   *       *       *       *   \n\
+  * *     * *     * *     * *  \n\
+ *   *   *   *   *   *   *   * \n\
+* * * * * * * * * * * * * * * *\n\
+"""
+    assert captured.err == ''
