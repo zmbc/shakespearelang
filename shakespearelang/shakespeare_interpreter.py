@@ -208,6 +208,7 @@ class Shakespeare:
             return self._evaluate_unary_operation(value, character)
         elif value.parseinfo.rule == 'binary_expression':
             return self._evaluate_binary_operation(value, character)
+        raise Exception('Unknown expression type: ' + value.parseinfo.rule)
 
     def run_dramatis_personae(self, personae, destructive=False):
         """
