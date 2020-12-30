@@ -79,7 +79,10 @@ class Shakespeare:
                                breakpoint is hit
         """
         event_to_run = self._next_event()
-        self.run_event(event_to_run, breakpoint_callback)
+        has_goto = self.run_event(event_to_run, breakpoint_callback)
+
+        if self.current_position and not has_goto:
+            self._advance_position()
 
     def next_event_text(self):
         """Return the contents of the next event in the play."""
@@ -126,8 +129,7 @@ class Shakespeare:
         elif event.parseinfo.rule == 'exit':
             self._run_exit(event)
 
-        if self.current_position and not has_goto:
-            self._advance_position()
+        return has_goto
 
     def run_sentence(self, sentence, character):
         """
