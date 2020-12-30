@@ -282,6 +282,7 @@ class Shakespeare:
         for index, scene in enumerate(self.current_act.scenes):
             if scene.number == roman_numeral:
                 return index
+        raise Exception('Scene ' + roman_numeral + ' does not exist.')
 
     def _next_event(self):
         act_head = self.ast.acts[self.current_position['act']]
