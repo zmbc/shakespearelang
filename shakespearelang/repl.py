@@ -1,4 +1,6 @@
 from .shakespeare_interpreter import Shakespeare
+from .errors import ShakespeareRuntimeError
+from grako.exceptions import FailedParse
 
 import readline
 
@@ -74,13 +76,7 @@ def _run_sentences(sentences,
             # Stop this entire line of sentences
             return
 
-        try:
-            interpreter.run_sentence(sentence,
-                                                    speaking_character)
-        except Exception as runtimeException:
-            print("Error:\n", runtimeException)
-            # Stop this entire line of sentences
-            return
+        interpreter.run_sentence(sentence, speaking_character)
 
         # Newline after output for next input cycle
         if sentence.parseinfo.rule == 'output':
@@ -113,77 +109,69 @@ def debug_play(text):
 
     interpreter.run_play(text, on_breakpoint)
 
+# TODO: This should not be global state.
+current_character = None
 
 def run_repl(interpreter, debug_mode=False):
-    current_character = None
     while True:
-        event = input('>> ')
-        if event in ['exit', 'quit'] or (event == 'continue' and debug_mode):
-            return
-        elif event == 'stage':
-            _print_stage(interpreter)
-            continue
-        elif event == 'next' and debug_mode:
-            interpreter.step_forward()
-            if interpreter.play_over():
-                return
-            print('\n', interpreter.next_event_text())
-            continue
-
         try:
-            ast = interpreter.parser.parse(event + "\n", rule_name='repl_input')
-        except Exception as parseException:
-            print("\n\nThat doesn't look right:\n", parseException)
-            continue
-
-        event = ast.event
-        sentences = ast.sentences
-        character = ast.character
-        value = ast.value
-
-        # Events that are lines should be considered sets of sentences.
-        if event and event.parseinfo.rule == 'line':
-            current_character = event.character
-            sentences = event.contents
-            event = None
-
-        if event:
-            try:
-                control_flow = interpreter.run_event(event)
-            except Exception as runtimeException:
-                print("Error:\n", runtimeException)
-                continue
-
-            if event.parseinfo.rule in ['entrance', 'exeunt', 'exit']:
+            repl_input = input('>> ')
+            if repl_input in ['exit', 'quit'] or (repl_input == 'continue' and debug_mode):
+                break
+            elif repl_input == 'next' and debug_mode:
+                interpreter.step_forward()
+                if interpreter.play_over():
+                    break
+                print('\n', interpreter.next_event_text())
+            elif repl_input == 'stage':
                 _print_stage(interpreter)
+            else:
+                _run_repl_input(interpreter, repl_input)
+        except FailedParse as parseException:
+            print("\n\nThat doesn't look right:\n", parseException)
+        except ShakespeareRuntimeError as runtimeError:
+            print("Error:\n", runtimeError)
 
-            if control_flow:
-                print("Control flow isn't allowed in REPL.")
-                continue
-        elif sentences:
-            if not current_character:
-                print("Who's saying this?")
-                continue
+def _run_repl_input(interpreter, repl_input):
+    global current_character
+    ast = interpreter.parser.parse(repl_input + "\n", rule_name='repl_input')
 
-            try:
-                speaking_character = interpreter._on_stage_character_by_name(current_character)
-                opposite_character = interpreter._character_opposite(speaking_character)
-            except Exception as runtimeException:
-                print("Error:\n", runtimeException)
-                continue
+    event = ast.event
+    sentences = ast.sentences
+    character = ast.character
+    value = ast.value
 
-            _run_sentences(sentences, speaking_character, opposite_character, interpreter)
-        elif value:
-            if character:
-                current_character = character
+    # Events that are lines should be considered sets of sentences.
+    if event and event.parseinfo.rule == 'line':
+        current_character = event.character
+        sentences = event.contents
+        event = None
 
-            try:
-                speaking_character = interpreter._on_stage_character_by_name(current_character)
-                result = interpreter.evaluate_expression(value, speaking_character)
-            except Exception as runtimeException:
-                print("Error:\n", runtimeException)
-                continue
+    if event:
+        # BUG: This does not actually prevent the control flow from occurring!
+        control_flow = interpreter.run_event(event)
 
-            print(result)
-        elif character:
-            _print_character(character, interpreter)
+        if event.parseinfo.rule in ['entrance', 'exeunt', 'exit']:
+            _print_stage(interpreter)
+
+        if control_flow:
+            print("Control flow isn't allowed in REPL.")
+    elif sentences:
+        if not current_character:
+            print("Who's saying this?")
+            return
+
+        speaking_character = interpreter._on_stage_character_by_name(current_character)
+        opposite_character = interpreter._character_opposite(speaking_character)
+
+        _run_sentences(sentences, speaking_character, opposite_character, interpreter)
+    elif value:
+        if character:
+            current_character = character
+
+        speaking_character = interpreter._on_stage_character_by_name(current_character)
+        result = interpreter.evaluate_expression(value, speaking_character)
+
+        print(result)
+    elif character:
+        _print_character(character, interpreter)
