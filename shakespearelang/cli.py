@@ -7,14 +7,16 @@ from .repl import start_console, debug_play
 
 @click.group(invoke_without_command=True)
 @click.pass_context
-def main(ctx):
+@click.option('--characters', default='Romeo,Juliet')
+def main(ctx, characters):
     if ctx.invoked_subcommand is None:
-        console()
+        ctx.forward(console)
 
 
 @main.command()
-def console():
-    start_console()
+@click.option('--characters', default='Romeo,Juliet')
+def console(characters):
+    start_console(characters.split(','))
 
 
 @main.command()
