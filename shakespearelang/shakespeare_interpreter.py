@@ -6,7 +6,6 @@ Shakespeare -- An interpreter for the Shakespeare Programming Language
 
 from .shakespeare_parser import shakespeareParser
 from .errors import ShakespeareRuntimeError
-import argparse
 import math
 
 class Shakespeare:
