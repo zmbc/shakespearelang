@@ -4,17 +4,6 @@ from grako.exceptions import FailedParse
 
 import readline
 
-def _collect_characters(interpreter):
-    while True:
-        persona = input('Dramatis persona or "done">> ')
-        if persona == 'exit' or persona == 'quit':
-            return False
-        elif persona == 'done':
-            if not interpreter.characters:
-                raise Exception('No characters!')
-            break
-        interpreter.run_dramatis_persona(persona)
-
 
 def _print_stage(interpreter):
     print('On stage:')
@@ -84,41 +73,56 @@ def _run_sentences(sentences,
 
         _show_result_of_sentence(sentence, opposite_character, interpreter)
 
+DEFAULT_PLAY_TEMPLATE = """
+A REPL-tastic Adventure.
 
-def start_console():
+<dramatis personae>
+
+                    Act I: All the World.
+                    Scene I: A Stage.
+
+[Enter <entrance list>]
+"""
+
+def start_console(characters=['Romeo', 'Juliet']):
+    dramatis_personae = '\n'.join([name + ', a player.' for name in characters])
+    entrance_list = _entrance_list_from_characters(characters)
+    play = DEFAULT_PLAY_TEMPLATE.replace('<dramatis personae>', dramatis_personae).replace('<entrance list>', entrance_list)
+
+    print(play)
     interpreter = Shakespeare()
-
-    print('\n\nA REPL-tastic Adventure.\n\n')
-
-    should_continue = _collect_characters(interpreter)
-    if should_continue == False:
-        return
-
-    print('\n\n                    Act I: All the World\n\n')
-    print('                    Scene I: A Stage\n\n')
-
+    interpreter.load_play(play)
+    # Run the entrance
+    interpreter.step_forward()
     run_repl(interpreter)
 
+# E.g. ["Mercutio", "Romeo", "Tybalt"] => "Mercutio, Romeo and Tybalt"
+def _entrance_list_from_characters(characters):
+    all_commas = ', '.join(characters)
+    split_on_last = all_commas.rsplit(', ', 1)
+    return ' and '.join(split_on_last)
 
 def debug_play(text):
     interpreter = Shakespeare()
 
     def on_breakpoint():
         print(interpreter.next_event_text(), '\n')
-        run_repl(interpreter, debug_mode=True)
+        run_repl(interpreter)
 
     interpreter.run_play(text, on_breakpoint)
 
 # TODO: This should not be global state.
 current_character = None
 
-def run_repl(interpreter, debug_mode=False):
+def run_repl(interpreter):
     while True:
         try:
             repl_input = input('>> ')
-            if repl_input in ['exit', 'quit'] or (repl_input == 'continue' and debug_mode):
+            if repl_input in ['exit', 'quit', 'continue']:
                 break
-            elif repl_input == 'next' and debug_mode:
+            elif repl_input == 'next':
+                if interpreter.play_over():
+                    break
                 interpreter.step_forward()
                 if interpreter.play_over():
                     break
