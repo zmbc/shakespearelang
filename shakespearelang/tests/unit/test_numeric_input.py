@@ -1,4 +1,5 @@
 from shakespearelang.shakespeare_interpreter import Shakespeare
+from shakespearelang.errors import ShakespeareRuntimeError
 from io import StringIO
 import pytest
 
@@ -47,13 +48,13 @@ def test_errors_without_digits(monkeypatch, capsys):
     s.run_dramatis_persona('Romeo, a test.')
     s.run_event('[Enter Romeo and Juliet]')
 
-    with pytest.raises(Exception) as exc:
+    with pytest.raises(ShakespeareRuntimeError) as exc:
         s.run_sentence('Listen to your heart!', s._on_stage_character_by_name('Juliet'))
     assert 'no numeric input' in str(exc.value).lower()
     assert s._character_by_name('Romeo').value == 0
 
     monkeypatch.setattr('sys.stdin', StringIO('a123'))
-    with pytest.raises(Exception) as exc:
+    with pytest.raises(ShakespeareRuntimeError) as exc:
         s.run_sentence('Listen to your heart!', s._on_stage_character_by_name('Juliet'))
     assert 'no numeric input' in str(exc.value).lower()
     assert s._character_by_name('Romeo').value == 0
@@ -67,7 +68,7 @@ def test_errors_on_eof(monkeypatch, capsys):
     s.run_dramatis_persona('Juliet, a test.')
     s.run_dramatis_persona('Romeo, a test.')
     s.run_event('[Enter Romeo and Juliet]')
-    with pytest.raises(Exception) as exc:
+    with pytest.raises(ShakespeareRuntimeError) as exc:
         s.run_sentence('Listen to your heart!', s._on_stage_character_by_name('Juliet'))
     assert 'end of file' in str(exc.value).lower()
     assert s._character_by_name('Romeo').value == 0

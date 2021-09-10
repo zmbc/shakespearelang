@@ -1,4 +1,5 @@
 from shakespearelang.shakespeare_interpreter import Shakespeare
+from shakespearelang.errors import ShakespeareRuntimeError
 from io import StringIO
 import pytest
 
@@ -118,17 +119,17 @@ def test_square_root_of(capsys):
     assert s.evaluate_expression('the square root of thyself', 'Juliet') == 0
     assert s.evaluate_expression('the square root of nothing', 'Juliet') == 0
     s._character_by_name('Romeo').value = -1
-    with pytest.raises(Exception) as exc:
+    with pytest.raises(ShakespeareRuntimeError) as exc:
         s.evaluate_expression('the square root of thyself', 'Juliet')
     assert 'negative' in str(exc.value).lower()
-    with pytest.raises(Exception) as exc:
+    with pytest.raises(ShakespeareRuntimeError) as exc:
         s.evaluate_expression('the square root of thy devil', 'Juliet')
     assert 'negative' in str(exc.value).lower()
     s._character_by_name('Romeo').value = -4
-    with pytest.raises(Exception) as exc:
+    with pytest.raises(ShakespeareRuntimeError) as exc:
         s.evaluate_expression('the square root of thyself', 'Juliet')
     assert 'negative' in str(exc.value).lower()
-    with pytest.raises(Exception) as exc:
+    with pytest.raises(ShakespeareRuntimeError) as exc:
         s.evaluate_expression('the square root of thy foul stupid devil', 'Juliet')
     assert 'negative' in str(exc.value).lower()
 
@@ -150,17 +151,17 @@ def test_factorial_of(capsys):
     assert s.evaluate_expression('the factorial of thyself', 'Juliet') == 1
     assert s.evaluate_expression('the factorial of nothing', 'Juliet') == 1
     s._character_by_name('Romeo').value = -1
-    with pytest.raises(Exception) as exc:
+    with pytest.raises(ShakespeareRuntimeError) as exc:
         s.evaluate_expression('the factorial of thyself', 'Juliet')
     assert 'negative' in str(exc.value).lower()
-    with pytest.raises(Exception) as exc:
+    with pytest.raises(ShakespeareRuntimeError) as exc:
         s.evaluate_expression('the factorial of thy devil', 'Juliet')
     assert 'negative' in str(exc.value).lower()
     s._character_by_name('Romeo').value = -4
-    with pytest.raises(Exception) as exc:
+    with pytest.raises(ShakespeareRuntimeError) as exc:
         s.evaluate_expression('the factorial of thyself', 'Juliet')
     assert 'negative' in str(exc.value).lower()
-    with pytest.raises(Exception) as exc:
+    with pytest.raises(ShakespeareRuntimeError) as exc:
         s.evaluate_expression('the factorial of thy foul stupid devil', 'Juliet')
     assert 'negative' in str(exc.value).lower()
 
@@ -290,7 +291,7 @@ def test_quotient_between(capsys):
     assert s.evaluate_expression('the quotient between yourself and my big big big chihuahua', 'Juliet') == 2
     assert s.evaluate_expression('the quotient between yourself and my evil foul rotten codpiece', 'Juliet') == -2
 
-    with pytest.raises(Exception) as exc:
+    with pytest.raises(ShakespeareRuntimeError) as exc:
         s.evaluate_expression('the quotient between yourself and nothing', 'Juliet')
     assert 'zero' in str(exc.value).lower()
 
@@ -313,7 +314,7 @@ def test_remainder(capsys):
     assert s.evaluate_expression('the remainder of the quotient between yourself and my big big big chihuahua', 'Juliet') == 7
     assert s.evaluate_expression('the remainder of the quotient between yourself and my evil foul rotten codpiece', 'Juliet') == 7
 
-    with pytest.raises(Exception) as exc:
+    with pytest.raises(ShakespeareRuntimeError) as exc:
         s.evaluate_expression('the remainder of the quotient between yourself and nothing', 'Juliet')
     assert 'zero' in str(exc.value).lower()
 

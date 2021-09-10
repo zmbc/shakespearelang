@@ -1,4 +1,5 @@
 from shakespearelang.shakespeare_interpreter import Shakespeare
+from shakespearelang.errors import ShakespeareRuntimeError
 from io import StringIO
 import pytest
 
@@ -135,12 +136,12 @@ def test_errors_on_invalid_code(capsys):
     s.run_event('[Enter Romeo and Juliet]')
 
     s._character_by_name('Romeo').value = 100000000
-    with pytest.raises(Exception) as exc:
+    with pytest.raises(ShakespeareRuntimeError) as exc:
         s.run_sentence('Speak your mind!', s._on_stage_character_by_name('Juliet'))
     assert 'invalid character code' in str(exc.value).lower()
 
     s._character_by_name('Romeo').value = -1
-    with pytest.raises(Exception) as exc:
+    with pytest.raises(ShakespeareRuntimeError) as exc:
         s.run_sentence('Speak your mind!', s._on_stage_character_by_name('Juliet'))
     assert 'invalid character code' in str(exc.value).lower()
 

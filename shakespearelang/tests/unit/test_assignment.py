@@ -1,4 +1,5 @@
 from shakespearelang.shakespeare_interpreter import Shakespeare
+from shakespearelang.errors import ShakespeareRuntimeError
 from io import StringIO
 import pytest
 
@@ -31,7 +32,7 @@ def test_errors_without_character_opposite(monkeypatch, capsys):
 
     assert s._character_by_name('Romeo').value == 0
     assert s._character_by_name('Macbeth').value == 0
-    with pytest.raises(Exception) as exc:
+    with pytest.raises(ShakespeareRuntimeError) as exc:
         s.run_sentence('You are as good as me!', s._on_stage_character_by_name('Juliet'))
     assert 'talking to nobody' in str(exc.value).lower()
     assert s._character_by_name('Romeo').value == 0
@@ -40,7 +41,7 @@ def test_errors_without_character_opposite(monkeypatch, capsys):
     s.run_event('[Enter Macbeth and Romeo]')
     assert s._character_by_name('Romeo').value == 0
     assert s._character_by_name('Macbeth').value == 0
-    with pytest.raises(Exception) as exc:
+    with pytest.raises(ShakespeareRuntimeError) as exc:
         s.run_sentence('You are as good as me!', s._on_stage_character_by_name('Juliet'))
     assert 'ambiguous' in str(exc.value).lower()
     assert s._character_by_name('Romeo').value == 0

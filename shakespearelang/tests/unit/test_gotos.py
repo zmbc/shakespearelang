@@ -1,4 +1,5 @@
 from shakespearelang.shakespeare_interpreter import Shakespeare
+from shakespearelang.errors import ShakespeareRuntimeError
 from io import StringIO
 import pytest
 
@@ -154,7 +155,7 @@ def test_errors_on_goto_nonexistent(monkeypatch, capsys):
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 1}
     s.step_forward()
     assert s.current_position == {'act': 0, 'scene': 1, 'event': 0}
-    with pytest.raises(Exception) as exc:
+    with pytest.raises(ShakespeareRuntimeError) as exc:
         s.run_sentence('Let us proceed to scene IV.', s._on_stage_character_by_name('Juliet'))
     assert 'does not exist' in str(exc.value).lower()
     assert s.current_position == {'act': 0, 'scene': 1, 'event': 0}
