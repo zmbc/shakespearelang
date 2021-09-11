@@ -6,6 +6,7 @@ Shakespeare -- An interpreter for the Shakespeare Programming Language
 
 from .shakespeare_parser import shakespeareParser
 from .errors import ShakespeareRuntimeError
+from .utils import parseinfo_context
 import math
 
 class Shakespeare:
@@ -85,23 +86,7 @@ class Shakespeare:
     def next_event_text(self):
         """Return the contents of the next event in the play."""
         current_event = self._next_event()
-        buffer = current_event.parseinfo.buffer
-        before_context_lines = buffer.get_lines(
-            max(current_event.parseinfo.line - 4, 0),
-            current_event.parseinfo.line - 1
-        )
-        lines = buffer.get_lines(
-            current_event.parseinfo.line,
-            current_event.parseinfo.endline
-        )
-        after_context_lines = buffer.get_lines(
-            current_event.parseinfo.endline + 1,
-            current_event.parseinfo.endline + 4
-        )
-        return "\n\n-----\n\n" + "".join(before_context_lines) + \
-            "".join(["> " + l for l in lines]) + \
-            "".join(after_context_lines) + \
-            "\n-----"
+        return parseinfo_context(current_event.parseinfo)
 
     def run_event(self, event, breakpoint_callback=None):
         """

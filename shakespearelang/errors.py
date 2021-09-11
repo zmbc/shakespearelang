@@ -1,3 +1,5 @@
+from .utils import parseinfo_context
+
 class ShakespeareRuntimeError(Exception):
     def __init__(self, message, parseinfo=None, interpreter=None):
         self.message = message
@@ -9,7 +11,7 @@ class ShakespeareRuntimeError(Exception):
         if self.parseinfo:
             result_lines += [f'  at line {self.parseinfo.line}']
             result_lines += ['----- context -----']
-            # TODO: Add a display of the buffer context.
+            result_lines += [parseinfo_context(self.parseinfo)]
         if self.interpreter:
             result_lines += ['----- state -----']
             result_lines += [f'global boolean = {self.interpreter.global_boolean}']
