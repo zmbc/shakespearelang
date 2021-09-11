@@ -1,4 +1,5 @@
 @@ignorecase :: True
+@@parseinfo :: True
 
 be = "am" |
 	"are" |

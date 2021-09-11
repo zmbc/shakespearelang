@@ -15,7 +15,7 @@ class Shakespeare:
     """
 
     def __init__(self, play):
-        self.parser = shakespeareParser(parseinfo=True)
+        self.parser = shakespeareParser()
         self.ast = self._parse_if_necessary(play, 'play')
         self._run_dramatis_personae(self.ast.dramatis_personae)
 

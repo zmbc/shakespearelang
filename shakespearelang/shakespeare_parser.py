@@ -18,12 +18,6 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
-__all__ = [
-    'shakespeareParser',
-    'shakespeareSemantics',
-    'main'
-]
-
 KEYWORDS = {}
 
 
@@ -1884,16 +1878,18 @@ class shakespeareSemantics(object):
 def main(filename, startrule, **kwargs):
     with open(filename) as f:
         text = f.read()
-    parser = shakespeareParser(parseinfo=False)
+    parser = shakespeareParser()
     return parser.parse(text, startrule, filename=filename, **kwargs)
 
 
 if __name__ == '__main__':
     import json
+    from grako.util import asjson
+
     ast = generic_main(main, shakespeareParser, name='shakespeare')
     print('AST:')
     print(ast)
     print()
     print('JSON:')
-    print(json.dumps(ast, indent=2))
+    print(json.dumps(asjson(ast), indent=2))
     print()
