@@ -13,14 +13,17 @@ class Shakespeare:
     Interpreter for the Shakespeare Programming Language.
     """
 
-    def __init__(self):
+    def __init__(self, play):
         self.parser = shakespeareParser(parseinfo=True)
-        self.characters = []
-        self.global_boolean = False
-        self.ast = None
-        self.current_position = None
+        self.ast = self._parse_if_necessary(play, 'play')
+        self._run_dramatis_personae(self.ast.dramatis_personae)
+
+        self.current_position = {'act': 0, 'scene': 0, 'event': 0}
+        # TODO
         self.current_act = None
         self._input_buffer = ''
+
+        self.global_boolean = False
 
     class Character:
         """A character in an SPL play."""
@@ -50,28 +53,14 @@ class Shakespeare:
 
     # PUBLIC METHODS
 
-    def load_play(self, play):
+    def run(self, breakpoint_callback=None):
         """
-        Load an SPL play without beginning execution.
+        Run the SPL play.
 
         Arguments:
-        play -- An AST or text representation of an SPL play
-        """
-        self.ast = self._parse_if_necessary(play, 'play')
-        self.run_dramatis_personae(self.ast.dramatis_personae, destructive=True)
-
-        self.current_position = {'act': 0, 'scene': 0, 'event': 0}
-
-    def run_play(self, play, breakpoint_callback=None):
-        """
-        Run an SPL play.
-
-        Arguments:
-        play -- An AST or text representation of an SPL play
         breakpoint_callback -- An optional callback, to be called if a debug
                                breakpoint is hit
         """
-        self.load_play(play)
         while not self.play_over():
             self.step_forward(breakpoint_callback)
 
@@ -227,9 +216,11 @@ class Shakespeare:
             return self._evaluate_binary_operation(value, character)
         raise ShakespeareRuntimeError('Unknown expression type: ' + value.parseinfo.rule, value.parseinfo, self)
 
-    def run_dramatis_personae(self, personae, destructive=False):
+    # HELPERS
+
+    def _run_dramatis_personae(self, personae):
         """
-        Run a dramatis personae, adding to or overwriting the character list.
+        Run a dramatis personae, overwriting the character list.
 
         Arguments:
         personae -- A string or AST representation of a dramatis personae
@@ -237,27 +228,10 @@ class Shakespeare:
                        (default False)
         """
         personae = self._parse_if_necessary(personae, 'dramatis_personae')
-        characters = []
+        self.characters = []
         for persona in personae:
             character = self._character_from_dramatis_persona(persona)
-            characters.append(character)
-        if destructive:
-            self.characters = characters
-        else:
-            self.characters += characters
-
-    def run_dramatis_persona(self, persona):
-        """
-        Run a dramatis persona, adding to the character list.
-
-        Arguments:
-        persona -- A string or AST representation of a dramatis persona
-        """
-        persona = self._parse_if_necessary(persona, 'dramatis_persona')
-        character = self._character_from_dramatis_persona(persona)
-        self.characters.append(character)
-
-    # HELPERS
+            self.characters.append(character)
 
     def _parse_if_necessary(self, item, rule_name):
         if isinstance(item, str):

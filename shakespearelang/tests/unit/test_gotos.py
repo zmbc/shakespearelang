@@ -28,8 +28,7 @@ SAMPLE_PLAY = """
 """
 
 def test_goto_current(monkeypatch, capsys):
-    s = Shakespeare()
-    s.load_play(SAMPLE_PLAY)
+    s = Shakespeare(SAMPLE_PLAY)
 
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 0}
     s.step_forward()
@@ -42,8 +41,7 @@ def test_goto_current(monkeypatch, capsys):
     assert captured.err == ''
 
 def test_goto_next(monkeypatch, capsys):
-    s = Shakespeare()
-    s.load_play(SAMPLE_PLAY)
+    s = Shakespeare(SAMPLE_PLAY)
 
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 0}
     s.step_forward()
@@ -56,8 +54,7 @@ def test_goto_next(monkeypatch, capsys):
     assert captured.err == ''
 
 def test_goto_prev(monkeypatch, capsys):
-    s = Shakespeare()
-    s.load_play(SAMPLE_PLAY)
+    s = Shakespeare(SAMPLE_PLAY)
 
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 0}
     s.step_forward()
@@ -72,8 +69,7 @@ def test_goto_prev(monkeypatch, capsys):
     assert captured.err == ''
 
 def test_goto_without_opposite_character(monkeypatch, capsys):
-    s = Shakespeare()
-    s.load_play(SAMPLE_PLAY)
+    s = Shakespeare(SAMPLE_PLAY)
 
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 0}
     s.step_forward()
@@ -90,8 +86,7 @@ def test_goto_without_opposite_character(monkeypatch, capsys):
     assert captured.err == ''
 
 def test_goto_conditionals(monkeypatch, capsys):
-    s = Shakespeare()
-    s.load_play(SAMPLE_PLAY)
+    s = Shakespeare(SAMPLE_PLAY)
 
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 0}
     s.step_forward()
@@ -114,8 +109,7 @@ def test_goto_conditionals(monkeypatch, capsys):
     assert captured.err == ''
 
 def test_goto_based_on_numeral_not_order(monkeypatch, capsys):
-    s = Shakespeare()
-    s.load_play("""
+    s = Shakespeare("""
         Test.
 
         Romeo, a test.
@@ -147,8 +141,7 @@ def test_goto_based_on_numeral_not_order(monkeypatch, capsys):
     assert captured.err == ''
 
 def test_errors_on_goto_nonexistent(monkeypatch, capsys):
-    s = Shakespeare()
-    s.load_play(SAMPLE_PLAY)
+    s = Shakespeare(SAMPLE_PLAY)
 
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 0}
     s.step_forward()

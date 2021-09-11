@@ -90,8 +90,7 @@ def start_console(characters=['Romeo', 'Juliet']):
     play = DEFAULT_PLAY_TEMPLATE.replace('<dramatis personae>', dramatis_personae).replace('<entrance list>', entrance_list)
 
     print(play)
-    interpreter = Shakespeare()
-    interpreter.load_play(play)
+    interpreter = Shakespeare(play)
     # Run the entrance
     interpreter.step_forward()
     run_repl(interpreter)
@@ -103,13 +102,13 @@ def _entrance_list_from_characters(characters):
     return ' and '.join(split_on_last)
 
 def debug_play(text):
-    interpreter = Shakespeare()
+    interpreter = Shakespeare(text)
 
     def on_breakpoint():
         print(interpreter.next_event_text(), '\n')
         run_repl(interpreter)
 
-    interpreter.run_play(text, on_breakpoint)
+    interpreter.run(on_breakpoint)
 
 # TODO: This should not be global state.
 current_character = None
@@ -134,7 +133,7 @@ def run_repl(interpreter):
         except FailedParse as parseException:
             print("\n\nThat doesn't look right:\n", parseException)
         except ShakespeareRuntimeError as runtimeError:
-            print("Error:\n", str(runtimeError))
+            print(str(runtimeError))
 
 def _run_repl_input(interpreter, repl_input):
     global current_character

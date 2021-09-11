@@ -5,9 +5,7 @@ import pytest
 
 def test_assign_character(monkeypatch, capsys):
     monkeypatch.setattr(Shakespeare, 'evaluate_expression', lambda x, y, z: 400)
-    s = Shakespeare()
-    s.run_dramatis_persona('Juliet, a test.')
-    s.run_dramatis_persona('Romeo, a test.')
+    s = Shakespeare('Foo. Juliet, a test. Romeo, a test.')
     s.run_event('[Enter Romeo and Juliet]')
 
     assert s._character_by_name('Romeo').value == 0
@@ -24,10 +22,7 @@ def test_assign_character(monkeypatch, capsys):
 
 def test_errors_without_character_opposite(monkeypatch, capsys):
     monkeypatch.setattr(Shakespeare, 'evaluate_expression', lambda x, y, z: 400)
-    s = Shakespeare()
-    s.run_dramatis_persona('Juliet, a test.')
-    s.run_dramatis_persona('Romeo, a test.')
-    s.run_dramatis_persona('Macbeth, a test.')
+    s = Shakespeare('Foo. Juliet, a test. Romeo, a test. Macbeth, a test.')
     s.run_event('[Enter Juliet]')
 
     assert s._character_by_name('Romeo').value == 0

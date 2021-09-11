@@ -3,9 +3,7 @@ from io import StringIO
 import pytest
 
 def test_outputs_numbers(capsys):
-    s = Shakespeare()
-    s.run_dramatis_persona('Juliet, a test.')
-    s.run_dramatis_persona('Romeo, a test.')
+    s = Shakespeare('Foo. Juliet, a test. Romeo, a test.')
     s.run_event('[Enter Romeo and Juliet]')
 
     s._character_by_name('Romeo').value = 4100

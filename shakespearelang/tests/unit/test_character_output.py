@@ -4,9 +4,7 @@ from io import StringIO
 import pytest
 
 def test_outputs_correct_character(capsys):
-    s = Shakespeare()
-    s.run_dramatis_persona('Juliet, a test.')
-    s.run_dramatis_persona('Romeo, a test.')
+    s = Shakespeare('Foo. Juliet, a test. Romeo, a test. Act I: One. Scene I: One.')
     s.run_event('[Enter Romeo and Juliet]')
 
     s._character_by_name('Romeo').value = 97
@@ -64,9 +62,7 @@ def test_outputs_correct_character(capsys):
     assert captured.err == ''
 
 def test_unicode(capsys):
-    s = Shakespeare()
-    s.run_dramatis_persona('Juliet, a test.')
-    s.run_dramatis_persona('Romeo, a test.')
+    s = Shakespeare('Foo. Juliet, a test. Romeo, a test. Act I: One. Scene I: One.')
     s.run_event('[Enter Romeo and Juliet]')
 
     s._character_by_name('Romeo').value = 664
@@ -130,9 +126,7 @@ def test_unicode(capsys):
     assert captured.err == ''
 
 def test_errors_on_invalid_code(capsys):
-    s = Shakespeare()
-    s.run_dramatis_persona('Juliet, a test.')
-    s.run_dramatis_persona('Romeo, a test.')
+    s = Shakespeare('Foo. Juliet, a test. Romeo, a test.')
     s.run_event('[Enter Romeo and Juliet]')
 
     s._character_by_name('Romeo').value = 100000000

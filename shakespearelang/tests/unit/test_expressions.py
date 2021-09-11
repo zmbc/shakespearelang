@@ -4,7 +4,7 @@ from io import StringIO
 import pytest
 
 def test_basic_constants(capsys):
-    s = Shakespeare()
+    s = Shakespeare('Foo.')
     assert s.evaluate_expression('nothing', None) == 0
     assert s.evaluate_expression('a cat', None) == 1
     assert s.evaluate_expression('cat', None) == 1
@@ -16,7 +16,7 @@ def test_basic_constants(capsys):
     assert captured.err == ''
 
 def test_adjectives(capsys):
-    s = Shakespeare()
+    s = Shakespeare('Foo.')
     assert s.evaluate_expression('the big cat', None) == 2
     assert s.evaluate_expression('the big blossoming cat', None) == 4
     assert s.evaluate_expression('the big fine fair cat', None) == 8
@@ -29,17 +29,14 @@ def test_adjectives(capsys):
     assert captured.err == ''
 
 def test_first_person_pronouns(capsys):
-    s = Shakespeare()
-    s.run_dramatis_persona('Juliet, a test.')
+    s = Shakespeare('Foo. Juliet, a test.')
     s._character_by_name('Juliet').value = 895
     assert s.evaluate_expression('me', 'Juliet') == 895
     assert s.evaluate_expression('myself', 'Juliet') == 895
     assert s.evaluate_expression('I', 'Juliet') == 895
 
 def test_second_person_pronouns(capsys):
-    s = Shakespeare()
-    s.run_dramatis_persona('Juliet, a test.')
-    s.run_dramatis_persona('Romeo, a test.')
+    s = Shakespeare('Foo. Juliet, a test. Romeo, a test.')
     s.run_event('[Enter Romeo and Juliet]')
     s._character_by_name('Romeo').value = 895
     assert s.evaluate_expression('you', 'Juliet') == 895
@@ -49,9 +46,7 @@ def test_second_person_pronouns(capsys):
     assert s.evaluate_expression('yourself', 'Juliet') == 895
 
 def test_character_name(capsys):
-    s = Shakespeare()
-    s.run_dramatis_persona('Juliet, a test.')
-    s.run_dramatis_persona('Romeo, a test.')
+    s = Shakespeare('Foo. Juliet, a test. Romeo, a test.')
     s.run_event('[Enter Romeo and Juliet]')
     s._character_by_name('Romeo').value = 895
     assert s.evaluate_expression('Romeo', 'Juliet') == 895
@@ -59,9 +54,7 @@ def test_character_name(capsys):
     assert s.evaluate_expression('Romeo', 'Juliet') == 895
 
 def test_square_of(capsys):
-    s = Shakespeare()
-    s.run_dramatis_persona('Juliet, a test.')
-    s.run_dramatis_persona('Romeo, a test.')
+    s = Shakespeare('Foo. Juliet, a test. Romeo, a test.')
     s.run_event('[Enter Romeo and Juliet]')
     s._character_by_name('Romeo').value = 4
     assert s.evaluate_expression('the square of yourself', 'Juliet') == 16
@@ -80,9 +73,7 @@ def test_square_of(capsys):
     assert s.evaluate_expression('the square of thy foul stupid devil', 'Juliet') == 16
 
 def test_cube_of(capsys):
-    s = Shakespeare()
-    s.run_dramatis_persona('Juliet, a test.')
-    s.run_dramatis_persona('Romeo, a test.')
+    s = Shakespeare('Foo. Juliet, a test. Romeo, a test.')
     s.run_event('[Enter Romeo and Juliet]')
     s._character_by_name('Romeo').value = 4
     assert s.evaluate_expression('the cube of yourself', 'Juliet') == 64
@@ -101,9 +92,7 @@ def test_cube_of(capsys):
     assert s.evaluate_expression('the cube of thy foul stupid devil', 'Juliet') == -64
 
 def test_square_root_of(capsys):
-    s = Shakespeare()
-    s.run_dramatis_persona('Juliet, a test.')
-    s.run_dramatis_persona('Romeo, a test.')
+    s = Shakespeare('Foo. Juliet, a test. Romeo, a test.')
     s.run_event('[Enter Romeo and Juliet]')
     s._character_by_name('Romeo').value = 16
     assert s.evaluate_expression('the square root of yourself', 'Juliet') == 4
@@ -134,9 +123,7 @@ def test_square_root_of(capsys):
     assert 'negative' in str(exc.value).lower()
 
 def test_factorial_of(capsys):
-    s = Shakespeare()
-    s.run_dramatis_persona('Juliet, a test.')
-    s.run_dramatis_persona('Romeo, a test.')
+    s = Shakespeare('Foo. Juliet, a test. Romeo, a test.')
     s.run_event('[Enter Romeo and Juliet]')
     s._character_by_name('Romeo').value = 8
     assert s.evaluate_expression('the factorial of yourself', 'Juliet') == 40320
@@ -166,9 +153,7 @@ def test_factorial_of(capsys):
     assert 'negative' in str(exc.value).lower()
 
 def test_twice(capsys):
-    s = Shakespeare()
-    s.run_dramatis_persona('Juliet, a test.')
-    s.run_dramatis_persona('Romeo, a test.')
+    s = Shakespeare('Foo. Juliet, a test. Romeo, a test.')
     s.run_event('[Enter Romeo and Juliet]')
     s._character_by_name('Romeo').value = 4
     assert s.evaluate_expression('twice yourself', 'Juliet') == 8
@@ -187,9 +172,7 @@ def test_twice(capsys):
     assert s.evaluate_expression('twice thy foul stupid devil', 'Juliet') == -8
 
 def test_sum_of(capsys):
-    s = Shakespeare()
-    s.run_dramatis_persona('Juliet, a test.')
-    s.run_dramatis_persona('Romeo, a test.')
+    s = Shakespeare('Foo. Juliet, a test. Romeo, a test.')
     s.run_event('[Enter Romeo and Juliet]')
     s._character_by_name('Romeo').value = 4
     assert s.evaluate_expression('the sum of yourself and nothing', 'Juliet') == 4
@@ -217,9 +200,7 @@ def test_sum_of(capsys):
     assert s.evaluate_expression('the sum of thyself and thy foul stupid devil', 'Juliet') == -8
 
 def test_difference_between(capsys):
-    s = Shakespeare()
-    s.run_dramatis_persona('Juliet, a test.')
-    s.run_dramatis_persona('Romeo, a test.')
+    s = Shakespeare('Foo. Juliet, a test. Romeo, a test.')
     s.run_event('[Enter Romeo and Juliet]')
     s._character_by_name('Romeo').value = 4
     assert s.evaluate_expression('the difference between yourself and nothing', 'Juliet') == 4
@@ -245,9 +226,7 @@ def test_difference_between(capsys):
     assert s.evaluate_expression('the difference between thyself and thy foul stupid devil', 'Juliet') == 0
 
 def test_product_of(capsys):
-    s = Shakespeare()
-    s.run_dramatis_persona('Juliet, a test.')
-    s.run_dramatis_persona('Romeo, a test.')
+    s = Shakespeare('Foo. Juliet, a test. Romeo, a test.')
     s.run_event('[Enter Romeo and Juliet]')
     s._character_by_name('Romeo').value = 4
     assert s.evaluate_expression('the product of yourself and nothing', 'Juliet') == 0
@@ -273,9 +252,7 @@ def test_product_of(capsys):
     assert s.evaluate_expression('the product of thyself and thy foul stupid devil', 'Juliet') == 16
 
 def test_quotient_between(capsys):
-    s = Shakespeare()
-    s.run_dramatis_persona('Juliet, a test.')
-    s.run_dramatis_persona('Romeo, a test.')
+    s = Shakespeare('Foo. Juliet, a test. Romeo, a test.')
     s.run_event('[Enter Romeo and Juliet]')
     s._character_by_name('Romeo').value = 12
     assert s.evaluate_expression('the quotient between yourself and my chihuahua', 'Juliet') == 12
@@ -296,9 +273,7 @@ def test_quotient_between(capsys):
     assert 'zero' in str(exc.value).lower()
 
 def test_remainder(capsys):
-    s = Shakespeare()
-    s.run_dramatis_persona('Juliet, a test.')
-    s.run_dramatis_persona('Romeo, a test.')
+    s = Shakespeare('Foo. Juliet, a test. Romeo, a test.')
     s.run_event('[Enter Romeo and Juliet]')
     s._character_by_name('Romeo').value = 12
     assert s.evaluate_expression('the remainder of the quotient between yourself and my chihuahua', 'Juliet') == 0
@@ -319,9 +294,7 @@ def test_remainder(capsys):
     assert 'zero' in str(exc.value).lower()
 
 def test_complex_expressions(capsys):
-    s = Shakespeare()
-    s.run_dramatis_persona('Juliet, a test.')
-    s.run_dramatis_persona('Romeo, a test.')
+    s = Shakespeare('Foo. Juliet, a test. Romeo, a test.')
     s.run_event('[Enter Romeo and Juliet]')
     # (2 * ((4 + 2)^3) * (2 + 4)) % (1 + (2 * (2 + 1))) = 2
     first_expression = """

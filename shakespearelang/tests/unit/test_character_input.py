@@ -3,9 +3,7 @@ from io import StringIO
 
 def test_reads_characters_accurately(monkeypatch, capsys):
     monkeypatch.setattr('sys.stdin', StringIO('ab\nAB\t&@ '))
-    s = Shakespeare()
-    s.run_dramatis_persona('Juliet, a test.')
-    s.run_dramatis_persona('Romeo, a test.')
+    s = Shakespeare('Foo. Juliet, a test. Romeo, a test.')
     s.run_event('[Enter Romeo and Juliet]')
 
     s.run_sentence('Open your mind!', s._on_stage_character_by_name('Juliet'))
@@ -41,9 +39,7 @@ def test_reads_characters_accurately(monkeypatch, capsys):
 
 def test_unicode(monkeypatch, capsys):
     monkeypatch.setattr('sys.stdin', StringIO('ʘɥӜआઔඦᢶᨆᵇḤ'))
-    s = Shakespeare()
-    s.run_dramatis_persona('Juliet, a test.')
-    s.run_dramatis_persona('Romeo, a test.')
+    s = Shakespeare('Foo. Juliet, a test. Romeo, a test.')
     s.run_event('[Enter Romeo and Juliet]')
 
     s.run_sentence('Open your mind!', s._on_stage_character_by_name('Juliet'))
@@ -82,9 +78,7 @@ def test_unicode(monkeypatch, capsys):
 
 def test_eof_character_code(monkeypatch, capsys):
     monkeypatch.setattr('sys.stdin', StringIO('&'))
-    s = Shakespeare()
-    s.run_dramatis_persona('Juliet, a test.')
-    s.run_dramatis_persona('Romeo, a test.')
+    s = Shakespeare('Foo. Juliet, a test. Romeo, a test.')
     s.run_event('[Enter Romeo and Juliet]')
 
     s.run_sentence('Open your mind!', s._on_stage_character_by_name('Juliet'))
@@ -103,9 +97,7 @@ def test_eof_character_code(monkeypatch, capsys):
 
 def test_past_eof(monkeypatch, capsys):
     monkeypatch.setattr('sys.stdin', StringIO(''))
-    s = Shakespeare()
-    s.run_dramatis_persona('Juliet, a test.')
-    s.run_dramatis_persona('Romeo, a test.')
+    s = Shakespeare('Foo. Juliet, a test. Romeo, a test.')
     s.run_event('[Enter Romeo and Juliet]')
 
     s.run_sentence('Open your mind!', s._on_stage_character_by_name('Juliet'))

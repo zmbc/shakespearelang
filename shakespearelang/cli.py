@@ -39,8 +39,7 @@ def console(characters):
 def run(file):
     with open(file, 'r') as f:
         play = f.read()
-        interpreter = Shakespeare()
-        interpreter.run_play(play)
+    Shakespeare(play).run()
 
 
 @main.command()
@@ -49,4 +48,4 @@ def run(file):
 def debug(file):
     with open(file, 'r') as f:
         play = f.read()
-        debug_play(play)
+    debug_play(play)
