@@ -134,7 +134,7 @@ def run_repl(interpreter):
         except FailedParse as parseException:
             print("\n\nThat doesn't look right:\n", parseException)
         except ShakespeareRuntimeError as runtimeError:
-            print("Error:\n", runtimeError)
+            print("Error:\n", str(runtimeError))
 
 def _run_repl_input(interpreter, repl_input):
     global current_character
