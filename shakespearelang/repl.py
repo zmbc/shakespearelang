@@ -3,6 +3,7 @@ from .errors import ShakespeareRuntimeError
 from grako.exceptions import FailedParse
 
 import readline
+import sys
 
 
 def _print_stage(interpreter):
@@ -117,7 +118,9 @@ def run_repl(interpreter):
     while True:
         try:
             repl_input = input('>> ')
-            if repl_input in ['exit', 'quit', 'continue']:
+            if repl_input in ['exit', 'quit']:
+                sys.exit()
+            elif repl_input == 'continue':
                 break
             elif repl_input == 'next':
                 if interpreter.play_over():
