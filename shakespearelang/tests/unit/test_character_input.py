@@ -1,4 +1,4 @@
-from shakespearelang.shakespeare_interpreter import Shakespeare
+from shakespearelang import Shakespeare
 from io import StringIO
 
 def test_reads_characters_accurately(monkeypatch, capsys):

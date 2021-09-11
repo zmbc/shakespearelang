@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 import click
-from .shakespeare_interpreter import Shakespeare
+from .shakespeare import Shakespeare
 from .errors import ShakespeareRuntimeError
 from .repl import start_console, debug_play
 from functools import wraps, partial

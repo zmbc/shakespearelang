@@ -1,2 +1,2 @@
-::: shakespearelang.shakespeare_interpreter.Shakespeare
+::: shakespearelang.shakespeare.Shakespeare
     handler: python

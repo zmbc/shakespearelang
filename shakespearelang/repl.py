@@ -1,4 +1,4 @@
-from .shakespeare_interpreter import Shakespeare
+from .shakespeare import Shakespeare
 from .errors import ShakespeareRuntimeError
 from grako.exceptions import FailedParse
 

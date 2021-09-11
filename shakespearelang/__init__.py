@@ -1,0 +1,1 @@
+from .shakespeare import Shakespeare
