@@ -227,7 +227,6 @@ class Shakespeare:
         destructive -- Whether to replace the current character list
                        (default False)
         """
-        personae = self._parse_if_necessary(personae, 'dramatis_personae')
         self.characters = []
         for persona in personae:
             character = self._character_from_dramatis_persona(persona)
