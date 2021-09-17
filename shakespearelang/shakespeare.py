@@ -65,7 +65,7 @@ class Shakespeare:
     # PUBLIC METHODS
 
     @_add_interpreter_context_to_errors
-    def run(self, breakpoint_callback=None):
+    def run(self, breakpoint_callback=lambda: None):
         """
         Run the SPL play.
 
@@ -74,7 +74,11 @@ class Shakespeare:
                                breakpoint is hit
         """
         while not self.play_over():
-            self.step_forward(breakpoint_callback)
+            if self._next_event().parseinfo.rule == 'breakpoint':
+                self._advance_position()
+                breakpoint_callback()
+            else:
+                self.step_forward()
 
     @_add_interpreter_context_to_errors
     def play_over(self):
@@ -82,7 +86,7 @@ class Shakespeare:
         return self.current_position['act'] >= len(self.ast.acts)
 
     @_add_interpreter_context_to_errors
-    def step_forward(self, breakpoint_callback=None):
+    def step_forward(self):
         """
         Run the next event in the play.
 
@@ -91,7 +95,7 @@ class Shakespeare:
                                breakpoint is hit
         """
         event_to_run = self._next_event()
-        has_goto = self.run_event(event_to_run, breakpoint_callback)
+        has_goto = self.run_event(event_to_run)
 
         if self.current_position and not has_goto:
             self._advance_position()
@@ -103,24 +107,19 @@ class Shakespeare:
         return parseinfo_context(current_event.parseinfo)
 
     @_add_interpreter_context_to_errors
-    def run_event(self, event, breakpoint_callback=None):
+    def run_event(self, event):
         """
         Run an event in the current executing context.
 
         Arguments:
         event -- A string or AST representation of an event (line, entrance,
                  exit, etc.)
-        breakpoint_callback -- An optional callback, to be called if a debug
-                               breakpoint is hit
         """
         event = self._parse_if_necessary(event, 'event')
         has_goto = False
         try:
             if event.parseinfo.rule == 'line':
                 has_goto = self._run_line(event)
-            elif event.parseinfo.rule == 'breakpoint':
-                if breakpoint_callback:
-                    breakpoint_callback()
             elif event.parseinfo.rule == 'entrance':
                 self._run_entrance(event)
             elif event.parseinfo.rule == 'exeunt':
