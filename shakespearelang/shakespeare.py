@@ -5,9 +5,10 @@ Shakespeare -- An interpreter for the Shakespeare Programming Language
 """
 
 from .shakespeare_parser import shakespeareParser
-from .errors import ShakespeareRuntimeError, add_parse_context_to_errors
+from .errors import ShakespeareRuntimeError
 from .utils import parseinfo_context
 import math
+from functools import wraps
 
 class Shakespeare:
     """
@@ -15,6 +16,7 @@ class Shakespeare:
     """
 
     def _add_interpreter_context_to_errors(func):
+        @wraps(func)
         def inner_function(self, *args, **kwargs):
             try:
                 return func(self, *args, **kwargs)
@@ -23,6 +25,21 @@ class Shakespeare:
                     exc.interpreter = self
                 raise exc
         return inner_function
+
+    def _parse_first_argument(rule_name):
+        def decorator(func):
+            @wraps(func)
+            def inner_function(self, first_arg, *args, **kwargs):
+                parsed = self._parse_if_necessary(first_arg, rule_name)
+
+                try:
+                    return func(self, parsed, *args, **kwargs)
+                except ShakespeareRuntimeError as exc:
+                    if not exc.parseinfo:
+                        exc.parseinfo = parsed.parseinfo
+                    raise exc
+            return inner_function
+        return decorator
 
     def __init__(self, play):
         self.parser = shakespeareParser()
@@ -107,6 +124,7 @@ class Shakespeare:
         return parseinfo_context(current_event.parseinfo)
 
     @_add_interpreter_context_to_errors
+    @_parse_first_argument('event')
     def run_event(self, event):
         """
         Run an event in the current executing context.
@@ -115,22 +133,21 @@ class Shakespeare:
         event -- A string or AST representation of an event (line, entrance,
                  exit, etc.)
         """
-        event = self._parse_if_necessary(event, 'event')
         has_goto = False
 
-        with add_parse_context_to_errors(event):
-            if event.parseinfo.rule == 'line':
-                has_goto = self._run_line(event)
-            elif event.parseinfo.rule == 'entrance':
-                self._run_entrance(event)
-            elif event.parseinfo.rule == 'exeunt':
-                self._run_exeunt(event)
-            elif event.parseinfo.rule == 'exit':
-                self._run_exit(event)
+        if event.parseinfo.rule == 'line':
+            has_goto = self._run_line(event)
+        elif event.parseinfo.rule == 'entrance':
+            self._run_entrance(event)
+        elif event.parseinfo.rule == 'exeunt':
+            self._run_exeunt(event)
+        elif event.parseinfo.rule == 'exit':
+            self._run_exit(event)
 
-            return has_goto
+        return has_goto
 
     @_add_interpreter_context_to_errors
+    @_parse_first_argument('sentence')
     def run_sentence(self, sentence, character):
         """
         Run a sentence in the current execution context.
@@ -140,29 +157,27 @@ class Shakespeare:
         character -- A name or Shakespeare.Character representation of the
                      character speaking the sentence.
         """
-        sentence = self._parse_if_necessary(sentence, 'sentence')
+        character = self._on_stage_character_by_name_if_necessary(character)
 
-        with add_parse_context_to_errors(sentence):
-            character = self._on_stage_character_by_name_if_necessary(character)
-
-            if sentence.parseinfo.rule == 'assignment':
-                self._run_assignment(sentence, character)
-            elif sentence.parseinfo.rule == 'question':
-                self._run_question(sentence, character)
-            elif sentence.parseinfo.rule == 'output':
-                self._run_output(sentence, character)
-            elif sentence.parseinfo.rule == 'input':
-                self._run_input(sentence, character)
-            elif sentence.parseinfo.rule == 'push':
-                self._run_push(sentence, character)
-            elif sentence.parseinfo.rule == 'pop':
-                self._run_pop(sentence, character)
-            elif sentence.parseinfo.rule == 'goto':
-                went_to = self._run_goto(sentence)
-                if went_to:
-                    return True
+        if sentence.parseinfo.rule == 'assignment':
+            self._run_assignment(sentence, character)
+        elif sentence.parseinfo.rule == 'question':
+            self._run_question(sentence, character)
+        elif sentence.parseinfo.rule == 'output':
+            self._run_output(sentence, character)
+        elif sentence.parseinfo.rule == 'input':
+            self._run_input(sentence, character)
+        elif sentence.parseinfo.rule == 'push':
+            self._run_push(sentence, character)
+        elif sentence.parseinfo.rule == 'pop':
+            self._run_pop(sentence, character)
+        elif sentence.parseinfo.rule == 'goto':
+            went_to = self._run_goto(sentence)
+            if went_to:
+                return True
 
     @_add_interpreter_context_to_errors
+    @_parse_first_argument('question')
     def evaluate_question(self, question, character):
         """
         Evaluate a question in the current execution context.
@@ -172,23 +187,21 @@ class Shakespeare:
         character -- A name or Shakespeare.Character representation of the
                      character asking the question.
         """
-        question = self._parse_if_necessary(question, 'question')
+        character = self._on_stage_character_by_name_if_necessary(character)
 
-        with add_parse_context_to_errors(question):
-            character = self._on_stage_character_by_name_if_necessary(character)
-
-            values = [
-                self.evaluate_expression(v, character) for v in
-                    [question.first_value, question.second_value]
-            ]
-            if question.comparative.parseinfo.rule == 'positive_comparative':
-                return values[0] > values[1]
-            elif question.comparative.parseinfo.rule == 'negative_comparative':
-                return values[0] < values[1]
-            elif question.comparative.parseinfo.rule == 'neutral_comparative':
-                return values[0] == values[1]
+        values = [
+            self.evaluate_expression(v, character) for v in
+                [question.first_value, question.second_value]
+        ]
+        if question.comparative.parseinfo.rule == 'positive_comparative':
+            return values[0] > values[1]
+        elif question.comparative.parseinfo.rule == 'negative_comparative':
+            return values[0] < values[1]
+        elif question.comparative.parseinfo.rule == 'neutral_comparative':
+            return values[0] == values[1]
 
     @_add_interpreter_context_to_errors
+    @_parse_first_argument('value')
     def evaluate_expression(self, value, character):
         """
         Evaluate an expression in the current execution context.
@@ -198,28 +211,25 @@ class Shakespeare:
         character -- A name or Shakespeare.Character representation of the
                      character speaking the expression.
         """
-        value = self._parse_if_necessary(value, 'value')
+        character = self._character_by_name_if_necessary(character)
 
-        with add_parse_context_to_errors(value):
-            character = self._character_by_name_if_necessary(character)
-
-            if value.parseinfo.rule == 'first_person_value':
-                return character.value
-            elif value.parseinfo.rule == 'second_person_value':
-                return self._character_opposite(character).value
-            elif value.parseinfo.rule == 'negative_noun_phrase':
-                return -pow(2, len(value.adjectives))
-            elif value.parseinfo.rule == 'positive_noun_phrase':
-                return pow(2, len(value.adjectives))
-            elif value.parseinfo.rule == 'character_name':
-                return self._character_by_name(value.name).value
-            elif value.parseinfo.rule == 'nothing':
-                return 0
-            elif value.parseinfo.rule == 'unary_expression':
-                return self._evaluate_unary_operation(value, character)
-            elif value.parseinfo.rule == 'binary_expression':
-                return self._evaluate_binary_operation(value, character)
-            raise ShakespeareRuntimeError('Unknown expression type: ' + value.parseinfo.rule)
+        if value.parseinfo.rule == 'first_person_value':
+            return character.value
+        elif value.parseinfo.rule == 'second_person_value':
+            return self._character_opposite(character).value
+        elif value.parseinfo.rule == 'negative_noun_phrase':
+            return -pow(2, len(value.adjectives))
+        elif value.parseinfo.rule == 'positive_noun_phrase':
+            return pow(2, len(value.adjectives))
+        elif value.parseinfo.rule == 'character_name':
+            return self._character_by_name(value.name).value
+        elif value.parseinfo.rule == 'nothing':
+            return 0
+        elif value.parseinfo.rule == 'unary_expression':
+            return self._evaluate_unary_operation(value, character)
+        elif value.parseinfo.rule == 'binary_expression':
+            return self._evaluate_binary_operation(value, character)
+        raise ShakespeareRuntimeError('Unknown expression type: ' + value.parseinfo.rule)
 
     # HELPERS
 

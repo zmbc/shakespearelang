@@ -1,5 +1,4 @@
 from .utils import parseinfo_context
-from contextlib import contextmanager
 
 class ShakespeareRuntimeError(Exception):
     def __init__(self, message, parseinfo=None, interpreter=None):
@@ -22,12 +21,3 @@ class ShakespeareRuntimeError(Exception):
             result_lines += [f'  {c}' for c in self.interpreter.characters if not c.on_stage]
 
         return '\n'.join(result_lines)
-
-@contextmanager
-def add_parse_context_to_errors(ast_node):
-    try:
-        yield None
-    except ShakespeareRuntimeError as exc:
-        if not exc.parseinfo:
-            exc.parseinfo = ast_node.parseinfo
-        raise exc
