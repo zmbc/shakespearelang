@@ -106,10 +106,6 @@ class Shakespeare:
     def step_forward(self):
         """
         Run the next event in the play.
-
-        Arguments:
-        breakpoint_callback -- An optional callback, to be called if a debug
-                               breakpoint is hit
         """
         event_to_run = self._next_event()
         has_goto = self.run_event(event_to_run)
