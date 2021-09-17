@@ -5,7 +5,7 @@ Shakespeare -- An interpreter for the Shakespeare Programming Language
 """
 
 from .shakespeare_parser import shakespeareParser
-from .errors import ShakespeareRuntimeError
+from .errors import ShakespeareRuntimeError, add_parse_context_to_errors
 from .utils import parseinfo_context
 import math
 
@@ -117,7 +117,8 @@ class Shakespeare:
         """
         event = self._parse_if_necessary(event, 'event')
         has_goto = False
-        try:
+
+        with add_parse_context_to_errors(event):
             if event.parseinfo.rule == 'line':
                 has_goto = self._run_line(event)
             elif event.parseinfo.rule == 'entrance':
@@ -128,11 +129,6 @@ class Shakespeare:
                 self._run_exit(event)
 
             return has_goto
-        except ShakespeareRuntimeError as exc:
-            # Add context to the exception, if not already present
-            if not exc.parseinfo:
-                exc.parseinfo = event.parseinfo
-            raise exc
 
     @_add_interpreter_context_to_errors
     def run_sentence(self, sentence, character):
@@ -144,24 +140,27 @@ class Shakespeare:
         character -- A name or Shakespeare.Character representation of the
                      character speaking the sentence.
         """
-        character = self._on_stage_character_by_name_if_necessary(character)
         sentence = self._parse_if_necessary(sentence, 'sentence')
-        if sentence.parseinfo.rule == 'assignment':
-            self._run_assignment(sentence, character)
-        elif sentence.parseinfo.rule == 'question':
-            self._run_question(sentence, character)
-        elif sentence.parseinfo.rule == 'output':
-            self._run_output(sentence, character)
-        elif sentence.parseinfo.rule == 'input':
-            self._run_input(sentence, character)
-        elif sentence.parseinfo.rule == 'push':
-            self._run_push(sentence, character)
-        elif sentence.parseinfo.rule == 'pop':
-            self._run_pop(sentence, character)
-        elif sentence.parseinfo.rule == 'goto':
-            went_to = self._run_goto(sentence)
-            if went_to:
-                return True
+
+        with add_parse_context_to_errors(sentence):
+            character = self._on_stage_character_by_name_if_necessary(character)
+
+            if sentence.parseinfo.rule == 'assignment':
+                self._run_assignment(sentence, character)
+            elif sentence.parseinfo.rule == 'question':
+                self._run_question(sentence, character)
+            elif sentence.parseinfo.rule == 'output':
+                self._run_output(sentence, character)
+            elif sentence.parseinfo.rule == 'input':
+                self._run_input(sentence, character)
+            elif sentence.parseinfo.rule == 'push':
+                self._run_push(sentence, character)
+            elif sentence.parseinfo.rule == 'pop':
+                self._run_pop(sentence, character)
+            elif sentence.parseinfo.rule == 'goto':
+                went_to = self._run_goto(sentence)
+                if went_to:
+                    return True
 
     @_add_interpreter_context_to_errors
     def evaluate_question(self, question, character):
@@ -173,18 +172,21 @@ class Shakespeare:
         character -- A name or Shakespeare.Character representation of the
                      character asking the question.
         """
-        character = self._on_stage_character_by_name_if_necessary(character)
         question = self._parse_if_necessary(question, 'question')
-        values = [
-            self.evaluate_expression(v, character) for v in
-                [question.first_value, question.second_value]
-        ]
-        if question.comparative.parseinfo.rule == 'positive_comparative':
-            return values[0] > values[1]
-        elif question.comparative.parseinfo.rule == 'negative_comparative':
-            return values[0] < values[1]
-        elif question.comparative.parseinfo.rule == 'neutral_comparative':
-            return values[0] == values[1]
+
+        with add_parse_context_to_errors(question):
+            character = self._on_stage_character_by_name_if_necessary(character)
+
+            values = [
+                self.evaluate_expression(v, character) for v in
+                    [question.first_value, question.second_value]
+            ]
+            if question.comparative.parseinfo.rule == 'positive_comparative':
+                return values[0] > values[1]
+            elif question.comparative.parseinfo.rule == 'negative_comparative':
+                return values[0] < values[1]
+            elif question.comparative.parseinfo.rule == 'neutral_comparative':
+                return values[0] == values[1]
 
     @_add_interpreter_context_to_errors
     def evaluate_expression(self, value, character):
@@ -196,25 +198,28 @@ class Shakespeare:
         character -- A name or Shakespeare.Character representation of the
                      character speaking the expression.
         """
-        character = self._character_by_name_if_necessary(character)
         value = self._parse_if_necessary(value, 'value')
-        if value.parseinfo.rule == 'first_person_value':
-            return character.value
-        elif value.parseinfo.rule == 'second_person_value':
-            return self._character_opposite(character).value
-        elif value.parseinfo.rule == 'negative_noun_phrase':
-            return -pow(2, len(value.adjectives))
-        elif value.parseinfo.rule == 'positive_noun_phrase':
-            return pow(2, len(value.adjectives))
-        elif value.parseinfo.rule == 'character_name':
-            return self._character_by_name(value.name).value
-        elif value.parseinfo.rule == 'nothing':
-            return 0
-        elif value.parseinfo.rule == 'unary_expression':
-            return self._evaluate_unary_operation(value, character)
-        elif value.parseinfo.rule == 'binary_expression':
-            return self._evaluate_binary_operation(value, character)
-        raise ShakespeareRuntimeError('Unknown expression type: ' + value.parseinfo.rule, value.parseinfo)
+
+        with add_parse_context_to_errors(value):
+            character = self._character_by_name_if_necessary(character)
+
+            if value.parseinfo.rule == 'first_person_value':
+                return character.value
+            elif value.parseinfo.rule == 'second_person_value':
+                return self._character_opposite(character).value
+            elif value.parseinfo.rule == 'negative_noun_phrase':
+                return -pow(2, len(value.adjectives))
+            elif value.parseinfo.rule == 'positive_noun_phrase':
+                return pow(2, len(value.adjectives))
+            elif value.parseinfo.rule == 'character_name':
+                return self._character_by_name(value.name).value
+            elif value.parseinfo.rule == 'nothing':
+                return 0
+            elif value.parseinfo.rule == 'unary_expression':
+                return self._evaluate_unary_operation(value, character)
+            elif value.parseinfo.rule == 'binary_expression':
+                return self._evaluate_binary_operation(value, character)
+            raise ShakespeareRuntimeError('Unknown expression type: ' + value.parseinfo.rule)
 
     # HELPERS
 
@@ -330,13 +335,13 @@ class Shakespeare:
             return pow(operand, 3)
         elif op.operation == ['the', 'factorial', 'of']:
             if operand < 0:
-                raise ShakespeareRuntimeError('Cannot take the factorial of a negative number: ' + str(operand), op.parseinfo)
+                raise ShakespeareRuntimeError('Cannot take the factorial of a negative number: ' + str(operand))
             return math.factorial(operand)
         elif op.operation == ['the', 'square', 'of']:
             return pow(operand, 2)
         elif op.operation == ['the', 'square', 'root', 'of']:
             if operand < 0:
-                raise ShakespeareRuntimeError('Cannot take the square root of a negative number: ' + str(operand), op.parseinfo)
+                raise ShakespeareRuntimeError('Cannot take the square root of a negative number: ' + str(operand))
             # Truncates (does not round) result -- this is equivalent to C
             # implementation's cast.
             return int(math.sqrt(operand))
@@ -352,7 +357,7 @@ class Shakespeare:
             return first_operand * second_operand
         elif op.operation == ['the', 'quotient', 'between']:
             if second_operand == 0:
-                raise ShakespeareRuntimeError('Cannot divide by zero', op.parseinfo)
+                raise ShakespeareRuntimeError('Cannot divide by zero')
             # Python's built-in integer division operator does not behave the
             # same as C for negative numbers, using floor instead of truncated
             # division
@@ -360,7 +365,7 @@ class Shakespeare:
         elif op.operation == ['the', 'remainder', 'of',
                               'the', 'quotient', 'between']:
             if second_operand == 0:
-                raise ShakespeareRuntimeError('Cannot divide by zero', op.parseinfo)
+                raise ShakespeareRuntimeError('Cannot divide by zero')
             # See note above. math.fmod replicates C behavior.
             return int(math.fmod(first_operand, second_operand))
         elif op.operation == ['the', 'sum', 'of']:
@@ -393,7 +398,7 @@ class Shakespeare:
             try:
                 char = chr(char_code)
             except ValueError:
-                raise ShakespeareRuntimeError('Invalid character code: ' + str(char_code), output.parseinfo)
+                raise ShakespeareRuntimeError('Invalid character code: ' + str(char_code))
             print(char, end="")
 
     def _run_input(self, input_op, character):
@@ -405,7 +410,7 @@ class Shakespeare:
                     self._character_opposite(character).value = -1
                     return
                 else:
-                    raise ShakespeareRuntimeError('End of file encountered.', input_op.parseinfo)
+                    raise ShakespeareRuntimeError('End of file encountered.')
 
         if input_op.input_number:
             number_input = ''
@@ -414,7 +419,7 @@ class Shakespeare:
                 self._input_buffer = self._input_buffer[1:]
 
             if len(number_input) == 0:
-                raise ShakespeareRuntimeError('No numeric input was given.', input_op.parseinfo)
+                raise ShakespeareRuntimeError('No numeric input was given.')
 
             if (self._input_buffer[0] == '\n'):
                 self._input_buffer = self._input_buffer[1:]
