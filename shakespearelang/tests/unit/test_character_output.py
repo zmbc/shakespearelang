@@ -133,11 +133,15 @@ def test_errors_on_invalid_code(capsys):
     with pytest.raises(ShakespeareRuntimeError) as exc:
         s.run_sentence('Speak your mind!', s._on_stage_character_by_name('Juliet'))
     assert 'invalid character code' in str(exc.value).lower()
+    assert '>>Speak your mind!<<' in str(exc.value)
+    assert exc.value.interpreter == s
 
     s._character_by_name('Romeo').value = -1
     with pytest.raises(ShakespeareRuntimeError) as exc:
         s.run_sentence('Speak your mind!', s._on_stage_character_by_name('Juliet'))
     assert 'invalid character code' in str(exc.value).lower()
+    assert '>>Speak your mind!<<' in str(exc.value)
+    assert exc.value.interpreter == s
 
     captured = capsys.readouterr()
     assert captured.out == ''

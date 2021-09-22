@@ -43,12 +43,16 @@ def test_errors_without_digits(monkeypatch, capsys):
     with pytest.raises(ShakespeareRuntimeError) as exc:
         s.run_sentence('Listen to your heart!', s._on_stage_character_by_name('Juliet'))
     assert 'no numeric input' in str(exc.value).lower()
+    assert '>>Listen to your heart!<<' in str(exc.value)
+    assert exc.value.interpreter == s
     assert s._character_by_name('Romeo').value == 0
 
     monkeypatch.setattr('sys.stdin', StringIO('a123'))
     with pytest.raises(ShakespeareRuntimeError) as exc:
         s.run_sentence('Listen to your heart!', s._on_stage_character_by_name('Juliet'))
     assert 'no numeric input' in str(exc.value).lower()
+    assert '>>Listen to your heart!<<' in str(exc.value)
+    assert exc.value.interpreter == s
     assert s._character_by_name('Romeo').value == 0
     captured = capsys.readouterr()
     assert captured.out == ''
@@ -61,6 +65,8 @@ def test_errors_on_eof(monkeypatch, capsys):
     with pytest.raises(ShakespeareRuntimeError) as exc:
         s.run_sentence('Listen to your heart!', s._on_stage_character_by_name('Juliet'))
     assert 'end of file' in str(exc.value).lower()
+    assert '>>Listen to your heart!<<' in str(exc.value)
+    assert exc.value.interpreter == s
     assert s._character_by_name('Romeo').value == 0
     captured = capsys.readouterr()
     assert captured.out == ''

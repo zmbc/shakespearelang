@@ -151,6 +151,8 @@ def test_errors_on_goto_nonexistent(monkeypatch, capsys):
     with pytest.raises(ShakespeareRuntimeError) as exc:
         s.run_sentence('Let us proceed to scene IV.', s._on_stage_character_by_name('Juliet'))
     assert 'does not exist' in str(exc.value).lower()
+    assert '>>Let us proceed to scene IV.<<' in str(exc.value)
+    assert exc.value.interpreter == s
     assert s.current_position == {'act': 0, 'scene': 1, 'event': 0}
 
     captured = capsys.readouterr()
