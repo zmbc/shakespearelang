@@ -456,16 +456,18 @@ class Shakespeare:
                 return True
 
     def _run_entrance(self, entrance):
-        for name in entrance.characters:
-            self._off_stage_character_by_name(name).on_stage = True
+        characters_to_enter = [self._off_stage_character_by_name(name) for name in entrance.characters]
+        for character in characters_to_enter:
+            character.on_stage = True
 
     def _run_exeunt(self, exeunt):
         if exeunt.characters:
-            for name in exeunt.characters:
-                self._on_stage_character_by_name(name).on_stage = False
+            characters_to_exeunt = [self._on_stage_character_by_name(name) for name in exeunt.characters]
         else:
-            for character in self.characters:
-                character.on_stage = False
+            characters_to_exeunt = self.characters
+
+        for character in characters_to_exeunt:
+            character.on_stage = False
 
     def _run_exit(self, exit):
         character = self._on_stage_character_by_name(exit.character)
