@@ -24,7 +24,7 @@ Recall your mind!
 
 """
 
-def test_assign_character(monkeypatch, capsys):
+def test_full_error_format():
     s = Shakespeare(ERROR_PLAY)
     with pytest.raises(ShakespeareRuntimeError) as exc:
         s.run()
