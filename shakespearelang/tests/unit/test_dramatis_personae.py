@@ -1,6 +1,4 @@
 from shakespearelang import Shakespeare
-from shakespearelang.errors import ShakespeareRuntimeError
-import pytest
 
 MANY_CHARACTERS_PLAY = """
 A lot of people.
