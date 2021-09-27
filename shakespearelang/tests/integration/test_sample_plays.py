@@ -59,6 +59,11 @@ def test_runs_sierpinski(monkeypatch, capsys):
 """
     )
 
+def test_runs_parse_everything(monkeypatch, capsys):
+    set_input(monkeypatch, '45c')
+    run_sample_play('parse_everything.spl')
+    assert_output(capsys, '72H')
+
 def assert_output(capsys, output, stderr=''):
     captured = capsys.readouterr()
     assert captured.out == output
