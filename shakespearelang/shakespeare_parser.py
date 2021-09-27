@@ -249,11 +249,11 @@ class shakespeareParser(Parser):
             with self._option():
                 self._token('evil')
             with self._option():
-                self._token('fat')
-            with self._option():
                 self._token('fat-kidneyed')
             with self._option():
                 self._token('fatherless')
+            with self._option():
+                self._token('fat')
             with self._option():
                 self._token('foul')
             with self._option():
@@ -1197,7 +1197,8 @@ class shakespeareParser(Parser):
     def _negative_if_(self):
         with self._group():
             self._token('If')
-            self._token('not,')
+            self._token('not')
+            self._token(',')
         self.name_last_node('if_')
         self.ast._define(
             ['if_'],
@@ -1208,7 +1209,8 @@ class shakespeareParser(Parser):
     def _positive_if_(self):
         with self._group():
             self._token('If')
-            self._token('so,')
+            self._token('so')
+            self._token(',')
         self.name_last_node('if_')
         self.ast._define(
             ['if_'],

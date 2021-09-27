@@ -47,8 +47,7 @@ class Shakespeare:
         self._run_dramatis_personae(self.ast.dramatis_personae)
 
         self.current_position = {'act': 0, 'scene': 0, 'event': 0}
-        # TODO
-        self.current_act = None
+        self._make_position_consistent()
         self._input_buffer = ''
 
         self.global_boolean = False
@@ -306,17 +305,30 @@ class Shakespeare:
         return scene_head.events[self.current_position['event']]
 
     def _make_position_consistent(self):
+        # This is very ugly, but leaving it like this because it will disappear with
+        # play flattening.
         if self.play_over():
             return
-        self.current_act = self.ast.acts[self.current_position['act']]
-        current_scene = self.current_act.scenes[self.current_position['scene']]
-        if self.current_position['event'] >= len(current_scene.events):
-            self.current_position['event'] = 0
-            self.current_position['scene'] += 1
 
-        if self.current_position['scene'] >= len(self.current_act.scenes):
-            self.current_position['scene'] = 0
-            self.current_position['act'] += 1
+        self.current_act = self.ast.acts[self.current_position['act']]
+        current_scene = dict(enumerate(self.current_act.scenes)).get(self.current_position['scene'])
+
+        while self.current_position['scene'] >= len(self.current_act.scenes) or self.current_position['event'] >= len(current_scene.events):
+            if self.play_over():
+                break
+
+            if current_scene is not None and self.current_position['event'] >= len(current_scene.events):
+                self.current_position['event'] = 0
+                self.current_position['scene'] += 1
+            if self.current_position['scene'] >= len(self.current_act.scenes):
+                self.current_position['scene'] = 0
+                self.current_position['act'] += 1
+
+            if self.play_over():
+                break
+
+            self.current_act = self.ast.acts[self.current_position['act']]
+            current_scene = dict(enumerate(self.current_act.scenes)).get(self.current_position['scene'])
 
     def _goto_scene(self, numeral):
         scene_number = self._scene_number_from_roman_numeral(numeral)

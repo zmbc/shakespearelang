@@ -45,9 +45,9 @@ negative_adjective = "bad" |
 	"distasteful" |
 	"dusty" |
 	"evil" |
-	"fat" |
 	"fat-kidneyed" |
 	"fatherless" |
+	"fat" |
 	"foul" |
 	"hairy" |
 	"half-witted" |
@@ -409,9 +409,9 @@ unary_expression = operation:unary_operation value:value;
 
 expression = binary_expression | unary_expression;
 
-negative_if = if:("If" "not,");
+negative_if = if:("If" "not" ",");
 
-positive_if = if:("If" "so,");
+positive_if = if:("If" "so" ",");
 
 question = be first_value:value comparative:(positive_comparative | neutral_comparative | negative_comparative) second_value:value "?";
 
