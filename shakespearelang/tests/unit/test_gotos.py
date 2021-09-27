@@ -18,13 +18,29 @@ SAMPLE_PLAY = """
     Juliet: Are you as good as nothing?
 
     Scene II: Still nothing.
+
+    [A pause]
+
     Scene III: Nothing strikes back.
+
+    [A pause]
 
     Act II: So separate.
     Scene I: This is hard to get to.
+
+    [A pause]
+
     Scene II: Likewise.
+
+    [A pause]
+
     Scene III: Yep.
+
+    [A pause]
+
     Scene IV: Still going.
+
+    [A pause]
 """
 
 def test_goto_current(monkeypatch, capsys):
@@ -59,8 +75,6 @@ def test_goto_prev(monkeypatch, capsys):
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 0}
     s.step_forward()
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 1}
-    s.step_forward()
-    assert s.current_position == {'act': 0, 'scene': 1, 'event': 0}
     s.run_sentence('Let us return to scene I.', s._on_stage_character_by_name('Juliet'))
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 0}
 
@@ -123,7 +137,12 @@ def test_goto_based_on_numeral_not_order(monkeypatch, capsys):
         Juliet: Are you as good as nothing?
 
         Scene I: Still nothing.
+
+        [A pause]
+
         Scene II: Nothing strikes back.
+
+        [A pause]
     """)
 
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 0}
@@ -146,14 +165,50 @@ def test_errors_on_goto_nonexistent(monkeypatch, capsys):
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 0}
     s.step_forward()
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 1}
-    s.step_forward()
-    assert s.current_position == {'act': 0, 'scene': 1, 'event': 0}
     with pytest.raises(ShakespeareRuntimeError) as exc:
         s.run_sentence('Let us proceed to scene IV.', s._on_stage_character_by_name('Juliet'))
     assert 'does not exist' in str(exc.value).lower()
     assert '>>Let us proceed to scene IV.<<' in str(exc.value)
     assert exc.value.interpreter == s
+    assert s.current_position == {'act': 0, 'scene': 0, 'event': 1}
+
+    captured = capsys.readouterr()
+    assert captured.out == ''
+    assert captured.err == ''
+
+def test_skips_empty_scenes_and_acts(monkeypatch, capsys):
+    s = Shakespeare("""
+        Test.
+
+        Romeo, a test.
+        Juliet, a test.
+
+        Act I: Nothing to see here.
+        Scene IV: Empty up front.
+
+        Scene III: These are not the actors you're looking for.
+
+        [Enter Romeo and Juliet]
+
+        Juliet: Are you as good as nothing?
+
+        Scene I: Still nothing.
+        Scene II: Nothing strikes back.
+
+        Act II: This is empty.
+        Act III: Not empty, kinda.
+        Scene I: Empty.
+        Scene II: Empty.
+        Act IV: Empty again.
+    """)
+
     assert s.current_position == {'act': 0, 'scene': 1, 'event': 0}
+    s.step_forward()
+    assert s.current_position == {'act': 0, 'scene': 1, 'event': 1}
+    s.run_sentence('Let us return to scene IV.', s._on_stage_character_by_name('Juliet'))
+    assert s.current_position == {'act': 0, 'scene': 1, 'event': 0}
+    s.run_sentence('Let us return to scene I.', s._on_stage_character_by_name('Juliet'))
+    assert s.current_position == {'act': 4, 'scene': 0, 'event': 0}
 
     captured = capsys.readouterr()
     assert captured.out == ''

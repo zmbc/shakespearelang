@@ -335,6 +335,8 @@ class Shakespeare:
         self.current_position['scene'] = scene_number
         self.current_position['event'] = 0
 
+        self._make_position_consistent()
+
     def _advance_position(self):
         self.current_position['event'] += 1
         self._make_position_consistent()
