@@ -1,6 +1,6 @@
 from .shakespeare import Shakespeare
 from .errors import ShakespeareRuntimeError
-from grako.exceptions import FailedParse
+from tatsu.exceptions import FailedParse
 
 import readline
 import sys
