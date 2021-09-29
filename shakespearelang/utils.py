@@ -13,7 +13,7 @@ def _add_str_at(string, character, index):
     return string[:index] + character + string[index:]
 
 def _highlighted_source_text(parseinfo):
-    buffer = parseinfo.buffer
+    buffer = parseinfo.tokenizer
     number_of_lines = (parseinfo.endline - parseinfo.line) + 1
     lines = buffer.get_lines(parseinfo.line, parseinfo.endline)
 
@@ -30,7 +30,7 @@ def _highlighted_source_text(parseinfo):
 
 def _before_context_lines(parseinfo, context_amount = 3):
     context_start_line = max(parseinfo.line - 1 - context_amount, 0)
-    return parseinfo.buffer.get_lines(context_start_line, parseinfo.line - 1)
+    return parseinfo.tokenizer.get_lines(context_start_line, parseinfo.line - 1)
 
 def _after_context_lines(parseinfo, context_amount = 3):
-    return parseinfo.buffer.get_lines(parseinfo.endline + 1, parseinfo.endline + 1 + context_amount)
+    return parseinfo.tokenizer.get_lines(parseinfo.endline + 1, parseinfo.endline + 1 + context_amount)

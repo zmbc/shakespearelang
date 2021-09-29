@@ -421,7 +421,7 @@ let_us = "Let" "us" | "We" "shall" | "We" "must";
 
 proceed_to = "proceed" "to" | "return" "to";
 
-roman_numeral = ?/M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})/?;
+roman_numeral = ?/(?i)M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})/?;
 
 goto = condition:[negative_if | positive_if] let_us proceed_to "scene" destination:roman_numeral ("!" | ".");
 

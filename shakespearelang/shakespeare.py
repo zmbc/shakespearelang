@@ -138,6 +138,8 @@ class Shakespeare:
             self._run_exeunt(event)
         elif event.parseinfo.rule == 'exit':
             self._run_exit(event)
+        else:
+            raise ShakespeareRuntimeError('Unknown event type: ' + event.parseinfo.rule)
 
         return has_goto
 
@@ -170,6 +172,8 @@ class Shakespeare:
             went_to = self._run_goto(sentence)
             if went_to:
                 return True
+        else:
+            raise ShakespeareRuntimeError('Unknown sentence type: ' + sentence.parseinfo.rule)
 
     @_add_interpreter_context_to_errors
     @_parse_first_argument('question')
@@ -194,6 +198,7 @@ class Shakespeare:
             return values[0] < values[1]
         elif question.comparative.parseinfo.rule == 'neutral_comparative':
             return values[0] == values[1]
+        raise ShakespeareRuntimeError('Unknown comparative type: ' + question.comparative.parseinfo.rule)
 
     @_add_interpreter_context_to_errors
     @_parse_first_argument('value')
@@ -351,15 +356,15 @@ class Shakespeare:
 
     def _evaluate_unary_operation(self, op, character):
         operand = self.evaluate_expression(op.value, character)
-        if op.operation == ['the', 'cube', 'of']:
+        if op.operation == ('the', 'cube', 'of'):
             return pow(operand, 3)
-        elif op.operation == ['the', 'factorial', 'of']:
+        elif op.operation == ('the', 'factorial', 'of'):
             if operand < 0:
                 raise ShakespeareRuntimeError('Cannot take the factorial of a negative number: ' + str(operand))
             return math.factorial(operand)
-        elif op.operation == ['the', 'square', 'of']:
+        elif op.operation == ('the', 'square', 'of'):
             return pow(operand, 2)
-        elif op.operation == ['the', 'square', 'root', 'of']:
+        elif op.operation == ('the', 'square', 'root', 'of'):
             if operand < 0:
                 raise ShakespeareRuntimeError('Cannot take the square root of a negative number: ' + str(operand))
             # Truncates (does not round) result -- this is equivalent to C
@@ -367,29 +372,31 @@ class Shakespeare:
             return int(math.sqrt(operand))
         elif op.operation == 'twice':
             return operand * 2
+        raise ShakespeareRuntimeError('Unknown operation!')
 
     def _evaluate_binary_operation(self, op, character):
         first_operand = self.evaluate_expression(op.first_value, character)
         second_operand = self.evaluate_expression(op.second_value, character)
-        if op.operation == ['the', 'difference', 'between']:
+        if op.operation == ('the', 'difference', 'between'):
             return first_operand - second_operand
-        elif op.operation == ['the', 'product', 'of']:
+        elif op.operation == ('the', 'product', 'of'):
             return first_operand * second_operand
-        elif op.operation == ['the', 'quotient', 'between']:
+        elif op.operation == ('the', 'quotient', 'between'):
             if second_operand == 0:
                 raise ShakespeareRuntimeError('Cannot divide by zero')
             # Python's built-in integer division operator does not behave the
             # same as C for negative numbers, using floor instead of truncated
             # division
             return int(first_operand / second_operand)
-        elif op.operation == ['the', 'remainder', 'of',
-                              'the', 'quotient', 'between']:
+        elif op.operation == ('the', 'remainder', 'of',
+                              'the', 'quotient', 'between'):
             if second_operand == 0:
                 raise ShakespeareRuntimeError('Cannot divide by zero')
             # See note above. math.fmod replicates C behavior.
             return int(math.fmod(first_operand, second_operand))
-        elif op.operation == ['the', 'sum', 'of']:
+        elif op.operation == ('the', 'sum', 'of'):
             return first_operand + second_operand
+        raise ShakespeareRuntimeError('Unknown operation!')
 
     # SENTENCE TYPES
 
@@ -420,6 +427,8 @@ class Shakespeare:
             except ValueError:
                 raise ShakespeareRuntimeError('Invalid character code: ' + str(char_code))
             print(char, end="")
+        else:
+            raise ShakespeareRuntimeError('Unknown output type!')
 
     def _run_input(self, input_op, character):
         if not self._input_buffer:
@@ -449,6 +458,8 @@ class Shakespeare:
             input_char = ord(self._input_buffer[0])
             self._input_buffer = self._input_buffer[1:]
             self._character_opposite(character).value = input_char
+        else:
+            raise ShakespeareRuntimeError('Unknown output type!')
 
     def _run_push(self, push, speaking_character):
         pushing_character = self._character_opposite(speaking_character)
