@@ -5,19 +5,34 @@ class ShakespeareRuntimeError(Exception):
         self.message = message
         self.parseinfo = parseinfo
         self.interpreter = interpreter
+        super().__init__()
 
     def __str__(self):
-        result_lines = [f'SPL Error: {self.message}']
-        if self.parseinfo:
-            result_lines += [f'  at line {self.parseinfo.line}']
-            result_lines += ['----- context -----']
-            result_lines += [parseinfo_context(self.parseinfo)]
-        if self.interpreter:
-            result_lines += ['----- state -----']
-            result_lines += [f'global boolean = {self.interpreter.global_boolean}']
-            result_lines += ['on stage:']
-            result_lines += [f'  {c}' for c in self.interpreter.characters if c.on_stage]
-            result_lines += ['off stage:']
-            result_lines += [f'  {c}' for c in self.interpreter.characters if not c.on_stage]
+        return '\n'.join(
+            [f'SPL Error: {self.message}'] +
+            self._parseinfo_str_lines() +
+            self._state_str_lines()
+        )
 
-        return '\n'.join(result_lines)
+    def _parseinfo_str_lines(self):
+        if self.parseinfo is None:
+            return []
+        return [
+            f'  at line {self.parseinfo.line}',
+            '----- context -----',
+            parseinfo_context(self.parseinfo)
+        ]
+
+    def _state_str_lines(self):
+        if self.interpreter is None:
+            return []
+        return (
+            [
+                '----- state -----',
+                f'global boolean = {self.interpreter.global_boolean}',
+                'on stage:'
+            ] +
+            [f'  {c}' for c in self.interpreter.characters if c.on_stage] +
+            ['off stage:'] +
+            [f'  {c}' for c in self.interpreter.characters if not c.on_stage]
+        )
