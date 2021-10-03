@@ -11,10 +11,6 @@ def test_basic_constants(capsys):
     assert s.evaluate_expression('the Microsoft', None) == -1
     assert s.evaluate_expression('Microsoft', None) == -1
 
-    captured = capsys.readouterr()
-    assert captured.out == ''
-    assert captured.err == ''
-
 def test_adjectives(capsys):
     s = Shakespeare('Foo.')
     assert s.evaluate_expression('the big cat', None) == 2
@@ -23,10 +19,6 @@ def test_adjectives(capsys):
     assert s.evaluate_expression('big Microsoft', None) == -2
     assert s.evaluate_expression('big evil Microsoft', None) == -4
     assert s.evaluate_expression('big evil blue Microsoft', None) == -8
-
-    captured = capsys.readouterr()
-    assert captured.out == ''
-    assert captured.err == ''
 
 def test_first_person_pronouns(capsys):
     s = Shakespeare('Foo. Juliet, a test.')
