@@ -1,0 +1,448 @@
+positive_comparative : ("better"i | "bigger"i | "fresher"i | "friendlier"i | "nicer"i | "jollier"i | "more"i positive_adjective) "than"i
+
+negative_comparative : ("punier"i | "smaller"i | "worse"i | "more"i negative_adjective) "than"i
+
+negative_adjective : "bad"i
+  | "cowardly"i
+  | "cursed"i
+  | "damned"i
+  | "dirty"i
+  | "disgusting"i
+  | "distasteful"i
+  | "dusty"i
+  | "evil"i
+  | "fat-kidneyed"i
+  | "fatherless"i
+  | "fat"i
+  | "foul"i
+  | "hairy"i
+  | "half-witted"i
+  | "horrible"i
+  | "horrid"i
+  | "infected"i
+  | "lying"i
+  | "miserable"i
+  | "misused"i
+  | "oozing"i
+  | "rotten"i
+  | "rotten"i
+  | "smelly"i
+  | "snotty"i
+  | "sorry"i
+  | "stinking"i
+  | "stuffed"i
+  | "stupid"i
+  | "vile"i
+  | "villainous"i
+  | "worried"i
+
+neutral_adjective : "big"i
+  | "black"i
+  | "blue"i
+  | "bluest"i
+  | "bottomless"i
+  | "furry"i
+  | "green"i
+  | "hard"i
+  | "huge"i
+  | "large"i
+  | "little"i
+  | "normal"i
+  | "old"i
+  | "purple"i
+  | "red"i
+  | "rural"i
+  | "small"i
+  | "tiny"i
+  | "white"i
+  | "yellow"i
+
+positive_adjective : "amazing"i
+  | "beautiful"i
+  | "blossoming"i
+  | "bold"i
+  | "brave"i
+  | "charming"i
+  | "clearest"i
+  | "cunning"i
+  | "cute"i
+  | "delicious"i
+  | "embroidered"i
+  | "fair"i
+  | "fine"i
+  | "gentle"i
+  | "golden"i
+  | "good"i
+  | "handsome"i
+  | "happy"i
+  | "healthy"i
+  | "honest"i
+  | "lovely"i
+  | "loving"i
+  | "mighty"i
+  | "noble"i
+  | "peaceful"i
+  | "pretty"i
+  | "prompt"i
+  | "proud"i
+  | "reddest"i
+  | "rich"i
+  | "smooth"i
+  | "sunny"i
+  | "sweet"i
+  | "sweetest"i
+  | "trustworthy"i
+  | "warm"i
+
+negative_noun : "Hell"i
+  | "Microsoft"i
+  | "bastard"i
+  | "beggar"i
+  | "blister"i
+  | "codpiece"i
+  | "coward"i
+  | "curse"i
+  | "death"i
+  | "devil"i
+  | "draught"i
+  | "famine"i
+  | "flirt-gill"i
+  | "goat"i
+  | "hate"i
+  | "hog"i
+  | "hound"i
+  | "leech"i
+  | "lie"i
+  | "pig"i
+  | "plague"i
+  | "starvation"i
+  | "toad"i
+  | "war"i
+  | "wolf"i
+
+neutral_noun : "animal"i
+  | "aunt"i
+  | "brother"i
+  | "cat"i
+  | "chihuahua"i
+  | "cousin"i
+  | "cow"i
+  | "daughter"i
+  | "door"i
+  | "face"i
+  | "father"i
+  | "fellow"i
+  | "granddaughter"i
+  | "grandfather"i
+  | "grandmother"i
+  | "grandson"i
+  | "hair"i
+  | "hamster"i
+  | "horse"i
+  | "lamp"i
+  | "lantern"i
+  | "mistletoe"i
+  | "moon"i
+  | "morning"i
+  | "mother"i
+  | "nephew"i
+  | "niece"i
+  | "nose"i
+  | "purse"i
+  | "road"i
+  | "roman"i
+  | "sister"i
+  | "sky"i
+  | "son"i
+  | "squirrel"i
+  | "stone"i "wall"i
+  | "thing"i
+  | "town"i
+  | "tree"i
+  | "uncle"i
+  | "wind"i
+
+positive_noun : "Heaven"i
+  | "King"i
+  | "Lord"i
+  | "angel"i
+  | "flower"i
+  | "happiness"i
+  | "joy"i
+  | "plum"i
+  | "summer's"i "day"i
+  | "hero"i
+  | "rose"i
+  | "kingdom"i
+  | "pony"i
+
+nothing : "nothing"i | "zero"i
+
+positive_or_neutral_adjective : positive_adjective | neutral_adjective
+
+?positive_or_neutral_noun : positive_noun | neutral_noun
+
+neutral_comparative : "as"i (negative_adjective | positive_or_neutral_adjective) "as"i
+
+negative_noun_phrase : [article | possessive] (negative_adjective | neutral_adjective)* negative_noun
+
+positive_noun_phrase : [article | possessive] positive_or_neutral_adjective* positive_or_neutral_noun
+
+noun_phrase : negative_noun_phrase | positive_noun_phrase
+
+second_person : _SECOND_PERSON
+
+value : expression
+  | FIRST_PERSON
+  | second_person
+  | noun_phrase
+  | CHARACTER
+  | nothing
+
+?binary_operation : "the"i "difference"i "between"i -> subtraction
+  | "the"i "product"i "of"i -> multiplication
+  | "the"i "quotient"i "between"i -> division
+  | "the"i "remainder"i "of"i "the"i "quotient"i "between"i -> modulo
+  | "the"i "sum"i "of"i -> addition
+
+binary_expression : binary_operation value "and"i value
+
+unary_operation : "the"i "cube"i "of"i
+  | "the"i "factorial"i "of"i
+  | "the"i "square"i "of"i
+  | "the"i "square"i "root"i "of"i
+  | "twice"i
+
+unary_expression : unary_operation value
+
+expression : binary_expression | unary_expression
+
+negative_if : "If"i "not"i ","i
+
+positive_if : "If"i "so"i ","i
+
+question : _BE value (positive_comparative | neutral_comparative | negative_comparative) value "?"i
+
+assignment : _SECOND_PERSON [_BE] ["as"i [(positive_or_neutral_adjective | negative_adjective) "as"i]] value _SENTENCE_END
+
+?condition : negative_if | positive_if
+
+goto : condition? _LET_US _PROCEED_TO "scene"i ROMAN_NUMERAL _SENTENCE_END
+
+output : ("open"i second_person_possessive "heart"i | "speak"i second_person_possessive "mind") _SENTENCE_END
+
+input : ("listen"i "to"i second_person_possessive "heart"i | "open"i second_person_possessive "mind") _SENTENCE_END
+
+push : "Remember"i value _SENTENCE_END
+
+pop : "Recall"i _TEXT_BEFORE_PUNCTUATION _SENTENCE_END
+
+?sentence : question | assignment | goto | output | input | push | pop
+
+line : CHARACTER ":"i sentence+
+
+character_list : CHARACTER (","i CHARACTER)* "and"i CHARACTER | CHARACTER
+
+breakpoint : "["i "A"i "pause"i "]"i
+
+entrance : "["i "Enter"i character_list "]"i
+
+exit : "["i "Exit"i CHARACTER "]"i
+
+exeunt : "["i "Exeunt"i [character_list] "]"i
+
+?event : line | breakpoint | entrance | exit | exeunt
+
+repl_input : CHARACTER ":"i value | CHARACTER | event | sentence+
+
+scene : "Scene"i ROMAN_NUMERAL ":"i _TEXT_BEFORE_PUNCTUATION _SENTENCE_END event*
+
+act : "Act"i ROMAN_NUMERAL ":"i _TEXT_BEFORE_PUNCTUATION _SENTENCE_END scene*
+
+dramatis_persona : CHARACTER ","i _TEXT_BEFORE_PUNCTUATION _SENTENCE_END
+
+dramatis_personae : dramatis_persona*
+
+play : _TEXT_BEFORE_PUNCTUATION ("!"i | ".") dramatis_personae act*
+
+?article : "an"i | "a"i | "the"i
+
+?possessive : first_person_possessive | second_person_possessive | third_person_possessive
+
+?third_person_possessive : "his"i | "her"i | "its"i | "their"i
+
+?second_person_possessive : "thine"i | "thy"i | "your"i
+
+?first_person_possessive : "mine"i | "my"i
+
+_TEXT_BEFORE_PUNCTUATION : /[^!\.]+/
+
+_SENTENCE_END : "!"i | "."i
+
+_LET_US : "Let"i WS+ "us"i | "We"i WS+ "shall"i | "We"i WS+ "must"i
+
+_PROCEED_TO : "proceed"i WS+ "to"i | "return"i WS+ "to"i
+
+_BE : "am"i | "are"i | "art"i | "be"i | "is"i
+
+FIRST_PERSON : "I"i | "me"i | "myself"i
+
+_SECOND_PERSON : "thyself"i | "yourself"i | "thee"i | "thou"i | "you"i
+
+ROMAN_NUMERAL : /[MDCLXVI]+/i
+
+CHARACTER : "Achilles"i
+  | "Adonis"i
+  | "Adriana"i
+  | "Aegeon"i
+  | "Aemilia"i
+  | "Agamemnon"i
+  | "Agrippa"i
+  | "Ajax"i
+  | "Alonso"i
+  | "Andromache"i
+  | "Angelo"i
+  | "Antiochus"i
+  | "Antonio"i
+  | "Arthur"i
+  | "Autolycus"i
+  | "Balthazar"i
+  | "Banquo"i
+  | "Beatrice"i
+  | "Benedick"i
+  | "Benvolio"i
+  | "Bianca"i
+  | "Brabantio"i
+  | "Brutus"i
+  | "Capulet"i
+  | "Cassandra"i
+  | "Cassius"i
+  | "Christopher"i WS+ "Sly"i
+  | "Cicero"i
+  | "Claudio"i
+  | "Claudius"i
+  | "Cleopatra"i
+  | "Cordelia"i
+  | "Cornelius"i
+  | "Cressida"i
+  | "Cymberline"i
+  | "Demetrius"i
+  | "Desdemona"i
+  | "Dionyza"i
+  | "Doctor"i WS+ "Caius"i
+  | "Dogberry"i
+  | "Don"i WS+ "John"i
+  | "Don"i WS+ "Pedro"i
+  | "Donalbain"i
+  | "Dorcas"i
+  | "Duncan"i
+  | "Egeus"i
+  | "Emilia"i
+  | "Escalus"i
+  | "Falstaff"i
+  | "Fenton"i
+  | "Ferdinand"i
+  | "Ford"i
+  | "Fortinbras"i
+  | "Francisca"i
+  | "Friar"i WS+ "John"i
+  | "Friar"i WS+ "Laurence"i
+  | "Gertrude"i
+  | "Goneril"i
+  | "Hamlet"i
+  | "Hecate"i
+  | "Hector"i
+  | "Helena"i
+  | "Helen"i
+  | "Hermia"i
+  | "Hermonie"i
+  | "Hippolyta"i
+  | "Horatio"i
+  | "Imogen"i
+  | "Isabella"i
+  | "John"i WS+ "of"i WS+ "Gaunt"i
+  | "John"i WS+ "of"i WS+ "Lancaster"i
+  | "Julia"i
+  | "Juliet"i
+  | "Julius"i WS+ "Caesar"i
+  | "King"i WS+ "Henry"i
+  | "King"i WS+ "John"i
+  | "King"i WS+ "Lear"i
+  | "King"i WS+ "Richard"i
+  | "Lady"i WS+ "Capulet"i
+  | "Lady"i WS+ "Macbeth"i
+  | "Lady"i WS+ "Macduff"i
+  | "Lady"i WS+ "Montague"i
+  | "Lennox"i
+  | "Leonato"i
+  | "Luciana"i
+  | "Lucio"i
+  | "Lychorida"i
+  | "Lysander"i
+  | "Macbeth"i
+  | "Macduff"i
+  | "Malcolm"i
+  | "Mariana"i
+  | "Mark"i WS+ "Antony"i
+  | "Mercutio"i
+  | "Miranda"i
+  | "Mistress"i WS+ "Ford"i
+  | "Mistress"i WS+ "Overdone"i
+  | "Mistress"i WS+ "Page"i
+  | "Montague"i
+  | "Mopsa"i
+  | "Oberon"i
+  | "Octavia"i
+  | "Octavius"i WS+ "Caesar"i
+  | "Olivia"i
+  | "Ophelia"i
+  | "Orlando"i
+  | "Orsino"i
+  | "Othello"i
+  | "Page"i
+  | "Pantino"i
+  | "Paris"i
+  | "Pericles"i
+  | "Pinch"i
+  | "Polonius"i
+  | "Pompeius"i
+  | "Portia"i
+  | "Priam"i
+  | "Prince"i WS+ "Henry"i
+  | "Prospero"i
+  | "Proteus"i
+  | "Publius"i
+  | "Puck"i
+  | "Queen"i WS+ "Elinor"i
+  | "Regan"i
+  | "Robin"i
+  | "Romeo"i
+  | "Rosalind"i
+  | "Sebastian"i
+  | "Shallow"i
+  | "Shylock"i
+  | "Slender"i
+  | "Solinus"i
+  | "Stephano"i
+  | "Thaisa"i
+  | "The"i WS+ "Abbot"i WS+ "of"i WS+ "Westminster"i
+  | "The"i WS+ "Apothecary"i
+  | "The"i WS+ "Archbishop"i WS+ "of"i WS+ "Canterbury"i
+  | "The"i WS+ "Duke"i WS+ "of"i WS+ "Milan"i
+  | "The"i WS+ "Duke"i WS+ "of"i WS+ "Venice"i
+  | "The"i WS+ "Ghost"i
+  | "Theseus"i
+  | "Thurio"i
+  | "Timon"i
+  | "Titania"i
+  | "Titus"i
+  | "Troilus"i
+  | "Tybalt"i
+  | "Ulysses"i
+  | "Valentine"i
+  | "Venus"i
+  | "Vincentio"i
+  | "Viola"i
+
+%import common.WS
+%ignore WS
