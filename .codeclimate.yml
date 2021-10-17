@@ -15,5 +15,5 @@ ratings:
   paths:
   - "**.py"
 exclude_paths:
-  - 'shakespearelang/tests/**.py'
+  - 'shakespearelang/tests/**/*.py'
   - 'shakespearelang/shakespeare_parser.py'
