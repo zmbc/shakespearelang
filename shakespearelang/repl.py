@@ -111,10 +111,9 @@ def debug_play(text):
 
     interpreter.run(on_breakpoint)
 
-# TODO: This should not be global state.
-current_character = None
-
 def run_repl(interpreter):
+    current_character = None
+
     while True:
         try:
             repl_input = input('>> ')
@@ -132,14 +131,14 @@ def run_repl(interpreter):
             elif repl_input == 'stage':
                 _print_stage(interpreter)
             else:
-                _run_repl_input(interpreter, repl_input)
+                # TODO: make this not an awkward return value
+                current_character = _run_repl_input(interpreter, repl_input, current_character)
         except FailedParse as parseException:
             print("\n\nThat doesn't look right:\n", parseException)
         except ShakespeareRuntimeError as runtimeError:
             print(str(runtimeError))
 
-def _run_repl_input(interpreter, repl_input):
-    global current_character
+def _run_repl_input(interpreter, repl_input, current_character):
     ast = interpreter.parser.parse(repl_input + "\n", rule_name='repl_input')
 
     event = ast.event
@@ -179,3 +178,5 @@ def _run_repl_input(interpreter, repl_input):
         print(result)
     elif character:
         _print_character(character, interpreter)
+
+    return current_character
