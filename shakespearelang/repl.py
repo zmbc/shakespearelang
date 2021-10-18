@@ -154,14 +154,12 @@ def _run_repl_input(interpreter, repl_input):
         event = None
 
     if event:
-        # BUG: This does not actually prevent the control flow from occurring!
-        control_flow = interpreter.run_event(event)
+        # Note we do not have to worry about control flow here because only lines
+        # can cause that -- these have been extracted to sentences above.
+        interpreter.run_event(event)
 
         if event.parseinfo.rule in ['entrance', 'exeunt', 'exit']:
             _print_stage(interpreter)
-
-        if control_flow:
-            print("Control flow isn't allowed in REPL.")
     elif sentences:
         if not current_character:
             print("Who's saying this?")
