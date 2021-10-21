@@ -105,16 +105,16 @@ def test_goto_conditionals(monkeypatch, capsys):
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 0}
     s.step_forward()
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 1}
-    s.global_boolean = True
+    s.state.global_boolean = True
     s.run_sentence('If so, let us proceed to scene II.', 'Juliet')
     assert s.current_position == {'act': 0, 'scene': 1, 'event': 0}
-    s.global_boolean = True
+    s.state.global_boolean = True
     s.run_sentence('If not, let us proceed to scene I.', 'Juliet')
     assert s.current_position == {'act': 0, 'scene': 1, 'event': 0}
-    s.global_boolean = False
+    s.state.global_boolean = False
     s.run_sentence('If so, let us proceed to scene I.', 'Juliet')
     assert s.current_position == {'act': 0, 'scene': 1, 'event': 0}
-    s.global_boolean = False
+    s.state.global_boolean = False
     s.run_sentence('If not, let us proceed to scene I.', 'Juliet')
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 0}
 

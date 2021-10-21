@@ -6,7 +6,7 @@ def test_push(monkeypatch):
     s = Shakespeare('Foo. Juliet, a test. Romeo, a test.')
     s.run_event('[Enter Romeo and Juliet]')
 
-    c = s._character_by_name('Juliet')
+    c = s.state.character_by_name('Juliet')
     assert c.stack == []
     assert c.value == 0
 
@@ -29,7 +29,7 @@ def test_pop():
     s = Shakespeare('Foo. Juliet, a test. Romeo, a test.')
     s.run_event('[Enter Romeo and Juliet]')
 
-    c = s._character_by_name('Juliet')
+    c = s.state.character_by_name('Juliet')
     assert c.stack == []
     assert c.value == 0
 
@@ -51,7 +51,7 @@ def test_sequence(monkeypatch):
     s = Shakespeare('Foo. Juliet, a test. Romeo, a test.')
     s.run_event('[Enter Romeo and Juliet]')
 
-    c = s._character_by_name('Juliet')
+    c = s.state.character_by_name('Juliet')
     assert c.stack == []
     assert c.value == 0
 
@@ -109,7 +109,7 @@ def test_errors_on_pop_from_empty():
     s = Shakespeare('Foo. Juliet, a test. Romeo, a test.')
     s.run_event('[Enter Romeo and Juliet]')
 
-    c = s._character_by_name('Juliet')
+    c = s.state.character_by_name('Juliet')
     assert c.stack == []
     assert c.value == 0
 

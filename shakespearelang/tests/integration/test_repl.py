@@ -189,14 +189,11 @@ Juliet, a player.
 
 >> Romeo pushed 0
 Romeo set to -1
->> Romeo
-Value: -1
-Stack:
-0
+>> Romeo = -1 (0)
 >> """)
 
-def test_display_stage(monkeypatch, capsys):
-    monkeypatch.setattr('sys.stdin', StringIO('Juliet: Remember thyself! You are a pig!\nstage\nquit\n'))
+def test_display_state(monkeypatch, capsys):
+    monkeypatch.setattr('sys.stdin', StringIO('Juliet: Remember thyself! You are a pig!\nstate\nquit\n'))
 
     with pytest.raises(SystemExit) as exc:
         start_console()
@@ -214,11 +211,11 @@ Juliet, a player.
 
 >> Romeo pushed 0
 Romeo set to -1
->> On stage:
-Romeo
-Juliet
-
-Off stage:
+>> global boolean = False
+on stage:
+  Romeo = -1 (0)
+  Juliet = 0 ()
+off stage:
 >> """)
 
 def assert_output(capsys, output, stderr=''):

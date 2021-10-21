@@ -8,6 +8,7 @@ from .shakespeare_parser import shakespeareParser
 from .errors import ShakespeareRuntimeError
 from .utils import parseinfo_context
 from .character import Character
+from .state import State
 import math
 from functools import wraps
 
@@ -45,13 +46,11 @@ class Shakespeare:
     def __init__(self, play):
         self.parser = shakespeareParser()
         self.ast = self._parse_if_necessary(play, 'play')
-        self._run_dramatis_personae(self.ast.dramatis_personae)
+        self.state = State(self.ast.dramatis_personae)
 
         self.current_position = {'act': 0, 'scene': 0, 'event': 0}
         self._make_position_consistent()
         self._input_buffer = ''
-
-        self.global_boolean = False
 
     # PUBLIC METHODS
 
@@ -135,8 +134,8 @@ class Shakespeare:
         character -- A name or shakespearelang.Character representation of the
                      character speaking the sentence.
         """
-        character = self._character_by_name_if_necessary(character)
-        self._assert_character_on_stage(character)
+        character = self.state.character_by_name_if_necessary(character)
+        self.state.assert_character_on_stage(character)
 
         if sentence.parseinfo.rule not in self._SENTENCE_TYPE_HANDLERS:
             raise ShakespeareRuntimeError('Unknown sentence type: ' + sentence.parseinfo.rule)
@@ -159,8 +158,8 @@ class Shakespeare:
         character -- A name or shakespearelang.Character representation of the
                      character asking the question.
         """
-        character = self._character_by_name_if_necessary(character)
-        self._assert_character_on_stage(character)
+        character = self.state.character_by_name_if_necessary(character)
+        self.state.assert_character_on_stage(character)
 
         rule = question.comparative.parseinfo.rule
         if rule not in self._COMPARATIVE_TYPE_HANDLERS:
@@ -172,10 +171,10 @@ class Shakespeare:
 
     _EXPRESSION_TYPE_HANDLERS = {
         'first_person_value': lambda self, v, c: c.value,
-        'second_person_value': lambda self, v, c: self._character_opposite(c).value,
+        'second_person_value': lambda self, v, c: self.state.character_opposite(c).value,
         'negative_noun_phrase': lambda self, v, c: -pow(2, len(v.adjectives)),
         'positive_noun_phrase': lambda self, v, c: pow(2, len(v.adjectives)),
-        'character_name': lambda self, v, c: self._character_by_name(v.name).value,
+        'character_name': lambda self, v, c: self.state.character_by_name(v.name).value,
         'nothing': lambda self, v, c: 0,
         'unary_expression': lambda self, v, c: self._evaluate_unary_operation(v, c),
         'binary_expression': lambda self, v, c: self._evaluate_binary_operation(v, c),
@@ -192,7 +191,7 @@ class Shakespeare:
         character -- A name or shakespearelang.Character representation of the
                      character speaking the expression.
         """
-        character = self._character_by_name_if_necessary(character)
+        character = self.state.character_by_name_if_necessary(character)
 
         if value.parseinfo.rule not in self._EXPRESSION_TYPE_HANDLERS:
             raise ShakespeareRuntimeError('Unknown expression type: ' + value.parseinfo.rule)
@@ -200,54 +199,11 @@ class Shakespeare:
 
     # HELPERS
 
-    def _run_dramatis_personae(self, personae):
-        """
-        Run a dramatis personae, overwriting the character list.
-
-        Arguments:
-        personae -- A string or AST representation of a dramatis personae
-        destructive -- Whether to replace the current character list
-                       (default False)
-        """
-        self.characters = [Character.from_dramatis_persona(p) for p in personae]
-
     def _parse_if_necessary(self, item, rule_name):
         if isinstance(item, str):
             return self.parser.parse(item, rule_name=rule_name)
         else:
             return item
-
-    def _character_opposite(self, character):
-        characters_opposite = [x for x in self.characters
-                               if x.on_stage and x.name != character.name]
-        if len(characters_opposite) > 1:
-            raise ShakespeareRuntimeError("Ambiguous second-person pronoun")
-        elif len(characters_opposite) == 0:
-            raise ShakespeareRuntimeError(character.name + ' is talking to nobody!')
-        return characters_opposite[0]
-
-    def _character_by_name(self, name):
-        if not isinstance(name, str):
-            name = " ".join(name)
-        match = next((x for x in self.characters if x.name.lower() == name.lower()), None)
-        if match is not None:
-            return match
-        else:
-            raise ShakespeareRuntimeError(name + ' was not initialized!')
-
-    def _character_by_name_if_necessary(self, character):
-        if isinstance(character, str):
-            return self._character_by_name(character)
-        else:
-            return character
-
-    def _assert_character_on_stage(self, character):
-        if character.on_stage == False:
-            raise ShakespeareRuntimeError(character.name + ' is not on stage!')
-
-    def _assert_character_off_stage(self, character):
-        if character.on_stage == True:
-            raise ShakespeareRuntimeError(character.name + ' is already on stage!')
 
     def _scene_number_from_roman_numeral(self, roman_numeral):
         for index, scene in enumerate(self.current_act.scenes):
@@ -360,27 +316,27 @@ class Shakespeare:
     # SENTENCE TYPES
 
     def _run_assignment(self, sentence, character):
-        character_opposite = self._character_opposite(character)
+        character_opposite = self.state.character_opposite(character)
         character_opposite.value = self.evaluate_expression(sentence.value,
                                                             character)
 
     def _run_question(self, question, character):
-        self.global_boolean = self.evaluate_question(question, character)
+        self.state.global_boolean = self.evaluate_question(question, character)
 
     def _run_goto(self, goto):
         condition = goto.condition
         condition_type = (condition and
                           condition.parseinfo.rule == 'positive_if')
-        if (not condition) or (condition_type == self.global_boolean):
+        if (not condition) or (condition_type == self.state.global_boolean):
             self._goto_scene(goto.destination)
             return True
 
     def _run_output(self, output, character):
         if output.output_number:
-            number = self._character_opposite(character).value
+            number = self.state.character_opposite(character).value
             print(number, end="")
         elif output.output_char:
-            char_code = self._character_opposite(character).value
+            char_code = self.state.character_opposite(character).value
             try:
                 char = chr(char_code)
             except ValueError:
@@ -395,7 +351,7 @@ class Shakespeare:
                 self._input_buffer = input() + '\n'
             except EOFError:
                 if input_op.input_char:
-                    self._character_opposite(character).value = -1
+                    self.state.character_opposite(character).value = -1
                     return
                 else:
                     raise ShakespeareRuntimeError('End of file encountered.')
@@ -412,28 +368,28 @@ class Shakespeare:
             if (self._input_buffer[0] == '\n'):
                 self._input_buffer = self._input_buffer[1:]
 
-            self._character_opposite(character).value = int(number_input)
+            self.state.character_opposite(character).value = int(number_input)
         elif input_op.input_char:
             input_char = ord(self._input_buffer[0])
             self._input_buffer = self._input_buffer[1:]
-            self._character_opposite(character).value = input_char
+            self.state.character_opposite(character).value = input_char
         else:
             raise ShakespeareRuntimeError('Unknown output type!')
 
     def _run_push(self, push, speaking_character):
-        pushing_character = self._character_opposite(speaking_character)
+        pushing_character = self.state.character_opposite(speaking_character)
         value = self.evaluate_expression(push.value, speaking_character)
         pushing_character.push(value)
 
     def _run_pop(self, pop, speaking_character):
-        popping_character = self._character_opposite(speaking_character)
+        popping_character = self.state.character_opposite(speaking_character)
         popping_character.pop()
 
     # EVENT TYPES
 
     def _run_line(self, line):
-        character = self._character_by_name(line.character)
-        self._assert_character_on_stage(character)
+        character = self.state.character_by_name(line.character)
+        self.state.assert_character_on_stage(character)
         for sentence in line.contents:
             # Returns whether this sentence caused a goto
             has_goto = self.run_sentence(sentence, character)
@@ -441,24 +397,13 @@ class Shakespeare:
                 return True
 
     def _run_entrance(self, entrance):
-        characters_to_enter = [self._character_by_name(name) for name in entrance.characters]
-        for character in characters_to_enter:
-            self._assert_character_off_stage(character)
-        for character in characters_to_enter:
-            character.on_stage = True
+        self.state.enter_characters(entrance.characters)
 
     def _run_exeunt(self, exeunt):
         if exeunt.characters:
-            characters_to_exeunt = [self._character_by_name(name) for name in exeunt.characters]
-            for character in characters_to_exeunt:
-                self._assert_character_on_stage(character)
+            self.state.exeunt_characters(exeunt.characters)
         else:
-            characters_to_exeunt = self.characters
-
-        for character in characters_to_exeunt:
-            character.on_stage = False
+            self.state.exeunt_all()
 
     def _run_exit(self, exit):
-        character = self._character_by_name(exit.character)
-        self._assert_character_on_stage(character)
-        character.on_stage = False
+        self.state.exit_character(exit.character)

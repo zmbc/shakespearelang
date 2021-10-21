@@ -26,13 +26,4 @@ class ShakespeareRuntimeError(Exception):
     def _state_str_lines(self):
         if self.interpreter is None:
             return []
-        return (
-            [
-                '----- state -----',
-                f'global boolean = {self.interpreter.global_boolean}',
-                'on stage:'
-            ] +
-            [f'  {c}' for c in self.interpreter.characters if c.on_stage] +
-            ['off stage:'] +
-            [f'  {c}' for c in self.interpreter.characters if not c.on_stage]
-        )
+        return ['----- state -----', str(self.interpreter.state)]

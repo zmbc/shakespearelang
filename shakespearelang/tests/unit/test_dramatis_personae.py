@@ -19,15 +19,15 @@ Vincentio, a test.
 
 def test_correct_characters():
     s = Shakespeare('Foo. Juliet, a test. Romeo, a test. The Ghost, a test.')
-    assert sorted([c.name for c in s.characters]) == ['Juliet', 'Romeo', 'The Ghost']
+    assert sorted([c.name for c in s.state.characters]) == ['Juliet', 'Romeo', 'The Ghost']
 
 def test_no_characters():
     s = Shakespeare('Foo. Act I: The beginning.')
-    assert s.characters == []
+    assert s.state.characters == []
 
 def test_many_characters():
     s = Shakespeare(MANY_CHARACTERS_PLAY)
-    assert sorted([c.name for c in s.characters]) == [
+    assert sorted([c.name for c in s.state.characters]) == [
         'Achilles',
         'Christopher Sly',
         'Demetrius',

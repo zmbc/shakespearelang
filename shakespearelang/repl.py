@@ -5,18 +5,6 @@ from tatsu.exceptions import FailedParse
 import readline
 import sys
 
-
-def _print_stage(interpreter):
-    print('On stage:')
-    for x in interpreter.characters:
-        if x.on_stage:
-            print(x.name)
-    print('\nOff stage:')
-    for x in interpreter.characters:
-        if not x.on_stage:
-            print(x.name)
-
-
 def _prefix_input_output(sentence, opposite_character):
     if sentence.parseinfo.rule == 'output' and sentence.output_number:
         print(opposite_character.name, 'outputted self as number:')
@@ -40,18 +28,8 @@ def _show_result_of_sentence(sentence, opposite_character, interpreter):
 
 
 def _print_character(character_name, interpreter):
-    character = interpreter._character_by_name(character_name)
-    if not character.on_stage:
-        print(character.name, 'is off stage right now.')
-    else:
-        print(character.name)
-        print('Value:', character.value)
-        print('Stack:')
-        for index, item in enumerate(character.stack):
-            if index >= 10:
-                print('...')
-                break
-            print(item)
+    character = interpreter.state.character_by_name(character_name)
+    print(character)
 
 
 def _run_sentences(sentences,
@@ -128,8 +106,8 @@ def run_repl(interpreter):
                 if interpreter.play_over():
                     break
                 print('\n-----\n', interpreter.next_event_text(), '\n-----\n')
-            elif repl_input == 'stage':
-                _print_stage(interpreter)
+            elif repl_input == 'state':
+                print(str(interpreter.state))
             else:
                 # TODO: make this not an awkward return value
                 current_character = _run_repl_input(interpreter, repl_input, current_character)
@@ -164,17 +142,17 @@ def _run_repl_input(interpreter, repl_input, current_character):
             print("Who's saying this?")
             return
 
-        speaking_character = interpreter._character_by_name(current_character)
-        interpreter._assert_character_on_stage(speaking_character)
-        opposite_character = interpreter._character_opposite(speaking_character)
+        speaking_character = interpreter.state.character_by_name(current_character)
+        interpreter.state.assert_character_on_stage(speaking_character)
+        opposite_character = interpreter.state.character_opposite(speaking_character)
 
         _run_sentences(sentences, speaking_character, opposite_character, interpreter)
     elif value:
         if character:
             current_character = character
 
-        speaking_character = interpreter._character_by_name(current_character)
-        interpreter._assert_character_on_stage(current_character)
+        speaking_character = interpreter.state.character_by_name(current_character)
+        interpreter.state.assert_character_on_stage(current_character)
         result = interpreter.evaluate_expression(value, speaking_character)
 
         print(result)
