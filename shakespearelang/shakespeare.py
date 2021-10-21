@@ -346,35 +346,45 @@ class Shakespeare:
             raise ShakespeareRuntimeError('Unknown output type!')
 
     def _run_input(self, input_op, character):
+        try:
+            self._ensure_input_buffer()
+
+            if input_op.input_number:
+                value_consumed = self._consume_numeric_input()
+            elif input_op.input_char:
+                value_consumed = self._consume_character_input()
+            else:
+                raise ShakespeareRuntimeError('Unknown input type!')
+        except EOFError:
+            if input_op.input_char:
+                value_consumed = -1
+            else:
+                raise ShakespeareRuntimeError('End of file encountered.')
+
+        self.state.character_opposite(character).value = value_consumed
+
+    def _ensure_input_buffer(self):
         if not self._input_buffer:
-            try:
-                self._input_buffer = input() + '\n'
-            except EOFError:
-                if input_op.input_char:
-                    self.state.character_opposite(character).value = -1
-                    return
-                else:
-                    raise ShakespeareRuntimeError('End of file encountered.')
+            self._input_buffer = input() + '\n'
 
-        if input_op.input_number:
-            number_input = ''
-            while self._input_buffer[0].isdigit():
-                number_input += self._input_buffer[0]
-                self._input_buffer = self._input_buffer[1:]
-
-            if len(number_input) == 0:
-                raise ShakespeareRuntimeError('No numeric input was given.')
-
-            if (self._input_buffer[0] == '\n'):
-                self._input_buffer = self._input_buffer[1:]
-
-            self.state.character_opposite(character).value = int(number_input)
-        elif input_op.input_char:
-            input_char = ord(self._input_buffer[0])
+    def _consume_numeric_input(self):
+        number_input = ''
+        while self._input_buffer[0].isdigit():
+            number_input += self._input_buffer[0]
             self._input_buffer = self._input_buffer[1:]
-            self.state.character_opposite(character).value = input_char
-        else:
-            raise ShakespeareRuntimeError('Unknown output type!')
+
+        if len(number_input) == 0:
+            raise ShakespeareRuntimeError('No numeric input was given.')
+
+        if (self._input_buffer[0] == '\n'):
+            self._input_buffer = self._input_buffer[1:]
+
+        return int(number_input)
+
+    def _consume_character_input(self):
+        input_char = ord(self._input_buffer[0])
+        self._input_buffer = self._input_buffer[1:]
+        return input_char
 
     def _run_push(self, push, speaking_character):
         pushing_character = self.state.character_opposite(speaking_character)
