@@ -164,7 +164,8 @@ def _run_repl_input(interpreter, repl_input, current_character):
             print("Who's saying this?")
             return
 
-        speaking_character = interpreter._on_stage_character_by_name(current_character)
+        speaking_character = interpreter._character_by_name(current_character)
+        interpreter._assert_character_on_stage(speaking_character)
         opposite_character = interpreter._character_opposite(speaking_character)
 
         _run_sentences(sentences, speaking_character, opposite_character, interpreter)
@@ -172,7 +173,8 @@ def _run_repl_input(interpreter, repl_input, current_character):
         if character:
             current_character = character
 
-        speaking_character = interpreter._on_stage_character_by_name(current_character)
+        speaking_character = interpreter._character_by_name(current_character)
+        interpreter._assert_character_on_stage(current_character)
         result = interpreter.evaluate_expression(value, speaking_character)
 
         print(result)

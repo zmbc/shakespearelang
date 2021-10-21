@@ -49,7 +49,7 @@ def test_goto_current(monkeypatch, capsys):
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 0}
     s.step_forward()
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 1}
-    s.run_sentence('Let us proceed to scene I.', s._on_stage_character_by_name('Juliet'))
+    s.run_sentence('Let us proceed to scene I.', 'Juliet')
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 0}
 
     captured = capsys.readouterr()
@@ -62,7 +62,7 @@ def test_goto_next(monkeypatch, capsys):
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 0}
     s.step_forward()
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 1}
-    s.run_sentence('Let us proceed to scene II.', s._on_stage_character_by_name('Juliet'))
+    s.run_sentence('Let us proceed to scene II.', 'Juliet')
     assert s.current_position == {'act': 0, 'scene': 1, 'event': 0}
 
     captured = capsys.readouterr()
@@ -75,7 +75,7 @@ def test_goto_prev(monkeypatch, capsys):
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 0}
     s.step_forward()
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 1}
-    s.run_sentence('Let us return to scene I.', s._on_stage_character_by_name('Juliet'))
+    s.run_sentence('Let us return to scene I.', 'Juliet')
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 0}
 
     captured = capsys.readouterr()
@@ -89,10 +89,10 @@ def test_goto_without_opposite_character(monkeypatch, capsys):
     s.step_forward()
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 1}
     s.run_event('[Exit Romeo]')
-    s.run_sentence('Let us proceed to scene II.', s._on_stage_character_by_name('Juliet'))
+    s.run_sentence('Let us proceed to scene II.', 'Juliet')
     assert s.current_position == {'act': 0, 'scene': 1, 'event': 0}
     s.run_event('[Enter Romeo and Macbeth]')
-    s.run_sentence('Let us proceed to scene I.', s._on_stage_character_by_name('Juliet'))
+    s.run_sentence('Let us proceed to scene I.', 'Juliet')
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 0}
 
     captured = capsys.readouterr()
@@ -106,16 +106,16 @@ def test_goto_conditionals(monkeypatch, capsys):
     s.step_forward()
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 1}
     s.global_boolean = True
-    s.run_sentence('If so, let us proceed to scene II.', s._on_stage_character_by_name('Juliet'))
+    s.run_sentence('If so, let us proceed to scene II.', 'Juliet')
     assert s.current_position == {'act': 0, 'scene': 1, 'event': 0}
     s.global_boolean = True
-    s.run_sentence('If not, let us proceed to scene I.', s._on_stage_character_by_name('Juliet'))
+    s.run_sentence('If not, let us proceed to scene I.', 'Juliet')
     assert s.current_position == {'act': 0, 'scene': 1, 'event': 0}
     s.global_boolean = False
-    s.run_sentence('If so, let us proceed to scene I.', s._on_stage_character_by_name('Juliet'))
+    s.run_sentence('If so, let us proceed to scene I.', 'Juliet')
     assert s.current_position == {'act': 0, 'scene': 1, 'event': 0}
     s.global_boolean = False
-    s.run_sentence('If not, let us proceed to scene I.', s._on_stage_character_by_name('Juliet'))
+    s.run_sentence('If not, let us proceed to scene I.', 'Juliet')
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 0}
 
     captured = capsys.readouterr()
@@ -148,11 +148,11 @@ def test_goto_based_on_numeral_not_order(monkeypatch, capsys):
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 0}
     s.step_forward()
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 1}
-    s.run_sentence('Let us return to scene I.', s._on_stage_character_by_name('Juliet'))
+    s.run_sentence('Let us return to scene I.', 'Juliet')
     assert s.current_position == {'act': 0, 'scene': 1, 'event': 0}
-    s.run_sentence('Let us return to scene III.', s._on_stage_character_by_name('Juliet'))
+    s.run_sentence('Let us return to scene III.', 'Juliet')
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 0}
-    s.run_sentence('Let us return to scene II.', s._on_stage_character_by_name('Juliet'))
+    s.run_sentence('Let us return to scene II.', 'Juliet')
     assert s.current_position == {'act': 0, 'scene': 2, 'event': 0}
 
     captured = capsys.readouterr()
@@ -166,7 +166,7 @@ def test_errors_on_goto_nonexistent(monkeypatch, capsys):
     s.step_forward()
     assert s.current_position == {'act': 0, 'scene': 0, 'event': 1}
     with pytest.raises(ShakespeareRuntimeError) as exc:
-        s.run_sentence('Let us proceed to scene IV.', s._on_stage_character_by_name('Juliet'))
+        s.run_sentence('Let us proceed to scene IV.', 'Juliet')
     assert 'does not exist' in str(exc.value).lower()
     assert '>>Let us proceed to scene IV.<<' in str(exc.value)
     assert exc.value.interpreter == s
@@ -205,9 +205,9 @@ def test_skips_empty_scenes_and_acts(monkeypatch, capsys):
     assert s.current_position == {'act': 0, 'scene': 1, 'event': 0}
     s.step_forward()
     assert s.current_position == {'act': 0, 'scene': 1, 'event': 1}
-    s.run_sentence('Let us return to scene IV.', s._on_stage_character_by_name('Juliet'))
+    s.run_sentence('Let us return to scene IV.', 'Juliet')
     assert s.current_position == {'act': 0, 'scene': 1, 'event': 0}
-    s.run_sentence('Let us return to scene I.', s._on_stage_character_by_name('Juliet'))
+    s.run_sentence('Let us return to scene I.', 'Juliet')
     assert s.current_position == {'act': 4, 'scene': 0, 'event': 0}
 
     captured = capsys.readouterr()

@@ -93,6 +93,13 @@ class Shakespeare:
         current_event = self._next_event()
         return parseinfo_context(current_event.parseinfo)
 
+    _EVENT_TYPE_HANDLERS = {
+        'line': lambda self, e: self._run_line(e),
+        'entrance': lambda self, e: self._run_entrance(e),
+        'exeunt': lambda self, e: self._run_exeunt(e),
+        'exit': lambda self, e: self._run_exit(e),
+    }
+
     @_add_interpreter_context_to_errors
     @_parse_first_argument('event')
     def run_event(self, event):
@@ -103,20 +110,19 @@ class Shakespeare:
         event -- A string or AST representation of an event (line, entrance,
                  exit, etc.)
         """
-        has_goto = False
-
-        if event.parseinfo.rule == 'line':
-            has_goto = self._run_line(event)
-        elif event.parseinfo.rule == 'entrance':
-            self._run_entrance(event)
-        elif event.parseinfo.rule == 'exeunt':
-            self._run_exeunt(event)
-        elif event.parseinfo.rule == 'exit':
-            self._run_exit(event)
-        else:
+        if event.parseinfo.rule not in self._EVENT_TYPE_HANDLERS:
             raise ShakespeareRuntimeError('Unknown event type: ' + event.parseinfo.rule)
+        return self._EVENT_TYPE_HANDLERS[event.parseinfo.rule](self, event)
 
-        return has_goto
+    _SENTENCE_TYPE_HANDLERS = {
+        'assignment': lambda self, s, c: self._run_assignment(s, c),
+        'question': lambda self, s, c: self._run_question(s, c),
+        'output': lambda self, s, c: self._run_output(s, c),
+        'input': lambda self, s, c: self._run_input(s, c),
+        'push': lambda self, s, c: self._run_push(s, c),
+        'pop': lambda self, s, c: self._run_pop(s, c),
+        'goto': lambda self, s, c: self._run_goto(s),
+    }
 
     @_add_interpreter_context_to_errors
     @_parse_first_argument('sentence')
@@ -129,26 +135,18 @@ class Shakespeare:
         character -- A name or shakespearelang.Character representation of the
                      character speaking the sentence.
         """
-        character = self._on_stage_character_by_name_if_necessary(character)
+        character = self._character_by_name_if_necessary(character)
+        self._assert_character_on_stage(character)
 
-        if sentence.parseinfo.rule == 'assignment':
-            self._run_assignment(sentence, character)
-        elif sentence.parseinfo.rule == 'question':
-            self._run_question(sentence, character)
-        elif sentence.parseinfo.rule == 'output':
-            self._run_output(sentence, character)
-        elif sentence.parseinfo.rule == 'input':
-            self._run_input(sentence, character)
-        elif sentence.parseinfo.rule == 'push':
-            self._run_push(sentence, character)
-        elif sentence.parseinfo.rule == 'pop':
-            self._run_pop(sentence, character)
-        elif sentence.parseinfo.rule == 'goto':
-            went_to = self._run_goto(sentence)
-            if went_to:
-                return True
-        else:
+        if sentence.parseinfo.rule not in self._SENTENCE_TYPE_HANDLERS:
             raise ShakespeareRuntimeError('Unknown sentence type: ' + sentence.parseinfo.rule)
+        return self._SENTENCE_TYPE_HANDLERS[sentence.parseinfo.rule](self, sentence, character)
+
+    _COMPARATIVE_TYPE_HANDLERS = {
+        'positive_comparative': lambda a, b: a > b,
+        'negative_comparative': lambda a, b: a < b,
+        'neutral_comparative': lambda a, b: a == b,
+    }
 
     @_add_interpreter_context_to_errors
     @_parse_first_argument('question')
@@ -161,19 +159,27 @@ class Shakespeare:
         character -- A name or shakespearelang.Character representation of the
                      character asking the question.
         """
-        character = self._on_stage_character_by_name_if_necessary(character)
+        character = self._character_by_name_if_necessary(character)
+        self._assert_character_on_stage(character)
 
-        values = [
-            self.evaluate_expression(v, character) for v in
-                [question.first_value, question.second_value]
-        ]
-        if question.comparative.parseinfo.rule == 'positive_comparative':
-            return values[0] > values[1]
-        elif question.comparative.parseinfo.rule == 'negative_comparative':
-            return values[0] < values[1]
-        elif question.comparative.parseinfo.rule == 'neutral_comparative':
-            return values[0] == values[1]
-        raise ShakespeareRuntimeError('Unknown comparative type: ' + question.comparative.parseinfo.rule)
+        rule = question.comparative.parseinfo.rule
+        if rule not in self._COMPARATIVE_TYPE_HANDLERS:
+            raise ShakespeareRuntimeError('Unknown comparative type: ' + rule)
+        return self._COMPARATIVE_TYPE_HANDLERS[rule](
+            self.evaluate_expression(question.first_value, character),
+            self.evaluate_expression(question.second_value, character)
+        )
+
+    _EXPRESSION_TYPE_HANDLERS = {
+        'first_person_value': lambda self, v, c: c.value,
+        'second_person_value': lambda self, v, c: self._character_opposite(c).value,
+        'negative_noun_phrase': lambda self, v, c: -pow(2, len(v.adjectives)),
+        'positive_noun_phrase': lambda self, v, c: pow(2, len(v.adjectives)),
+        'character_name': lambda self, v, c: self._character_by_name(v.name).value,
+        'nothing': lambda self, v, c: 0,
+        'unary_expression': lambda self, v, c: self._evaluate_unary_operation(v, c),
+        'binary_expression': lambda self, v, c: self._evaluate_binary_operation(v, c),
+    }
 
     @_add_interpreter_context_to_errors
     @_parse_first_argument('value')
@@ -188,23 +194,9 @@ class Shakespeare:
         """
         character = self._character_by_name_if_necessary(character)
 
-        if value.parseinfo.rule == 'first_person_value':
-            return character.value
-        elif value.parseinfo.rule == 'second_person_value':
-            return self._character_opposite(character).value
-        elif value.parseinfo.rule == 'negative_noun_phrase':
-            return -pow(2, len(value.adjectives))
-        elif value.parseinfo.rule == 'positive_noun_phrase':
-            return pow(2, len(value.adjectives))
-        elif value.parseinfo.rule == 'character_name':
-            return self._character_by_name(value.name).value
-        elif value.parseinfo.rule == 'nothing':
-            return 0
-        elif value.parseinfo.rule == 'unary_expression':
-            return self._evaluate_unary_operation(value, character)
-        elif value.parseinfo.rule == 'binary_expression':
-            return self._evaluate_binary_operation(value, character)
-        raise ShakespeareRuntimeError('Unknown expression type: ' + value.parseinfo.rule)
+        if value.parseinfo.rule not in self._EXPRESSION_TYPE_HANDLERS:
+            raise ShakespeareRuntimeError('Unknown expression type: ' + value.parseinfo.rule)
+        return self._EXPRESSION_TYPE_HANDLERS[value.parseinfo.rule](self, value, character)
 
     # HELPERS
 
@@ -237,38 +229,25 @@ class Shakespeare:
     def _character_by_name(self, name):
         if not isinstance(name, str):
             name = " ".join(name)
-        for x in self.characters:
-            if x.name.lower() == name.lower():
-                return x
-        raise ShakespeareRuntimeError(name + ' was not initialized!')
-
-    def _on_stage_character_by_name(self, name):
-        if not isinstance(name, str):
-            name = " ".join(name)
-        character = self._character_by_name(name)
-        if character.on_stage == False:
-            raise ShakespeareRuntimeError(name + ' is not on stage!')
-        return character
-
-    def _off_stage_character_by_name(self, name):
-        if not isinstance(name, str):
-            name = " ".join(name)
-        character = self._character_by_name(name)
-        if character.on_stage == True:
-            raise ShakespeareRuntimeError(name + ' is already on stage!')
-        return character
-
-    def _on_stage_character_by_name_if_necessary(self, character):
-        if isinstance(character, str):
-            return self._on_stage_character_by_name(character)
+        match = next((x for x in self.characters if x.name.lower() == name.lower()), None)
+        if match is not None:
+            return match
         else:
-            return character
+            raise ShakespeareRuntimeError(name + ' was not initialized!')
 
     def _character_by_name_if_necessary(self, character):
         if isinstance(character, str):
             return self._character_by_name(character)
         else:
             return character
+
+    def _assert_character_on_stage(self, character):
+        if character.on_stage == False:
+            raise ShakespeareRuntimeError(character.name + ' is not on stage!')
+
+    def _assert_character_off_stage(self, character):
+        if character.on_stage == True:
+            raise ShakespeareRuntimeError(character.name + ' is already on stage!')
 
     def _scene_number_from_roman_numeral(self, roman_numeral):
         for index, scene in enumerate(self.current_act.scenes):
@@ -320,49 +299,63 @@ class Shakespeare:
 
     # EXPRESSION TYPES
 
+    def _evaluate_factorial(operand):
+        if operand < 0:
+            raise ShakespeareRuntimeError('Cannot take the factorial of a negative number: ' + str(operand))
+        return math.factorial(operand)
+
+    def _evaluate_square_root(operand):
+        if operand < 0:
+            raise ShakespeareRuntimeError('Cannot take the square root of a negative number: ' + str(operand))
+        # Truncates (does not round) result -- this is equivalent to C
+        # implementation's cast.
+        return int(math.sqrt(operand))
+
+    _UNARY_OPERATION_HANDLERS = {
+        ('the', 'cube', 'of'): lambda x: pow(x, 3),
+        ('the', 'factorial', 'of'): _evaluate_factorial,
+        ('the', 'square', 'of'): lambda x: pow(x, 2),
+        ('the', 'square', 'root', 'of'): _evaluate_square_root,
+        'twice': lambda x: x * 2
+    }
+
     def _evaluate_unary_operation(self, op, character):
+        if op.operation not in self._UNARY_OPERATION_HANDLERS:
+            raise ShakespeareRuntimeError('Unknown operation!')
+
         operand = self.evaluate_expression(op.value, character)
-        if op.operation == ('the', 'cube', 'of'):
-            return pow(operand, 3)
-        elif op.operation == ('the', 'factorial', 'of'):
-            if operand < 0:
-                raise ShakespeareRuntimeError('Cannot take the factorial of a negative number: ' + str(operand))
-            return math.factorial(operand)
-        elif op.operation == ('the', 'square', 'of'):
-            return pow(operand, 2)
-        elif op.operation == ('the', 'square', 'root', 'of'):
-            if operand < 0:
-                raise ShakespeareRuntimeError('Cannot take the square root of a negative number: ' + str(operand))
-            # Truncates (does not round) result -- this is equivalent to C
-            # implementation's cast.
-            return int(math.sqrt(operand))
-        elif op.operation == 'twice':
-            return operand * 2
-        raise ShakespeareRuntimeError('Unknown operation!')
+        return self._UNARY_OPERATION_HANDLERS[op.operation](operand)
+
+    def _evaluate_quotient(first_operand, second_operand):
+        if second_operand == 0:
+            raise ShakespeareRuntimeError('Cannot divide by zero')
+        # Python's built-in integer division operator does not behave the
+        # same as C for negative numbers, using floor instead of truncated
+        # division
+        return int(first_operand / second_operand)
+
+    def _evaluate_remainder(first_operand, second_operand):
+        if second_operand == 0:
+            raise ShakespeareRuntimeError('Cannot divide by zero')
+        # See note above. math.fmod replicates C behavior.
+        return int(math.fmod(first_operand, second_operand))
+
+    _BINARY_OPERATION_HANDLERS = {
+        ('the', 'difference', 'between'): lambda a, b: a - b,
+        ('the', 'product', 'of'): lambda a, b: a * b,
+        ('the', 'quotient', 'between'): _evaluate_quotient,
+        ('the', 'remainder', 'of', 'the', 'quotient', 'between'): _evaluate_remainder,
+        ('the', 'sum', 'of'): lambda a, b: a + b,
+    }
 
     def _evaluate_binary_operation(self, op, character):
+        if op.operation not in self._BINARY_OPERATION_HANDLERS:
+            raise ShakespeareRuntimeError('Unknown operation!')
+
         first_operand = self.evaluate_expression(op.first_value, character)
         second_operand = self.evaluate_expression(op.second_value, character)
-        if op.operation == ('the', 'difference', 'between'):
-            return first_operand - second_operand
-        elif op.operation == ('the', 'product', 'of'):
-            return first_operand * second_operand
-        elif op.operation == ('the', 'quotient', 'between'):
-            if second_operand == 0:
-                raise ShakespeareRuntimeError('Cannot divide by zero')
-            # Python's built-in integer division operator does not behave the
-            # same as C for negative numbers, using floor instead of truncated
-            # division
-            return int(first_operand / second_operand)
-        elif op.operation == ('the', 'remainder', 'of',
-                              'the', 'quotient', 'between'):
-            if second_operand == 0:
-                raise ShakespeareRuntimeError('Cannot divide by zero')
-            # See note above. math.fmod replicates C behavior.
-            return int(math.fmod(first_operand, second_operand))
-        elif op.operation == ('the', 'sum', 'of'):
-            return first_operand + second_operand
-        raise ShakespeareRuntimeError('Unknown operation!')
+
+        return self._BINARY_OPERATION_HANDLERS[op.operation](first_operand, second_operand)
 
     # SENTENCE TYPES
 
@@ -439,7 +432,8 @@ class Shakespeare:
     # EVENT TYPES
 
     def _run_line(self, line):
-        character = self._on_stage_character_by_name(line.character)
+        character = self._character_by_name(line.character)
+        self._assert_character_on_stage(character)
         for sentence in line.contents:
             # Returns whether this sentence caused a goto
             has_goto = self.run_sentence(sentence, character)
@@ -447,13 +441,17 @@ class Shakespeare:
                 return True
 
     def _run_entrance(self, entrance):
-        characters_to_enter = [self._off_stage_character_by_name(name) for name in entrance.characters]
+        characters_to_enter = [self._character_by_name(name) for name in entrance.characters]
+        for character in characters_to_enter:
+            self._assert_character_off_stage(character)
         for character in characters_to_enter:
             character.on_stage = True
 
     def _run_exeunt(self, exeunt):
         if exeunt.characters:
-            characters_to_exeunt = [self._on_stage_character_by_name(name) for name in exeunt.characters]
+            characters_to_exeunt = [self._character_by_name(name) for name in exeunt.characters]
+            for character in characters_to_exeunt:
+                self._assert_character_on_stage(character)
         else:
             characters_to_exeunt = self.characters
 
@@ -461,5 +459,6 @@ class Shakespeare:
             character.on_stage = False
 
     def _run_exit(self, exit):
-        character = self._on_stage_character_by_name(exit.character)
+        character = self._character_by_name(exit.character)
+        self._assert_character_on_stage(character)
         character.on_stage = False
