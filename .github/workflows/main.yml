@@ -33,7 +33,7 @@ jobs:
       run: poetry run pytest
     - name: Run unit tests with coverage
       if: ${{ matrix.python-version == '3.10' }}
-      run: poetry run coverage run -m pytest shakespearelang/tests/unit/
+      run: poetry run coverage run -m pytest shakespearelang/tests/
     - uses: paambaati/codeclimate-action@v2.7.5
       if: ${{ matrix.python-version == '3.10' }}
       env:
