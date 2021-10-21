@@ -48,3 +48,12 @@ def test_full_error_format():
       Romeo = 0 ()
       Juliet = -1 ()
     off stage:""")
+
+def test_error_format_without_anything():
+    # This really shouldn't happen. But if it does, we at least don't want anything
+    # *else* to blow up.
+
+    with pytest.raises(ShakespeareRuntimeError) as exc:
+        raise ShakespeareRuntimeError("How did this happen?")
+
+    assert str(exc.value) == "SPL Error: How did this happen?"
