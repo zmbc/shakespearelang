@@ -7,6 +7,7 @@ Shakespeare -- An interpreter for the Shakespeare Programming Language
 from .shakespeare_parser import shakespeareParser
 from .errors import ShakespeareRuntimeError
 from .utils import parseinfo_context
+from .character import Character
 import math
 from functools import wraps
 
@@ -51,32 +52,6 @@ class Shakespeare:
         self._input_buffer = ''
 
         self.global_boolean = False
-
-    class Character:
-        """A character in an SPL play."""
-        def __init__(self, name):
-            self.value = 0
-            self.stack = []
-            self.on_stage = False
-            self.name = name
-            if isinstance(self.name, str):
-                self.display_name = name
-            else:
-                self.display_name = " ".join(name)
-
-        def __str__(self):
-            return f'{self.display_name} = {self.value} ({" ".join([str(v) for v in self.stack])})'
-
-        def push(self, newValue):
-            """Push a value onto the character's stack."""
-            self.stack.append(newValue)
-
-        def pop(self):
-            """Pop a value off the character's stack, and set the character to
-            that value."""
-            if len(self.stack) == 0:
-                raise ShakespeareRuntimeError('Tried to pop from an empty stack. Character: ' + self.display_name)
-            self.value = self.stack.pop()
 
     # PUBLIC METHODS
 
@@ -242,10 +217,7 @@ class Shakespeare:
         destructive -- Whether to replace the current character list
                        (default False)
         """
-        self.characters = []
-        for persona in personae:
-            character = self._character_from_dramatis_persona(persona)
-            self.characters.append(character)
+        self.characters = [Character.from_dramatis_persona(p) for p in personae]
 
     def _parse_if_necessary(self, item, rule_name):
         if isinstance(item, str):
@@ -259,7 +231,7 @@ class Shakespeare:
         if len(characters_opposite) > 1:
             raise ShakespeareRuntimeError("Ambiguous second-person pronoun")
         elif len(characters_opposite) == 0:
-            raise ShakespeareRuntimeError(character.display_name + ' is talking to nobody!')
+            raise ShakespeareRuntimeError(character.name + ' is talking to nobody!')
         return characters_opposite[0]
 
     def _character_by_name(self, name):
@@ -345,12 +317,6 @@ class Shakespeare:
     def _advance_position(self):
         self.current_position['event'] += 1
         self._make_position_consistent()
-
-    def _character_from_dramatis_persona(self, persona):
-        name = persona.character
-        if not isinstance(name, str):
-            name = " ".join(name)
-        return self.Character(name)
 
     # EXPRESSION TYPES
 
