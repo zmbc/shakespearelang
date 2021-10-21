@@ -126,7 +126,7 @@ class Shakespeare:
 
         Arguments:
         sentence -- A string or AST representation of a sentence
-        character -- A name or Shakespeare.Character representation of the
+        character -- A name or shakespearelang.Character representation of the
                      character speaking the sentence.
         """
         character = self._on_stage_character_by_name_if_necessary(character)
@@ -158,7 +158,7 @@ class Shakespeare:
 
         Arguments:
         question -- A string or AST representation of a question
-        character -- A name or Shakespeare.Character representation of the
+        character -- A name or shakespearelang.Character representation of the
                      character asking the question.
         """
         character = self._on_stage_character_by_name_if_necessary(character)
@@ -183,7 +183,7 @@ class Shakespeare:
 
         Arguments:
         expression -- A string or AST representation of an expression
-        character -- A name or Shakespeare.Character representation of the
+        character -- A name or shakespearelang.Character representation of the
                      character speaking the expression.
         """
         character = self._character_by_name_if_necessary(character)
