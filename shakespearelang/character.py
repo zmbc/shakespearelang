@@ -1,7 +1,9 @@
 from .errors import ShakespeareRuntimeError
 
+
 class Character:
     """A character in an SPL play."""
+
     def __init__(self, name):
         self.value = 0
         self.stack = []
@@ -26,5 +28,7 @@ class Character:
         """Pop a value off the character's stack, and set the character to
         that value."""
         if len(self.stack) == 0:
-            raise ShakespeareRuntimeError('Tried to pop from an empty stack. Character: ' + self.name)
+            raise ShakespeareRuntimeError(
+                "Tried to pop from an empty stack. Character: " + self.name
+            )
         self.value = self.stack.pop()

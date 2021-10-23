@@ -3,13 +3,16 @@ from tatsu.exceptions import FailedParse
 from io import StringIO
 import pytest
 
+
 def test_errors_on_nonsense_characters(monkeypatch, capsys):
-    monkeypatch.setattr('sys.stdin', StringIO('exit\n'))
+    monkeypatch.setattr("sys.stdin", StringIO("exit\n"))
 
     with pytest.raises(FailedParse) as exc:
-        start_console(['Foobar', 'Not Real'])
+        start_console(["Foobar", "Not Real"])
 
-    assert_output(capsys, """
+    assert_output(
+        capsys,
+        """
 A REPL-tastic Adventure.
 
 Foobar, a player.
@@ -20,15 +23,19 @@ Not Real, a player.
 
 [Enter Foobar and Not Real]
 
-""")
+""",
+    )
+
 
 def test_runs_noop(monkeypatch, capsys):
-    monkeypatch.setattr('sys.stdin', StringIO('exit\n'))
+    monkeypatch.setattr("sys.stdin", StringIO("exit\n"))
 
     with pytest.raises(SystemExit) as exc:
         start_console()
 
-    assert_output(capsys, """
+    assert_output(
+        capsys,
+        """
 A REPL-tastic Adventure.
 
 Romeo, a player.
@@ -39,15 +46,19 @@ Juliet, a player.
 
 [Enter Romeo and Juliet]
 
->> """)
+>> """,
+    )
+
 
 def test_display_parse_error(monkeypatch, capsys):
-    monkeypatch.setattr('sys.stdin', StringIO('foobar\nexit\n'))
+    monkeypatch.setattr("sys.stdin", StringIO("foobar\nexit\n"))
 
     with pytest.raises(SystemExit) as exc:
         start_console()
 
-    assert_output(capsys, """
+    assert_output(
+        capsys,
+        """
 A REPL-tastic Adventure.
 
 Romeo, a player.
@@ -66,15 +77,24 @@ foobar
 ^
 character
 repl_input
->> """)
+>> """,
+    )
+
 
 def test_display_runtime_error(monkeypatch, capsys):
-    monkeypatch.setattr('sys.stdin', StringIO('Juliet: You are as good as the quotient between a pig and nothing.\nexit\n'))
+    monkeypatch.setattr(
+        "sys.stdin",
+        StringIO(
+            "Juliet: You are as good as the quotient between a pig and nothing.\nexit\n"
+        ),
+    )
 
     with pytest.raises(SystemExit) as exc:
         start_console()
 
-    assert_output(capsys, """
+    assert_output(
+        capsys,
+        """
 A REPL-tastic Adventure.
 
 Romeo, a player.
@@ -96,15 +116,24 @@ on stage:
   Romeo = 0 ()
   Juliet = 0 ()
 off stage:
->> """)
+>> """,
+    )
+
 
 def test_display_repl_specific_error(monkeypatch, capsys):
-    monkeypatch.setattr('sys.stdin', StringIO('You are as good as nothing.\nJuliet: Let us proceed to scene II.\nLet us proceed to scene IV.\nexit\n'))
+    monkeypatch.setattr(
+        "sys.stdin",
+        StringIO(
+            "You are as good as nothing.\nJuliet: Let us proceed to scene II.\nLet us proceed to scene IV.\nexit\n"
+        ),
+    )
 
     with pytest.raises(SystemExit) as exc:
         start_console()
 
-    assert_output(capsys, """
+    assert_output(
+        capsys,
+        """
 A REPL-tastic Adventure.
 
 Romeo, a player.
@@ -118,15 +147,24 @@ Juliet, a player.
 >> Who's saying this?
 >> Control flow isn't allowed in REPL.
 >> Control flow isn't allowed in REPL.
->> """)
+>> """,
+    )
+
 
 def test_last_character_speaking(monkeypatch, capsys):
-    monkeypatch.setattr('sys.stdin', StringIO('Juliet: You are as good as nothing.\nYou are nothing.\nRomeo: You are nothing.\nYou are nothing.\nexit\n'))
+    monkeypatch.setattr(
+        "sys.stdin",
+        StringIO(
+            "Juliet: You are as good as nothing.\nYou are nothing.\nRomeo: You are nothing.\nYou are nothing.\nexit\n"
+        ),
+    )
 
     with pytest.raises(SystemExit) as exc:
         start_console()
 
-    assert_output(capsys, """
+    assert_output(
+        capsys,
+        """
 A REPL-tastic Adventure.
 
 Romeo, a player.
@@ -141,15 +179,24 @@ Juliet, a player.
 >> Romeo set to 0
 >> Juliet set to 0
 >> Juliet set to 0
->> """)
+>> """,
+    )
+
 
 def test_detailed_logging(monkeypatch, capsys):
-    monkeypatch.setattr('sys.stdin', StringIO('Juliet: You are as good as a good good good good good good animal. Speak your mind! Listen to your heart!\n10\nOpen your heart!\nexit\n'))
+    monkeypatch.setattr(
+        "sys.stdin",
+        StringIO(
+            "Juliet: You are as good as a good good good good good good animal. Speak your mind! Listen to your heart!\n10\nOpen your heart!\nexit\n"
+        ),
+    )
 
     with pytest.raises(SystemExit) as exc:
         start_console()
 
-    assert_output(capsys, """
+    assert_output(
+        capsys,
+        """
 A REPL-tastic Adventure.
 
 Romeo, a player.
@@ -168,15 +215,21 @@ Romeo taking input number:
 >> Romeo outputted self as number:
 10
 
->> """)
+>> """,
+    )
+
 
 def test_display_character(monkeypatch, capsys):
-    monkeypatch.setattr('sys.stdin', StringIO('Juliet: Remember thyself! You are a pig!\nRomeo\nquit\n'))
+    monkeypatch.setattr(
+        "sys.stdin", StringIO("Juliet: Remember thyself! You are a pig!\nRomeo\nquit\n")
+    )
 
     with pytest.raises(SystemExit) as exc:
         start_console()
 
-    assert_output(capsys, """
+    assert_output(
+        capsys,
+        """
 A REPL-tastic Adventure.
 
 Romeo, a player.
@@ -190,15 +243,21 @@ Juliet, a player.
 >> Romeo pushed 0
 Romeo set to -1
 >> Romeo = -1 (0)
->> """)
+>> """,
+    )
+
 
 def test_display_state(monkeypatch, capsys):
-    monkeypatch.setattr('sys.stdin', StringIO('Juliet: Remember thyself! You are a pig!\nstate\nquit\n'))
+    monkeypatch.setattr(
+        "sys.stdin", StringIO("Juliet: Remember thyself! You are a pig!\nstate\nquit\n")
+    )
 
     with pytest.raises(SystemExit) as exc:
         start_console()
 
-    assert_output(capsys, """
+    assert_output(
+        capsys,
+        """
 A REPL-tastic Adventure.
 
 Romeo, a player.
@@ -216,9 +275,11 @@ on stage:
   Romeo = -1 (0)
   Juliet = 0 ()
 off stage:
->> """)
+>> """,
+    )
 
-def assert_output(capsys, output, stderr=''):
+
+def assert_output(capsys, output, stderr=""):
     captured = capsys.readouterr()
     assert captured.out == output
     assert captured.err == stderr

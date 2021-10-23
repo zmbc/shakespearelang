@@ -5,26 +5,27 @@ from tatsu.exceptions import FailedParse
 import readline
 import sys
 
+
 def _prefix_input_output(sentence, opposite_character):
-    if sentence.parseinfo.rule == 'output' and sentence.output_number:
-        print(opposite_character.name, 'outputted self as number:')
-    elif sentence.parseinfo.rule == 'output' and sentence.output_char:
-        print(opposite_character.name, 'outputted self as character:')
-    elif sentence.parseinfo.rule == 'input' and sentence.input_number:
-        print(opposite_character.name, 'taking input number:')
-    elif sentence.parseinfo.rule == 'input' and sentence.input_char:
-        print(opposite_character.name, 'taking input character:')
+    if sentence.parseinfo.rule == "output" and sentence.output_number:
+        print(opposite_character.name, "outputted self as number:")
+    elif sentence.parseinfo.rule == "output" and sentence.output_char:
+        print(opposite_character.name, "outputted self as character:")
+    elif sentence.parseinfo.rule == "input" and sentence.input_number:
+        print(opposite_character.name, "taking input number:")
+    elif sentence.parseinfo.rule == "input" and sentence.input_char:
+        print(opposite_character.name, "taking input character:")
 
 
 def _show_result_of_sentence(sentence, opposite_character, interpreter):
-    if sentence.parseinfo.rule == 'question':
+    if sentence.parseinfo.rule == "question":
         print(interpreter.global_boolean)
-    elif sentence.parseinfo.rule == 'assignment':
-        print(opposite_character.name, 'set to', opposite_character.value)
-    elif sentence.parseinfo.rule == 'push':
-        print(opposite_character.name, 'pushed', opposite_character.stack[0])
-    elif sentence.parseinfo.rule == 'pop':
-        print(opposite_character.name, 'popped', opposite_character.value)
+    elif sentence.parseinfo.rule == "assignment":
+        print(opposite_character.name, "set to", opposite_character.value)
+    elif sentence.parseinfo.rule == "push":
+        print(opposite_character.name, "pushed", opposite_character.stack[0])
+    elif sentence.parseinfo.rule == "pop":
+        print(opposite_character.name, "popped", opposite_character.value)
 
 
 def _print_character(character_name, interpreter):
@@ -32,14 +33,11 @@ def _print_character(character_name, interpreter):
     print(character)
 
 
-def _run_sentences(sentences,
-                   speaking_character,
-                   opposite_character,
-                   interpreter):
+def _run_sentences(sentences, speaking_character, opposite_character, interpreter):
     for sentence in sentences:
         _prefix_input_output(sentence, opposite_character)
 
-        if sentence.parseinfo.rule == 'goto':
+        if sentence.parseinfo.rule == "goto":
             print("Control flow isn't allowed in REPL.")
             # Stop this entire line of sentences
             return
@@ -47,10 +45,11 @@ def _run_sentences(sentences,
         interpreter.run_sentence(sentence, speaking_character)
 
         # Newline after output for next input cycle
-        if sentence.parseinfo.rule == 'output':
-            print('\n')
+        if sentence.parseinfo.rule == "output":
+            print("\n")
 
         _show_result_of_sentence(sentence, opposite_character, interpreter)
+
 
 DEFAULT_PLAY_TEMPLATE = """
 A REPL-tastic Adventure.
@@ -63,10 +62,13 @@ A REPL-tastic Adventure.
 [Enter <entrance list>]
 """
 
-def start_console(characters=['Romeo', 'Juliet']):
-    dramatis_personae = '\n'.join([name + ', a player.' for name in characters])
+
+def start_console(characters=["Romeo", "Juliet"]):
+    dramatis_personae = "\n".join([name + ", a player." for name in characters])
     entrance_list = _entrance_list_from_characters(characters)
-    play = DEFAULT_PLAY_TEMPLATE.replace('<dramatis personae>', dramatis_personae).replace('<entrance list>', entrance_list)
+    play = DEFAULT_PLAY_TEMPLATE.replace(
+        "<dramatis personae>", dramatis_personae
+    ).replace("<entrance list>", entrance_list)
 
     print(play)
     interpreter = Shakespeare(play)
@@ -74,50 +76,56 @@ def start_console(characters=['Romeo', 'Juliet']):
     interpreter.step_forward()
     run_repl(interpreter)
 
+
 # E.g. ["Mercutio", "Romeo", "Tybalt"] => "Mercutio, Romeo and Tybalt"
 def _entrance_list_from_characters(characters):
-    all_commas = ', '.join(characters)
-    split_on_last = all_commas.rsplit(', ', 1)
-    return ' and '.join(split_on_last)
+    all_commas = ", ".join(characters)
+    split_on_last = all_commas.rsplit(", ", 1)
+    return " and ".join(split_on_last)
+
 
 def debug_play(text):
     interpreter = Shakespeare(text)
 
     def on_breakpoint():
-        print('-----\n', interpreter.next_event_text(), '\n-----\n')
+        print("-----\n", interpreter.next_event_text(), "\n-----\n")
         run_repl(interpreter)
 
     interpreter.run(on_breakpoint)
+
 
 def run_repl(interpreter):
     current_character = None
 
     while True:
         try:
-            repl_input = input('>> ')
-            if repl_input in ['exit', 'quit']:
+            repl_input = input(">> ")
+            if repl_input in ["exit", "quit"]:
                 sys.exit()
-            elif repl_input == 'continue':
+            elif repl_input == "continue":
                 break
-            elif repl_input == 'next':
+            elif repl_input == "next":
                 if interpreter.play_over():
                     break
                 interpreter.step_forward()
                 if interpreter.play_over():
                     break
-                print('\n-----\n', interpreter.next_event_text(), '\n-----\n')
-            elif repl_input == 'state':
+                print("\n-----\n", interpreter.next_event_text(), "\n-----\n")
+            elif repl_input == "state":
                 print(str(interpreter.state))
             else:
                 # TODO: make this not an awkward return value
-                current_character = _run_repl_input(interpreter, repl_input, current_character)
+                current_character = _run_repl_input(
+                    interpreter, repl_input, current_character
+                )
         except FailedParse as parseException:
             print("\n\nThat doesn't look right:\n", parseException)
         except ShakespeareRuntimeError as runtimeError:
             print(str(runtimeError))
 
+
 def _run_repl_input(interpreter, repl_input, current_character):
-    ast = interpreter.parser.parse(repl_input + "\n", rule_name='repl_input')
+    ast = interpreter.parser.parse(repl_input + "\n", rule_name="repl_input")
 
     event = ast.event
     sentences = ast.sentences
@@ -125,7 +133,7 @@ def _run_repl_input(interpreter, repl_input, current_character):
     value = ast.value
 
     # Events that are lines should be considered sets of sentences.
-    if event and event.parseinfo.rule == 'line':
+    if event and event.parseinfo.rule == "line":
         current_character = event.character
         sentences = event.contents
         event = None
@@ -135,7 +143,7 @@ def _run_repl_input(interpreter, repl_input, current_character):
         # can cause that -- these have been extracted to sentences above.
         interpreter.run_event(event)
 
-        if event.parseinfo.rule in ['entrance', 'exeunt', 'exit']:
+        if event.parseinfo.rule in ["entrance", "exeunt", "exit"]:
             _print_stage(interpreter)
     elif sentences:
         if not current_character:

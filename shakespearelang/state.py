@@ -1,6 +1,7 @@
 from .errors import ShakespeareRuntimeError
 from .character import Character
 
+
 class State:
     """State of a Shakespeare play execution context: variable values and who is on stage."""
 
@@ -10,13 +11,10 @@ class State:
 
     def __str__(self):
         return "\n".join(
-            [
-                f'global boolean = {self.global_boolean}',
-                'on stage:'
-            ] +
-            [f'  {c}' for c in self.characters if c.on_stage] +
-            ['off stage:'] +
-            [f'  {c}' for c in self.characters if not c.on_stage]
+            [f"global boolean = {self.global_boolean}", "on stage:"]
+            + [f"  {c}" for c in self.characters if c.on_stage]
+            + ["off stage:"]
+            + [f"  {c}" for c in self.characters if not c.on_stage]
         )
 
     def enter_characters(self, characters):
@@ -43,22 +41,25 @@ class State:
         character.on_stage = False
 
     def character_opposite(self, character):
-        characters_opposite = [x for x in self.characters
-                               if x.on_stage and x.name != character.name]
+        characters_opposite = [
+            x for x in self.characters if x.on_stage and x.name != character.name
+        ]
         if len(characters_opposite) > 1:
             raise ShakespeareRuntimeError("Ambiguous second-person pronoun")
         elif len(characters_opposite) == 0:
-            raise ShakespeareRuntimeError(character.name + ' is talking to nobody!')
+            raise ShakespeareRuntimeError(character.name + " is talking to nobody!")
         return characters_opposite[0]
 
     def character_by_name(self, name):
         if not isinstance(name, str):
             name = " ".join(name)
-        match = next((x for x in self.characters if x.name.lower() == name.lower()), None)
+        match = next(
+            (x for x in self.characters if x.name.lower() == name.lower()), None
+        )
         if match is not None:
             return match
         else:
-            raise ShakespeareRuntimeError(name + ' was not initialized!')
+            raise ShakespeareRuntimeError(name + " was not initialized!")
 
     def character_by_name_if_necessary(self, character):
         if isinstance(character, str):
@@ -68,8 +69,8 @@ class State:
 
     def assert_character_on_stage(self, character):
         if character.on_stage == False:
-            raise ShakespeareRuntimeError(character.name + ' is not on stage!')
+            raise ShakespeareRuntimeError(character.name + " is not on stage!")
 
     def assert_character_off_stage(self, character):
         if character.on_stage == True:
-            raise ShakespeareRuntimeError(character.name + ' is already on stage!')
+            raise ShakespeareRuntimeError(character.name + " is already on stage!")

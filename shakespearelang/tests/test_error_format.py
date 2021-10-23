@@ -24,11 +24,13 @@ Recall your mind!
 
 """
 
+
 def test_full_error_format():
     s = Shakespeare(ERROR_PLAY)
     with pytest.raises(ShakespeareRuntimeError) as exc:
         s.run()
-    assert str(exc.value) == textwrap.dedent("""\
+    assert str(exc.value) == textwrap.dedent(
+        """\
     SPL Error: Tried to pop from an empty stack. Character: Juliet
       at line 12
     ----- context -----
@@ -47,7 +49,9 @@ def test_full_error_format():
     on stage:
       Romeo = 0 ()
       Juliet = -1 ()
-    off stage:""")
+    off stage:"""
+    )
+
 
 def test_error_format_without_anything():
     # This really shouldn't happen. But if it does, we at least don't want anything

@@ -34,7 +34,7 @@ class shakespeareBuffer(Buffer):
         comments_re=None,
         eol_comments_re=None,
         ignorecase=True,
-        namechars='',
+        namechars="",
         **kwargs
     ):
         super().__init__(
@@ -60,7 +60,7 @@ class shakespeareParser(Parser):
         left_recursion=True,
         parseinfo=True,
         keywords=None,
-        namechars='',
+        namechars="",
         tokenizercls=shakespeareBuffer,
         **kwargs
     ):
@@ -84,93 +84,93 @@ class shakespeareParser(Parser):
     def _be_(self):  # noqa
         with self._choice():
             with self._option():
-                self._token('am')
+                self._token("am")
             with self._option():
-                self._token('are')
+                self._token("are")
             with self._option():
-                self._token('art')
+                self._token("art")
             with self._option():
-                self._token('be')
+                self._token("be")
             with self._option():
-                self._token('is')
-            self._error('expecting one of: am are art be is')
+                self._token("is")
+            self._error("expecting one of: am are art be is")
 
     @tatsumasu()
     def _article_(self):  # noqa
         with self._choice():
             with self._option():
-                self._token('a')
+                self._token("a")
             with self._option():
-                self._token('an')
+                self._token("an")
             with self._option():
-                self._token('the')
-            self._error('expecting one of: a an the')
+                self._token("the")
+            self._error("expecting one of: a an the")
 
     @tatsumasu()
     def _first_person_(self):  # noqa
         with self._choice():
             with self._option():
-                self._token('I')
+                self._token("I")
             with self._option():
-                self._token('me')
-            self._error('expecting one of: I me')
+                self._token("me")
+            self._error("expecting one of: I me")
 
     @tatsumasu()
     def _first_person_reflexive_(self):  # noqa
-        self._token('myself')
+        self._token("myself")
 
     @tatsumasu()
     def _first_person_possessive_(self):  # noqa
         with self._choice():
             with self._option():
-                self._token('mine')
+                self._token("mine")
             with self._option():
-                self._token('my')
-            self._error('expecting one of: mine my')
+                self._token("my")
+            self._error("expecting one of: mine my")
 
     @tatsumasu()
     def _second_person_(self):  # noqa
         with self._choice():
             with self._option():
-                self._token('thee')
+                self._token("thee")
             with self._option():
-                self._token('thou')
+                self._token("thou")
             with self._option():
-                self._token('you')
-            self._error('expecting one of: thee thou you')
+                self._token("you")
+            self._error("expecting one of: thee thou you")
 
     @tatsumasu()
     def _second_person_reflexive_(self):  # noqa
         with self._choice():
             with self._option():
-                self._token('thyself')
+                self._token("thyself")
             with self._option():
-                self._token('yourself')
-            self._error('expecting one of: thyself yourself')
+                self._token("yourself")
+            self._error("expecting one of: thyself yourself")
 
     @tatsumasu()
     def _second_person_possessive_(self):  # noqa
         with self._choice():
             with self._option():
-                self._token('thine')
+                self._token("thine")
             with self._option():
-                self._token('thy')
+                self._token("thy")
             with self._option():
-                self._token('your')
-            self._error('expecting one of: thine thy your')
+                self._token("your")
+            self._error("expecting one of: thine thy your")
 
     @tatsumasu()
     def _third_person_possessive_(self):  # noqa
         with self._choice():
             with self._option():
-                self._token('his')
+                self._token("his")
             with self._option():
-                self._token('her')
+                self._token("her")
             with self._option():
-                self._token('its')
+                self._token("its")
             with self._option():
-                self._token('their')
-            self._error('expecting one of: her his its their')
+                self._token("their")
+            self._error("expecting one of: her his its their")
 
     @tatsumasu()
     def _possessive_(self):  # noqa
@@ -181,787 +181,796 @@ class shakespeareParser(Parser):
                 self._second_person_possessive_()
             with self._option():
                 self._third_person_possessive_()
-            self._error('expecting one of: first_person_possessive her his its mine my second_person_possessive their thine third_person_possessive thy your')
+            self._error(
+                "expecting one of: first_person_possessive her his its mine my second_person_possessive their thine third_person_possessive thy your"
+            )
 
     @tatsumasu()
     def _positive_comparative_(self):  # noqa
         with self._group():
             with self._choice():
                 with self._option():
-                    self._token('better')
+                    self._token("better")
                 with self._option():
-                    self._token('bigger')
+                    self._token("bigger")
                 with self._option():
-                    self._token('fresher')
+                    self._token("fresher")
                 with self._option():
-                    self._token('friendlier')
+                    self._token("friendlier")
                 with self._option():
-                    self._token('nicer')
+                    self._token("nicer")
                 with self._option():
-                    self._token('jollier')
+                    self._token("jollier")
                 with self._option():
-                    self._token('more')
+                    self._token("more")
                     self._positive_adjective_()
-                self._error('expecting one of: better bigger fresher friendlier jollier more nicer')
-        self.name_last_node('comparison')
-        self._token('than')
-        self.ast._define(
-            ['comparison'],
-            []
-        )
+                self._error(
+                    "expecting one of: better bigger fresher friendlier jollier more nicer"
+                )
+        self.name_last_node("comparison")
+        self._token("than")
+        self.ast._define(["comparison"], [])
 
     @tatsumasu()
     def _negative_comparative_(self):  # noqa
         with self._group():
             with self._choice():
                 with self._option():
-                    self._token('punier')
+                    self._token("punier")
                 with self._option():
-                    self._token('smaller')
+                    self._token("smaller")
                 with self._option():
-                    self._token('worse')
+                    self._token("worse")
                 with self._option():
-                    self._token('more')
+                    self._token("more")
                     self._negative_adjective_()
-                self._error('expecting one of: more punier smaller worse')
-        self.name_last_node('comparison')
-        self._token('than')
-        self.ast._define(
-            ['comparison'],
-            []
-        )
+                self._error("expecting one of: more punier smaller worse")
+        self.name_last_node("comparison")
+        self._token("than")
+        self.ast._define(["comparison"], [])
 
     @tatsumasu()
     def _negative_adjective_(self):  # noqa
         with self._choice():
             with self._option():
-                self._token('bad')
+                self._token("bad")
             with self._option():
-                self._token('cowardly')
+                self._token("cowardly")
             with self._option():
-                self._token('cursed')
+                self._token("cursed")
             with self._option():
-                self._token('damned')
+                self._token("damned")
             with self._option():
-                self._token('dirty')
+                self._token("dirty")
             with self._option():
-                self._token('disgusting')
+                self._token("disgusting")
             with self._option():
-                self._token('distasteful')
+                self._token("distasteful")
             with self._option():
-                self._token('dusty')
+                self._token("dusty")
             with self._option():
-                self._token('evil')
+                self._token("evil")
             with self._option():
-                self._token('fat-kidneyed')
+                self._token("fat-kidneyed")
             with self._option():
-                self._token('fatherless')
+                self._token("fatherless")
             with self._option():
-                self._token('fat')
+                self._token("fat")
             with self._option():
-                self._token('foul')
+                self._token("foul")
             with self._option():
-                self._token('hairy')
+                self._token("hairy")
             with self._option():
-                self._token('half-witted')
+                self._token("half-witted")
             with self._option():
-                self._token('horrible')
+                self._token("horrible")
             with self._option():
-                self._token('horrid')
+                self._token("horrid")
             with self._option():
-                self._token('infected')
+                self._token("infected")
             with self._option():
-                self._token('lying')
+                self._token("lying")
             with self._option():
-                self._token('miserable')
+                self._token("miserable")
             with self._option():
-                self._token('misused')
+                self._token("misused")
             with self._option():
-                self._token('oozing')
+                self._token("oozing")
             with self._option():
-                self._token('rotten')
+                self._token("rotten")
             with self._option():
-                self._token('rotten')
+                self._token("rotten")
             with self._option():
-                self._token('smelly')
+                self._token("smelly")
             with self._option():
-                self._token('snotty')
+                self._token("snotty")
             with self._option():
-                self._token('sorry')
+                self._token("sorry")
             with self._option():
-                self._token('stinking')
+                self._token("stinking")
             with self._option():
-                self._token('stuffed')
+                self._token("stuffed")
             with self._option():
-                self._token('stupid')
+                self._token("stupid")
             with self._option():
-                self._token('vile')
+                self._token("vile")
             with self._option():
-                self._token('villainous')
+                self._token("villainous")
             with self._option():
-                self._token('worried')
-            self._error('expecting one of: bad cowardly cursed damned dirty disgusting distasteful dusty evil fat fat-kidneyed fatherless foul hairy half-witted horrible horrid infected lying miserable misused oozing rotten smelly snotty sorry stinking stuffed stupid vile villainous worried')
+                self._token("worried")
+            self._error(
+                "expecting one of: bad cowardly cursed damned dirty disgusting distasteful dusty evil fat fat-kidneyed fatherless foul hairy half-witted horrible horrid infected lying miserable misused oozing rotten smelly snotty sorry stinking stuffed stupid vile villainous worried"
+            )
 
     @tatsumasu()
     def _neutral_adjective_(self):  # noqa
         with self._choice():
             with self._option():
-                self._token('big')
+                self._token("big")
             with self._option():
-                self._token('black')
+                self._token("black")
             with self._option():
-                self._token('blue')
+                self._token("blue")
             with self._option():
-                self._token('bluest')
+                self._token("bluest")
             with self._option():
-                self._token('bottomless')
+                self._token("bottomless")
             with self._option():
-                self._token('furry')
+                self._token("furry")
             with self._option():
-                self._token('green')
+                self._token("green")
             with self._option():
-                self._token('hard')
+                self._token("hard")
             with self._option():
-                self._token('huge')
+                self._token("huge")
             with self._option():
-                self._token('large')
+                self._token("large")
             with self._option():
-                self._token('little')
+                self._token("little")
             with self._option():
-                self._token('normal')
+                self._token("normal")
             with self._option():
-                self._token('old')
+                self._token("old")
             with self._option():
-                self._token('purple')
+                self._token("purple")
             with self._option():
-                self._token('red')
+                self._token("red")
             with self._option():
-                self._token('rural')
+                self._token("rural")
             with self._option():
-                self._token('small')
+                self._token("small")
             with self._option():
-                self._token('tiny')
+                self._token("tiny")
             with self._option():
-                self._token('white')
+                self._token("white")
             with self._option():
-                self._token('yellow')
-            self._error('expecting one of: big black blue bluest bottomless furry green hard huge large little normal old purple red rural small tiny white yellow')
+                self._token("yellow")
+            self._error(
+                "expecting one of: big black blue bluest bottomless furry green hard huge large little normal old purple red rural small tiny white yellow"
+            )
 
     @tatsumasu()
     def _positive_adjective_(self):  # noqa
         with self._choice():
             with self._option():
-                self._token('amazing')
+                self._token("amazing")
             with self._option():
-                self._token('beautiful')
+                self._token("beautiful")
             with self._option():
-                self._token('blossoming')
+                self._token("blossoming")
             with self._option():
-                self._token('bold')
+                self._token("bold")
             with self._option():
-                self._token('brave')
+                self._token("brave")
             with self._option():
-                self._token('charming')
+                self._token("charming")
             with self._option():
-                self._token('clearest')
+                self._token("clearest")
             with self._option():
-                self._token('cunning')
+                self._token("cunning")
             with self._option():
-                self._token('cute')
+                self._token("cute")
             with self._option():
-                self._token('delicious')
+                self._token("delicious")
             with self._option():
-                self._token('embroidered')
+                self._token("embroidered")
             with self._option():
-                self._token('fair')
+                self._token("fair")
             with self._option():
-                self._token('fine')
+                self._token("fine")
             with self._option():
-                self._token('gentle')
+                self._token("gentle")
             with self._option():
-                self._token('golden')
+                self._token("golden")
             with self._option():
-                self._token('good')
+                self._token("good")
             with self._option():
-                self._token('handsome')
+                self._token("handsome")
             with self._option():
-                self._token('happy')
+                self._token("happy")
             with self._option():
-                self._token('healthy')
+                self._token("healthy")
             with self._option():
-                self._token('honest')
+                self._token("honest")
             with self._option():
-                self._token('lovely')
+                self._token("lovely")
             with self._option():
-                self._token('loving')
+                self._token("loving")
             with self._option():
-                self._token('mighty')
+                self._token("mighty")
             with self._option():
-                self._token('noble')
+                self._token("noble")
             with self._option():
-                self._token('peaceful')
+                self._token("peaceful")
             with self._option():
-                self._token('pretty')
+                self._token("pretty")
             with self._option():
-                self._token('prompt')
+                self._token("prompt")
             with self._option():
-                self._token('proud')
+                self._token("proud")
             with self._option():
-                self._token('reddest')
+                self._token("reddest")
             with self._option():
-                self._token('rich')
+                self._token("rich")
             with self._option():
-                self._token('smooth')
+                self._token("smooth")
             with self._option():
-                self._token('sunny')
+                self._token("sunny")
             with self._option():
-                self._token('sweet')
+                self._token("sweet")
             with self._option():
-                self._token('sweetest')
+                self._token("sweetest")
             with self._option():
-                self._token('trustworthy')
+                self._token("trustworthy")
             with self._option():
-                self._token('warm')
-            self._error('expecting one of: amazing beautiful blossoming bold brave charming clearest cunning cute delicious embroidered fair fine gentle golden good handsome happy healthy honest lovely loving mighty noble peaceful pretty prompt proud reddest rich smooth sunny sweet sweetest trustworthy warm')
+                self._token("warm")
+            self._error(
+                "expecting one of: amazing beautiful blossoming bold brave charming clearest cunning cute delicious embroidered fair fine gentle golden good handsome happy healthy honest lovely loving mighty noble peaceful pretty prompt proud reddest rich smooth sunny sweet sweetest trustworthy warm"
+            )
 
     @tatsumasu()
     def _negative_noun_(self):  # noqa
         with self._choice():
             with self._option():
-                self._token('Hell')
+                self._token("Hell")
             with self._option():
-                self._token('Microsoft')
+                self._token("Microsoft")
             with self._option():
-                self._token('bastard')
+                self._token("bastard")
             with self._option():
-                self._token('beggar')
+                self._token("beggar")
             with self._option():
-                self._token('blister')
+                self._token("blister")
             with self._option():
-                self._token('codpiece')
+                self._token("codpiece")
             with self._option():
-                self._token('coward')
+                self._token("coward")
             with self._option():
-                self._token('curse')
+                self._token("curse")
             with self._option():
-                self._token('death')
+                self._token("death")
             with self._option():
-                self._token('devil')
+                self._token("devil")
             with self._option():
-                self._token('draught')
+                self._token("draught")
             with self._option():
-                self._token('famine')
+                self._token("famine")
             with self._option():
-                self._token('flirt-gill')
+                self._token("flirt-gill")
             with self._option():
-                self._token('goat')
+                self._token("goat")
             with self._option():
-                self._token('hate')
+                self._token("hate")
             with self._option():
-                self._token('hog')
+                self._token("hog")
             with self._option():
-                self._token('hound')
+                self._token("hound")
             with self._option():
-                self._token('leech')
+                self._token("leech")
             with self._option():
-                self._token('lie')
+                self._token("lie")
             with self._option():
-                self._token('pig')
+                self._token("pig")
             with self._option():
-                self._token('plague')
+                self._token("plague")
             with self._option():
-                self._token('starvation')
+                self._token("starvation")
             with self._option():
-                self._token('toad')
+                self._token("toad")
             with self._option():
-                self._token('war')
+                self._token("war")
             with self._option():
-                self._token('wolf')
-            self._error('expecting one of: Hell Microsoft bastard beggar blister codpiece coward curse death devil draught famine flirt-gill goat hate hog hound leech lie pig plague starvation toad war wolf')
+                self._token("wolf")
+            self._error(
+                "expecting one of: Hell Microsoft bastard beggar blister codpiece coward curse death devil draught famine flirt-gill goat hate hog hound leech lie pig plague starvation toad war wolf"
+            )
 
     @tatsumasu()
     def _neutral_noun_(self):  # noqa
         with self._choice():
             with self._option():
-                self._token('animal')
+                self._token("animal")
             with self._option():
-                self._token('aunt')
+                self._token("aunt")
             with self._option():
-                self._token('brother')
+                self._token("brother")
             with self._option():
-                self._token('cat')
+                self._token("cat")
             with self._option():
-                self._token('chihuahua')
+                self._token("chihuahua")
             with self._option():
-                self._token('cousin')
+                self._token("cousin")
             with self._option():
-                self._token('cow')
+                self._token("cow")
             with self._option():
-                self._token('daughter')
+                self._token("daughter")
             with self._option():
-                self._token('door')
+                self._token("door")
             with self._option():
-                self._token('face')
+                self._token("face")
             with self._option():
-                self._token('father')
+                self._token("father")
             with self._option():
-                self._token('fellow')
+                self._token("fellow")
             with self._option():
-                self._token('granddaughter')
+                self._token("granddaughter")
             with self._option():
-                self._token('grandfather')
+                self._token("grandfather")
             with self._option():
-                self._token('grandmother')
+                self._token("grandmother")
             with self._option():
-                self._token('grandson')
+                self._token("grandson")
             with self._option():
-                self._token('hair')
+                self._token("hair")
             with self._option():
-                self._token('hamster')
+                self._token("hamster")
             with self._option():
-                self._token('horse')
+                self._token("horse")
             with self._option():
-                self._token('lamp')
+                self._token("lamp")
             with self._option():
-                self._token('lantern')
+                self._token("lantern")
             with self._option():
-                self._token('mistletoe')
+                self._token("mistletoe")
             with self._option():
-                self._token('moon')
+                self._token("moon")
             with self._option():
-                self._token('morning')
+                self._token("morning")
             with self._option():
-                self._token('mother')
+                self._token("mother")
             with self._option():
-                self._token('nephew')
+                self._token("nephew")
             with self._option():
-                self._token('niece')
+                self._token("niece")
             with self._option():
-                self._token('nose')
+                self._token("nose")
             with self._option():
-                self._token('purse')
+                self._token("purse")
             with self._option():
-                self._token('road')
+                self._token("road")
             with self._option():
-                self._token('roman')
+                self._token("roman")
             with self._option():
-                self._token('sister')
+                self._token("sister")
             with self._option():
-                self._token('sky')
+                self._token("sky")
             with self._option():
-                self._token('son')
+                self._token("son")
             with self._option():
-                self._token('squirrel')
+                self._token("squirrel")
             with self._option():
-                self._token('stone')
-                self._token('wall')
+                self._token("stone")
+                self._token("wall")
             with self._option():
-                self._token('thing')
+                self._token("thing")
             with self._option():
-                self._token('town')
+                self._token("town")
             with self._option():
-                self._token('tree')
+                self._token("tree")
             with self._option():
-                self._token('uncle')
+                self._token("uncle")
             with self._option():
-                self._token('wind')
-            self._error('expecting one of: animal aunt brother cat chihuahua cousin cow daughter door face father fellow granddaughter grandfather grandmother grandson hair hamster horse lamp lantern mistletoe moon morning mother nephew niece nose purse road roman sister sky son squirrel stone thing town tree uncle wind')
+                self._token("wind")
+            self._error(
+                "expecting one of: animal aunt brother cat chihuahua cousin cow daughter door face father fellow granddaughter grandfather grandmother grandson hair hamster horse lamp lantern mistletoe moon morning mother nephew niece nose purse road roman sister sky son squirrel stone thing town tree uncle wind"
+            )
 
     @tatsumasu()
     def _positive_noun_(self):  # noqa
         with self._choice():
             with self._option():
-                self._token('Heaven')
+                self._token("Heaven")
             with self._option():
-                self._token('King')
+                self._token("King")
             with self._option():
-                self._token('Lord')
+                self._token("Lord")
             with self._option():
-                self._token('angel')
+                self._token("angel")
             with self._option():
-                self._token('flower')
+                self._token("flower")
             with self._option():
-                self._token('happiness')
+                self._token("happiness")
             with self._option():
-                self._token('joy')
+                self._token("joy")
             with self._option():
-                self._token('plum')
+                self._token("plum")
             with self._option():
                 self._token("summer's")
-                self._token('day')
+                self._token("day")
             with self._option():
-                self._token('hero')
+                self._token("hero")
             with self._option():
-                self._token('rose')
+                self._token("rose")
             with self._option():
-                self._token('kingdom')
+                self._token("kingdom")
             with self._option():
-                self._token('pony')
-            self._error("expecting one of: Heaven King Lord angel flower happiness hero joy kingdom plum pony rose summer's")
+                self._token("pony")
+            self._error(
+                "expecting one of: Heaven King Lord angel flower happiness hero joy kingdom plum pony rose summer's"
+            )
 
     @tatsumasu()
     def _character_(self):  # noqa
         with self._choice():
             with self._option():
-                self._token('Achilles')
+                self._token("Achilles")
             with self._option():
-                self._token('Adonis')
+                self._token("Adonis")
             with self._option():
-                self._token('Adriana')
+                self._token("Adriana")
             with self._option():
-                self._token('Aegeon')
+                self._token("Aegeon")
             with self._option():
-                self._token('Aemilia')
+                self._token("Aemilia")
             with self._option():
-                self._token('Agamemnon')
+                self._token("Agamemnon")
             with self._option():
-                self._token('Agrippa')
+                self._token("Agrippa")
             with self._option():
-                self._token('Ajax')
+                self._token("Ajax")
             with self._option():
-                self._token('Alonso')
+                self._token("Alonso")
             with self._option():
-                self._token('Andromache')
+                self._token("Andromache")
             with self._option():
-                self._token('Angelo')
+                self._token("Angelo")
             with self._option():
-                self._token('Antiochus')
+                self._token("Antiochus")
             with self._option():
-                self._token('Antonio')
+                self._token("Antonio")
             with self._option():
-                self._token('Arthur')
+                self._token("Arthur")
             with self._option():
-                self._token('Autolycus')
+                self._token("Autolycus")
             with self._option():
-                self._token('Balthazar')
+                self._token("Balthazar")
             with self._option():
-                self._token('Banquo')
+                self._token("Banquo")
             with self._option():
-                self._token('Beatrice')
+                self._token("Beatrice")
             with self._option():
-                self._token('Benedick')
+                self._token("Benedick")
             with self._option():
-                self._token('Benvolio')
+                self._token("Benvolio")
             with self._option():
-                self._token('Bianca')
+                self._token("Bianca")
             with self._option():
-                self._token('Brabantio')
+                self._token("Brabantio")
             with self._option():
-                self._token('Brutus')
+                self._token("Brutus")
             with self._option():
-                self._token('Capulet')
+                self._token("Capulet")
             with self._option():
-                self._token('Cassandra')
+                self._token("Cassandra")
             with self._option():
-                self._token('Cassius')
+                self._token("Cassius")
             with self._option():
-                self._token('Christopher')
-                self._token('Sly')
+                self._token("Christopher")
+                self._token("Sly")
             with self._option():
-                self._token('Cicero')
+                self._token("Cicero")
             with self._option():
-                self._token('Claudio')
+                self._token("Claudio")
             with self._option():
-                self._token('Claudius')
+                self._token("Claudius")
             with self._option():
-                self._token('Cleopatra')
+                self._token("Cleopatra")
             with self._option():
-                self._token('Cordelia')
+                self._token("Cordelia")
             with self._option():
-                self._token('Cornelius')
+                self._token("Cornelius")
             with self._option():
-                self._token('Cressida')
+                self._token("Cressida")
             with self._option():
-                self._token('Cymberline')
+                self._token("Cymberline")
             with self._option():
-                self._token('Demetrius')
+                self._token("Demetrius")
             with self._option():
-                self._token('Desdemona')
+                self._token("Desdemona")
             with self._option():
-                self._token('Dionyza')
+                self._token("Dionyza")
             with self._option():
-                self._token('Doctor')
-                self._token('Caius')
+                self._token("Doctor")
+                self._token("Caius")
             with self._option():
-                self._token('Dogberry')
+                self._token("Dogberry")
             with self._option():
-                self._token('Don')
-                self._token('John')
+                self._token("Don")
+                self._token("John")
             with self._option():
-                self._token('Don')
-                self._token('Pedro')
+                self._token("Don")
+                self._token("Pedro")
             with self._option():
-                self._token('Donalbain')
+                self._token("Donalbain")
             with self._option():
-                self._token('Dorcas')
+                self._token("Dorcas")
             with self._option():
-                self._token('Duncan')
+                self._token("Duncan")
             with self._option():
-                self._token('Egeus')
+                self._token("Egeus")
             with self._option():
-                self._token('Emilia')
+                self._token("Emilia")
             with self._option():
-                self._token('Escalus')
+                self._token("Escalus")
             with self._option():
-                self._token('Falstaff')
+                self._token("Falstaff")
             with self._option():
-                self._token('Fenton')
+                self._token("Fenton")
             with self._option():
-                self._token('Ferdinand')
+                self._token("Ferdinand")
             with self._option():
-                self._token('Ford')
+                self._token("Ford")
             with self._option():
-                self._token('Fortinbras')
+                self._token("Fortinbras")
             with self._option():
-                self._token('Francisca')
+                self._token("Francisca")
             with self._option():
-                self._token('Friar')
-                self._token('John')
+                self._token("Friar")
+                self._token("John")
             with self._option():
-                self._token('Friar')
-                self._token('Laurence')
+                self._token("Friar")
+                self._token("Laurence")
             with self._option():
-                self._token('Gertrude')
+                self._token("Gertrude")
             with self._option():
-                self._token('Goneril')
+                self._token("Goneril")
             with self._option():
-                self._token('Hamlet')
+                self._token("Hamlet")
             with self._option():
-                self._token('Hecate')
+                self._token("Hecate")
             with self._option():
-                self._token('Hector')
+                self._token("Hector")
             with self._option():
-                self._token('Helen')
+                self._token("Helen")
             with self._option():
-                self._token('Helena')
+                self._token("Helena")
             with self._option():
-                self._token('Hermia')
+                self._token("Hermia")
             with self._option():
-                self._token('Hermonie')
+                self._token("Hermonie")
             with self._option():
-                self._token('Hippolyta')
+                self._token("Hippolyta")
             with self._option():
-                self._token('Horatio')
+                self._token("Horatio")
             with self._option():
-                self._token('Imogen')
+                self._token("Imogen")
             with self._option():
-                self._token('Isabella')
+                self._token("Isabella")
             with self._option():
-                self._token('John')
-                self._token('of')
-                self._token('Gaunt')
+                self._token("John")
+                self._token("of")
+                self._token("Gaunt")
             with self._option():
-                self._token('John')
-                self._token('of')
-                self._token('Lancaster')
+                self._token("John")
+                self._token("of")
+                self._token("Lancaster")
             with self._option():
-                self._token('Julia')
+                self._token("Julia")
             with self._option():
-                self._token('Juliet')
+                self._token("Juliet")
             with self._option():
-                self._token('Julius')
-                self._token('Caesar')
+                self._token("Julius")
+                self._token("Caesar")
             with self._option():
-                self._token('King')
-                self._token('Henry')
+                self._token("King")
+                self._token("Henry")
             with self._option():
-                self._token('King')
-                self._token('John')
+                self._token("King")
+                self._token("John")
             with self._option():
-                self._token('King')
-                self._token('Lear')
+                self._token("King")
+                self._token("Lear")
             with self._option():
-                self._token('King')
-                self._token('Richard')
+                self._token("King")
+                self._token("Richard")
             with self._option():
-                self._token('Lady')
-                self._token('Capulet')
+                self._token("Lady")
+                self._token("Capulet")
             with self._option():
-                self._token('Lady')
-                self._token('Macbeth')
+                self._token("Lady")
+                self._token("Macbeth")
             with self._option():
-                self._token('Lady')
-                self._token('Macduff')
+                self._token("Lady")
+                self._token("Macduff")
             with self._option():
-                self._token('Lady')
-                self._token('Montague')
+                self._token("Lady")
+                self._token("Montague")
             with self._option():
-                self._token('Lennox')
+                self._token("Lennox")
             with self._option():
-                self._token('Leonato')
+                self._token("Leonato")
             with self._option():
-                self._token('Luciana')
+                self._token("Luciana")
             with self._option():
-                self._token('Lucio')
+                self._token("Lucio")
             with self._option():
-                self._token('Lychorida')
+                self._token("Lychorida")
             with self._option():
-                self._token('Lysander')
+                self._token("Lysander")
             with self._option():
-                self._token('Macbeth')
+                self._token("Macbeth")
             with self._option():
-                self._token('Macduff')
+                self._token("Macduff")
             with self._option():
-                self._token('Malcolm')
+                self._token("Malcolm")
             with self._option():
-                self._token('Mariana')
+                self._token("Mariana")
             with self._option():
-                self._token('Mark')
-                self._token('Antony')
+                self._token("Mark")
+                self._token("Antony")
             with self._option():
-                self._token('Mercutio')
+                self._token("Mercutio")
             with self._option():
-                self._token('Miranda')
+                self._token("Miranda")
             with self._option():
-                self._token('Mistress')
-                self._token('Ford')
+                self._token("Mistress")
+                self._token("Ford")
             with self._option():
-                self._token('Mistress')
-                self._token('Overdone')
+                self._token("Mistress")
+                self._token("Overdone")
             with self._option():
-                self._token('Mistress')
-                self._token('Page')
+                self._token("Mistress")
+                self._token("Page")
             with self._option():
-                self._token('Montague')
+                self._token("Montague")
             with self._option():
-                self._token('Mopsa')
+                self._token("Mopsa")
             with self._option():
-                self._token('Oberon')
+                self._token("Oberon")
             with self._option():
-                self._token('Octavia')
+                self._token("Octavia")
             with self._option():
-                self._token('Octavius')
-                self._token('Caesar')
+                self._token("Octavius")
+                self._token("Caesar")
             with self._option():
-                self._token('Olivia')
+                self._token("Olivia")
             with self._option():
-                self._token('Ophelia')
+                self._token("Ophelia")
             with self._option():
-                self._token('Orlando')
+                self._token("Orlando")
             with self._option():
-                self._token('Orsino')
+                self._token("Orsino")
             with self._option():
-                self._token('Othello')
+                self._token("Othello")
             with self._option():
-                self._token('Page')
+                self._token("Page")
             with self._option():
-                self._token('Pantino')
+                self._token("Pantino")
             with self._option():
-                self._token('Paris')
+                self._token("Paris")
             with self._option():
-                self._token('Pericles')
+                self._token("Pericles")
             with self._option():
-                self._token('Pinch')
+                self._token("Pinch")
             with self._option():
-                self._token('Polonius')
+                self._token("Polonius")
             with self._option():
-                self._token('Pompeius')
+                self._token("Pompeius")
             with self._option():
-                self._token('Portia')
+                self._token("Portia")
             with self._option():
-                self._token('Priam')
+                self._token("Priam")
             with self._option():
-                self._token('Prince')
-                self._token('Henry')
+                self._token("Prince")
+                self._token("Henry")
             with self._option():
-                self._token('Prospero')
+                self._token("Prospero")
             with self._option():
-                self._token('Proteus')
+                self._token("Proteus")
             with self._option():
-                self._token('Publius')
+                self._token("Publius")
             with self._option():
-                self._token('Puck')
+                self._token("Puck")
             with self._option():
-                self._token('Queen')
-                self._token('Elinor')
+                self._token("Queen")
+                self._token("Elinor")
             with self._option():
-                self._token('Regan')
+                self._token("Regan")
             with self._option():
-                self._token('Robin')
+                self._token("Robin")
             with self._option():
-                self._token('Romeo')
+                self._token("Romeo")
             with self._option():
-                self._token('Rosalind')
+                self._token("Rosalind")
             with self._option():
-                self._token('Sebastian')
+                self._token("Sebastian")
             with self._option():
-                self._token('Shallow')
+                self._token("Shallow")
             with self._option():
-                self._token('Shylock')
+                self._token("Shylock")
             with self._option():
-                self._token('Slender')
+                self._token("Slender")
             with self._option():
-                self._token('Solinus')
+                self._token("Solinus")
             with self._option():
-                self._token('Stephano')
+                self._token("Stephano")
             with self._option():
-                self._token('Thaisa')
+                self._token("Thaisa")
             with self._option():
-                self._token('The')
-                self._token('Abbot')
-                self._token('of')
-                self._token('Westminster')
+                self._token("The")
+                self._token("Abbot")
+                self._token("of")
+                self._token("Westminster")
             with self._option():
-                self._token('The')
-                self._token('Apothecary')
+                self._token("The")
+                self._token("Apothecary")
             with self._option():
-                self._token('The')
-                self._token('Archbishop')
-                self._token('of')
-                self._token('Canterbury')
+                self._token("The")
+                self._token("Archbishop")
+                self._token("of")
+                self._token("Canterbury")
             with self._option():
-                self._token('The')
-                self._token('Duke')
-                self._token('of')
-                self._token('Milan')
+                self._token("The")
+                self._token("Duke")
+                self._token("of")
+                self._token("Milan")
             with self._option():
-                self._token('The')
-                self._token('Duke')
-                self._token('of')
-                self._token('Venice')
+                self._token("The")
+                self._token("Duke")
+                self._token("of")
+                self._token("Venice")
             with self._option():
-                self._token('The')
-                self._token('Ghost')
+                self._token("The")
+                self._token("Ghost")
             with self._option():
-                self._token('Theseus')
+                self._token("Theseus")
             with self._option():
-                self._token('Thurio')
+                self._token("Thurio")
             with self._option():
-                self._token('Timon')
+                self._token("Timon")
             with self._option():
-                self._token('Titania')
+                self._token("Titania")
             with self._option():
-                self._token('Titus')
+                self._token("Titus")
             with self._option():
-                self._token('Troilus')
+                self._token("Troilus")
             with self._option():
-                self._token('Tybalt')
+                self._token("Tybalt")
             with self._option():
-                self._token('Ulysses')
+                self._token("Ulysses")
             with self._option():
-                self._token('Valentine')
+                self._token("Valentine")
             with self._option():
-                self._token('Venus')
+                self._token("Venus")
             with self._option():
-                self._token('Vincentio')
+                self._token("Vincentio")
             with self._option():
-                self._token('Viola')
-            self._error('expecting one of: Achilles Adonis Adriana Aegeon Aemilia Agamemnon Agrippa Ajax Alonso Andromache Angelo Antiochus Antonio Arthur Autolycus Balthazar Banquo Beatrice Benedick Benvolio Bianca Brabantio Brutus Capulet Cassandra Cassius Christopher Cicero Claudio Claudius Cleopatra Cordelia Cornelius Cressida Cymberline Demetrius Desdemona Dionyza Doctor Dogberry Don Donalbain Dorcas Duncan Egeus Emilia Escalus Falstaff Fenton Ferdinand Ford Fortinbras Francisca Friar Gertrude Goneril Hamlet Hecate Hector Helen Helena Hermia Hermonie Hippolyta Horatio Imogen Isabella John Julia Juliet Julius King Lady Lennox Leonato Luciana Lucio Lychorida Lysander Macbeth Macduff Malcolm Mariana Mark Mercutio Miranda Mistress Montague Mopsa Oberon Octavia Octavius Olivia Ophelia Orlando Orsino Othello Page Pantino Paris Pericles Pinch Polonius Pompeius Portia Priam Prince Prospero Proteus Publius Puck Queen Regan Robin Romeo Rosalind Sebastian Shallow Shylock Slender Solinus Stephano Thaisa The Theseus Thurio Timon Titania Titus Troilus Tybalt Ulysses Valentine Venus Vincentio Viola')
+                self._token("Viola")
+            self._error(
+                "expecting one of: Achilles Adonis Adriana Aegeon Aemilia Agamemnon Agrippa Ajax Alonso Andromache Angelo Antiochus Antonio Arthur Autolycus Balthazar Banquo Beatrice Benedick Benvolio Bianca Brabantio Brutus Capulet Cassandra Cassius Christopher Cicero Claudio Claudius Cleopatra Cordelia Cornelius Cressida Cymberline Demetrius Desdemona Dionyza Doctor Dogberry Don Donalbain Dorcas Duncan Egeus Emilia Escalus Falstaff Fenton Ferdinand Ford Fortinbras Francisca Friar Gertrude Goneril Hamlet Hecate Hector Helen Helena Hermia Hermonie Hippolyta Horatio Imogen Isabella John Julia Juliet Julius King Lady Lennox Leonato Luciana Lucio Lychorida Lysander Macbeth Macduff Malcolm Mariana Mark Mercutio Miranda Mistress Montague Mopsa Oberon Octavia Octavius Olivia Ophelia Orlando Orsino Othello Page Pantino Paris Pericles Pinch Polonius Pompeius Portia Priam Prince Prospero Proteus Publius Puck Queen Regan Robin Romeo Rosalind Sebastian Shallow Shylock Slender Solinus Stephano Thaisa The Theseus Thurio Timon Titania Titus Troilus Tybalt Ulysses Valentine Venus Vincentio Viola"
+            )
 
     @tatsumasu()
     def _nothing_(self):  # noqa
         with self._group():
             with self._choice():
                 with self._option():
-                    self._token('nothing')
+                    self._token("nothing")
                 with self._option():
-                    self._token('zero')
-                self._error('expecting one of: nothing zero')
-        self.name_last_node('nothing_word')
-        self.ast._define(
-            ['nothing_word'],
-            []
-        )
+                    self._token("zero")
+                self._error("expecting one of: nothing zero")
+        self.name_last_node("nothing_word")
+        self.ast._define(["nothing_word"], [])
 
     @tatsumasu()
     def _positive_or_neutral_adjective_(self):  # noqa
@@ -970,7 +979,9 @@ class shakespeareParser(Parser):
                 self._positive_adjective_()
             with self._option():
                 self._neutral_adjective_()
-            self._error('expecting one of: amazing beautiful big black blossoming blue bluest bold bottomless brave charming clearest cunning cute delicious embroidered fair fine furry gentle golden good green handsome happy hard healthy honest huge large little lovely loving mighty neutral_adjective noble normal old peaceful positive_adjective pretty prompt proud purple red reddest rich rural small smooth sunny sweet sweetest tiny trustworthy warm white yellow')
+            self._error(
+                "expecting one of: amazing beautiful big black blossoming blue bluest bold bottomless brave charming clearest cunning cute delicious embroidered fair fine furry gentle golden good green handsome happy hard healthy honest huge large little lovely loving mighty neutral_adjective noble normal old peaceful positive_adjective pretty prompt proud purple red reddest rich rural small smooth sunny sweet sweetest tiny trustworthy warm white yellow"
+            )
 
     @tatsumasu()
     def _positive_or_neutral_noun_(self):  # noqa
@@ -979,24 +990,25 @@ class shakespeareParser(Parser):
                 self._positive_noun_()
             with self._option():
                 self._neutral_noun_()
-            self._error("expecting one of: Heaven King Lord angel animal aunt brother cat chihuahua cousin cow daughter door face father fellow flower granddaughter grandfather grandmother grandson hair hamster happiness hero horse joy kingdom lamp lantern mistletoe moon morning mother nephew neutral_noun niece nose plum pony positive_noun purse road roman rose sister sky son squirrel stone summer's thing town tree uncle wind")
+            self._error(
+                "expecting one of: Heaven King Lord angel animal aunt brother cat chihuahua cousin cow daughter door face father fellow flower granddaughter grandfather grandmother grandson hair hamster happiness hero horse joy kingdom lamp lantern mistletoe moon morning mother nephew neutral_noun niece nose plum pony positive_noun purse road roman rose sister sky son squirrel stone summer's thing town tree uncle wind"
+            )
 
     @tatsumasu()
     def _neutral_comparative_(self):  # noqa
-        self._token('as')
+        self._token("as")
         with self._group():
             with self._choice():
                 with self._option():
                     self._negative_adjective_()
                 with self._option():
                     self._positive_or_neutral_adjective_()
-                self._error('expecting one of: negative_adjective positive_or_neutral_adjective')
-        self.name_last_node('comparison')
-        self._token('as')
-        self.ast._define(
-            ['comparison'],
-            []
-        )
+                self._error(
+                    "expecting one of: negative_adjective positive_or_neutral_adjective"
+                )
+        self.name_last_node("comparison")
+        self._token("as")
+        self.ast._define(["comparison"], [])
 
     @tatsumasu()
     def _negative_noun_phrase_(self):  # noqa
@@ -1006,7 +1018,7 @@ class shakespeareParser(Parser):
                     self._article_()
                 with self._option():
                     self._possessive_()
-                self._error('expecting one of: article possessive')
+                self._error("expecting one of: article possessive")
 
         def block2():
             with self._group():
@@ -1015,15 +1027,15 @@ class shakespeareParser(Parser):
                         self._negative_adjective_()
                     with self._option():
                         self._neutral_adjective_()
-                    self._error('expecting one of: negative_adjective neutral_adjective')
+                    self._error(
+                        "expecting one of: negative_adjective neutral_adjective"
+                    )
+
         self._closure(block2)
-        self.name_last_node('adjectives')
+        self.name_last_node("adjectives")
         self._negative_noun_()
-        self.name_last_node('noun')
-        self.ast._define(
-            ['adjectives', 'noun'],
-            []
-        )
+        self.name_last_node("noun")
+        self.ast._define(["adjectives", "noun"], [])
 
     @tatsumasu()
     def _positive_noun_phrase_(self):  # noqa
@@ -1033,18 +1045,16 @@ class shakespeareParser(Parser):
                     self._article_()
                 with self._option():
                     self._possessive_()
-                self._error('expecting one of: article possessive')
+                self._error("expecting one of: article possessive")
 
         def block2():
             self._positive_or_neutral_adjective_()
+
         self._closure(block2)
-        self.name_last_node('adjectives')
+        self.name_last_node("adjectives")
         self._positive_or_neutral_noun_()
-        self.name_last_node('noun')
-        self.ast._define(
-            ['adjectives', 'noun'],
-            []
-        )
+        self.name_last_node("noun")
+        self.ast._define(["adjectives", "noun"], [])
 
     @tatsumasu()
     def _noun_phrase_(self):  # noqa
@@ -1053,7 +1063,9 @@ class shakespeareParser(Parser):
                 self._negative_noun_phrase_()
             with self._option():
                 self._positive_noun_phrase_()
-            self._error("expecting one of: Heaven Hell King Lord Microsoft a amazing an angel animal article aunt bad bastard beautiful beggar big black blister blossoming blue bluest bold bottomless brave brother cat charming chihuahua clearest codpiece cousin cow coward cowardly cunning curse cursed cute damned daughter death delicious devil dirty disgusting distasteful door draught dusty embroidered evil face fair famine fat fat-kidneyed father fatherless fellow fine first_person_possessive flirt-gill flower foul furry gentle goat golden good granddaughter grandfather grandmother grandson green hair hairy half-witted hamster handsome happiness happy hard hate healthy her hero his hog honest horrible horrid horse hound huge infected its joy kingdom lamp lantern large leech lie little lovely loving lying mighty mine miserable mistletoe misused moon morning mother my negative_adjective negative_noun negative_noun_phrase nephew neutral_adjective neutral_noun niece noble normal nose old oozing peaceful pig plague plum pony positive_adjective positive_noun positive_noun_phrase positive_or_neutral_adjective positive_or_neutral_noun possessive pretty prompt proud purple purse red reddest rich road roman rose rotten rural second_person_possessive sister sky small smelly smooth snotty son sorry squirrel starvation stinking stone stuffed stupid summer's sunny sweet sweetest the their thine thing third_person_possessive thy tiny toad town tree trustworthy uncle vile villainous war warm white wind wolf worried yellow your")
+            self._error(
+                "expecting one of: Heaven Hell King Lord Microsoft a amazing an angel animal article aunt bad bastard beautiful beggar big black blister blossoming blue bluest bold bottomless brave brother cat charming chihuahua clearest codpiece cousin cow coward cowardly cunning curse cursed cute damned daughter death delicious devil dirty disgusting distasteful door draught dusty embroidered evil face fair famine fat fat-kidneyed father fatherless fellow fine first_person_possessive flirt-gill flower foul furry gentle goat golden good granddaughter grandfather grandmother grandson green hair hairy half-witted hamster handsome happiness happy hard hate healthy her hero his hog honest horrible horrid horse hound huge infected its joy kingdom lamp lantern large leech lie little lovely loving lying mighty mine miserable mistletoe misused moon morning mother my negative_adjective negative_noun negative_noun_phrase nephew neutral_adjective neutral_noun niece noble normal nose old oozing peaceful pig plague plum pony positive_adjective positive_noun positive_noun_phrase positive_or_neutral_adjective positive_or_neutral_noun possessive pretty prompt proud purple purse red reddest rich road roman rose rotten rural second_person_possessive sister sky small smelly smooth snotty son sorry squirrel starvation stinking stone stuffed stupid summer's sunny sweet sweetest the their thine thing third_person_possessive thy tiny toad town tree trustworthy uncle vile villainous war warm white wind wolf worried yellow your"
+            )
 
     @tatsumasu()
     def _first_person_value_(self):  # noqa
@@ -1063,12 +1075,11 @@ class shakespeareParser(Parser):
                     self._first_person_()
                 with self._option():
                     self._first_person_reflexive_()
-                self._error('expecting one of: I first_person first_person_reflexive me myself')
-        self.name_last_node('first_person_word')
-        self.ast._define(
-            ['first_person_word'],
-            []
-        )
+                self._error(
+                    "expecting one of: I first_person first_person_reflexive me myself"
+                )
+        self.name_last_node("first_person_word")
+        self.ast._define(["first_person_word"], [])
 
     @tatsumasu()
     def _second_person_value_(self):  # noqa
@@ -1078,21 +1089,17 @@ class shakespeareParser(Parser):
                     self._second_person_()
                 with self._option():
                     self._second_person_reflexive_()
-                self._error('expecting one of: second_person second_person_reflexive thee thou thyself you yourself')
-        self.name_last_node('second_person_word')
-        self.ast._define(
-            ['second_person_word'],
-            []
-        )
+                self._error(
+                    "expecting one of: second_person second_person_reflexive thee thou thyself you yourself"
+                )
+        self.name_last_node("second_person_word")
+        self.ast._define(["second_person_word"], [])
 
     @tatsumasu()
     def _character_name_(self):  # noqa
         self._character_()
-        self.name_last_node('name')
-        self.ast._define(
-            ['name'],
-            []
-        )
+        self.name_last_node("name")
+        self.ast._define(["name"], [])
 
     @tatsumasu()
     def _value_(self):  # noqa
@@ -1109,84 +1116,80 @@ class shakespeareParser(Parser):
                 self._character_name_()
             with self._option():
                 self._nothing_()
-            self._error("expecting one of: Achilles Adonis Adriana Aegeon Aemilia Agamemnon Agrippa Ajax Alonso Andromache Angelo Antiochus Antonio Arthur Autolycus Balthazar Banquo Beatrice Benedick Benvolio Bianca Brabantio Brutus Capulet Cassandra Cassius Christopher Cicero Claudio Claudius Cleopatra Cordelia Cornelius Cressida Cymberline Demetrius Desdemona Dionyza Doctor Dogberry Don Donalbain Dorcas Duncan Egeus Emilia Escalus Falstaff Fenton Ferdinand Ford Fortinbras Francisca Friar Gertrude Goneril Hamlet Heaven Hecate Hector Helen Helena Hell Hermia Hermonie Hippolyta Horatio I Imogen Isabella John Julia Juliet Julius King Lady Lennox Leonato Lord Luciana Lucio Lychorida Lysander Macbeth Macduff Malcolm Mariana Mark Mercutio Microsoft Miranda Mistress Montague Mopsa Oberon Octavia Octavius Olivia Ophelia Orlando Orsino Othello Page Pantino Paris Pericles Pinch Polonius Pompeius Portia Priam Prince Prospero Proteus Publius Puck Queen Regan Robin Romeo Rosalind Sebastian Shallow Shylock Slender Solinus Stephano Thaisa The Theseus Thurio Timon Titania Titus Troilus Tybalt Ulysses Valentine Venus Vincentio Viola a amazing an angel animal article aunt bad bastard beautiful beggar big binary_expression binary_operation black blister blossoming blue bluest bold bottomless brave brother cat character character_name charming chihuahua clearest codpiece cousin cow coward cowardly cunning curse cursed cute damned daughter death delicious devil dirty disgusting distasteful door draught dusty embroidered evil expression face fair famine fat fat-kidneyed father fatherless fellow fine first_person first_person_possessive first_person_reflexive first_person_value flirt-gill flower foul furry gentle goat golden good granddaughter grandfather grandmother grandson green hair hairy half-witted hamster handsome happiness happy hard hate healthy her hero his hog honest horrible horrid horse hound huge infected its joy kingdom lamp lantern large leech lie little lovely loving lying me mighty mine miserable mistletoe misused moon morning mother my myself negative_adjective negative_noun negative_noun_phrase nephew neutral_adjective neutral_noun niece noble normal nose nothing noun_phrase old oozing peaceful pig plague plum pony positive_adjective positive_noun positive_noun_phrase positive_or_neutral_adjective positive_or_neutral_noun possessive pretty prompt proud purple purse red reddest rich road roman rose rotten rural second_person second_person_possessive second_person_reflexive second_person_value sister sky small smelly smooth snotty son sorry squirrel starvation stinking stone stuffed stupid summer's sunny sweet sweetest the thee their thine thing third_person_possessive thou thy thyself tiny toad town tree trustworthy twice unary_expression unary_operation uncle vile villainous war warm white wind wolf worried yellow you your yourself zero")
+            self._error(
+                "expecting one of: Achilles Adonis Adriana Aegeon Aemilia Agamemnon Agrippa Ajax Alonso Andromache Angelo Antiochus Antonio Arthur Autolycus Balthazar Banquo Beatrice Benedick Benvolio Bianca Brabantio Brutus Capulet Cassandra Cassius Christopher Cicero Claudio Claudius Cleopatra Cordelia Cornelius Cressida Cymberline Demetrius Desdemona Dionyza Doctor Dogberry Don Donalbain Dorcas Duncan Egeus Emilia Escalus Falstaff Fenton Ferdinand Ford Fortinbras Francisca Friar Gertrude Goneril Hamlet Heaven Hecate Hector Helen Helena Hell Hermia Hermonie Hippolyta Horatio I Imogen Isabella John Julia Juliet Julius King Lady Lennox Leonato Lord Luciana Lucio Lychorida Lysander Macbeth Macduff Malcolm Mariana Mark Mercutio Microsoft Miranda Mistress Montague Mopsa Oberon Octavia Octavius Olivia Ophelia Orlando Orsino Othello Page Pantino Paris Pericles Pinch Polonius Pompeius Portia Priam Prince Prospero Proteus Publius Puck Queen Regan Robin Romeo Rosalind Sebastian Shallow Shylock Slender Solinus Stephano Thaisa The Theseus Thurio Timon Titania Titus Troilus Tybalt Ulysses Valentine Venus Vincentio Viola a amazing an angel animal article aunt bad bastard beautiful beggar big binary_expression binary_operation black blister blossoming blue bluest bold bottomless brave brother cat character character_name charming chihuahua clearest codpiece cousin cow coward cowardly cunning curse cursed cute damned daughter death delicious devil dirty disgusting distasteful door draught dusty embroidered evil expression face fair famine fat fat-kidneyed father fatherless fellow fine first_person first_person_possessive first_person_reflexive first_person_value flirt-gill flower foul furry gentle goat golden good granddaughter grandfather grandmother grandson green hair hairy half-witted hamster handsome happiness happy hard hate healthy her hero his hog honest horrible horrid horse hound huge infected its joy kingdom lamp lantern large leech lie little lovely loving lying me mighty mine miserable mistletoe misused moon morning mother my myself negative_adjective negative_noun negative_noun_phrase nephew neutral_adjective neutral_noun niece noble normal nose nothing noun_phrase old oozing peaceful pig plague plum pony positive_adjective positive_noun positive_noun_phrase positive_or_neutral_adjective positive_or_neutral_noun possessive pretty prompt proud purple purse red reddest rich road roman rose rotten rural second_person second_person_possessive second_person_reflexive second_person_value sister sky small smelly smooth snotty son sorry squirrel starvation stinking stone stuffed stupid summer's sunny sweet sweetest the thee their thine thing third_person_possessive thou thy thyself tiny toad town tree trustworthy twice unary_expression unary_operation uncle vile villainous war warm white wind wolf worried yellow you your yourself zero"
+            )
 
     @tatsumasu()
     def _binary_operation_(self):  # noqa
         with self._choice():
             with self._option():
-                self._token('the')
-                self._token('difference')
-                self._token('between')
+                self._token("the")
+                self._token("difference")
+                self._token("between")
             with self._option():
-                self._token('the')
-                self._token('product')
-                self._token('of')
+                self._token("the")
+                self._token("product")
+                self._token("of")
             with self._option():
-                self._token('the')
-                self._token('quotient')
-                self._token('between')
+                self._token("the")
+                self._token("quotient")
+                self._token("between")
             with self._option():
-                self._token('the')
-                self._token('remainder')
-                self._token('of')
-                self._token('the')
-                self._token('quotient')
-                self._token('between')
+                self._token("the")
+                self._token("remainder")
+                self._token("of")
+                self._token("the")
+                self._token("quotient")
+                self._token("between")
             with self._option():
-                self._token('the')
-                self._token('sum')
-                self._token('of')
-            self._error('expecting one of: the')
+                self._token("the")
+                self._token("sum")
+                self._token("of")
+            self._error("expecting one of: the")
 
     @tatsumasu()
     def _binary_expression_(self):  # noqa
         self._binary_operation_()
-        self.name_last_node('operation')
+        self.name_last_node("operation")
         self._value_()
-        self.name_last_node('first_value')
-        self._token('and')
+        self.name_last_node("first_value")
+        self._token("and")
         self._value_()
-        self.name_last_node('second_value')
-        self.ast._define(
-            ['first_value', 'operation', 'second_value'],
-            []
-        )
+        self.name_last_node("second_value")
+        self.ast._define(["first_value", "operation", "second_value"], [])
 
     @tatsumasu()
     def _unary_operation_(self):  # noqa
         with self._choice():
             with self._option():
-                self._token('the')
-                self._token('cube')
-                self._token('of')
+                self._token("the")
+                self._token("cube")
+                self._token("of")
             with self._option():
-                self._token('the')
-                self._token('factorial')
-                self._token('of')
+                self._token("the")
+                self._token("factorial")
+                self._token("of")
             with self._option():
-                self._token('the')
-                self._token('square')
-                self._token('of')
+                self._token("the")
+                self._token("square")
+                self._token("of")
             with self._option():
-                self._token('the')
-                self._token('square')
-                self._token('root')
-                self._token('of')
+                self._token("the")
+                self._token("square")
+                self._token("root")
+                self._token("of")
             with self._option():
-                self._token('twice')
-            self._error('expecting one of: the twice')
+                self._token("twice")
+            self._error("expecting one of: the twice")
 
     @tatsumasu()
     def _unary_expression_(self):  # noqa
         self._unary_operation_()
-        self.name_last_node('operation')
+        self.name_last_node("operation")
         self._value_()
-        self.name_last_node('value')
-        self.ast._define(
-            ['operation', 'value'],
-            []
-        )
+        self.name_last_node("value")
+        self.ast._define(["operation", "value"], [])
 
     @tatsumasu()
     def _expression_(self):  # noqa
@@ -1195,37 +1198,33 @@ class shakespeareParser(Parser):
                 self._binary_expression_()
             with self._option():
                 self._unary_expression_()
-            self._error('expecting one of: binary_expression binary_operation the twice unary_expression unary_operation')
+            self._error(
+                "expecting one of: binary_expression binary_operation the twice unary_expression unary_operation"
+            )
 
     @tatsumasu()
     def _negative_if_(self):  # noqa
         with self._group():
-            self._token('If')
-            self._token('not')
-            self._token(',')
-        self.name_last_node('if_')
-        self.ast._define(
-            ['if_'],
-            []
-        )
+            self._token("If")
+            self._token("not")
+            self._token(",")
+        self.name_last_node("if_")
+        self.ast._define(["if_"], [])
 
     @tatsumasu()
     def _positive_if_(self):  # noqa
         with self._group():
-            self._token('If')
-            self._token('so')
-            self._token(',')
-        self.name_last_node('if_')
-        self.ast._define(
-            ['if_'],
-            []
-        )
+            self._token("If")
+            self._token("so")
+            self._token(",")
+        self.name_last_node("if_")
+        self.ast._define(["if_"], [])
 
     @tatsumasu()
     def _question_(self):  # noqa
         self._be_()
         self._value_()
-        self.name_last_node('first_value')
+        self.name_last_node("first_value")
         with self._group():
             with self._choice():
                 with self._option():
@@ -1234,15 +1233,14 @@ class shakespeareParser(Parser):
                     self._neutral_comparative_()
                 with self._option():
                     self._negative_comparative_()
-                self._error('expecting one of: negative_comparative neutral_comparative positive_comparative')
-        self.name_last_node('comparative')
+                self._error(
+                    "expecting one of: negative_comparative neutral_comparative positive_comparative"
+                )
+        self.name_last_node("comparative")
         self._value_()
-        self.name_last_node('second_value')
-        self._token('?')
-        self.ast._define(
-            ['comparative', 'first_value', 'second_value'],
-            []
-        )
+        self.name_last_node("second_value")
+        self._token("?")
+        self.ast._define(["comparative", "first_value", "second_value"], [])
 
     @tatsumasu()
     def _assignment_(self):  # noqa
@@ -1250,7 +1248,7 @@ class shakespeareParser(Parser):
         with self._optional():
             self._be_()
         with self._optional():
-            self._token('as')
+            self._token("as")
             with self._optional():
                 with self._group():
                     with self._choice():
@@ -1258,50 +1256,49 @@ class shakespeareParser(Parser):
                             self._positive_or_neutral_adjective_()
                         with self._option():
                             self._negative_adjective_()
-                        self._error('expecting one of: negative_adjective positive_or_neutral_adjective')
-                self._token('as')
+                        self._error(
+                            "expecting one of: negative_adjective positive_or_neutral_adjective"
+                        )
+                self._token("as")
         self._value_()
-        self.name_last_node('value')
+        self.name_last_node("value")
         with self._group():
             with self._choice():
                 with self._option():
-                    self._token('!')
+                    self._token("!")
                 with self._option():
-                    self._token('.')
-                self._error('expecting one of: ! .')
-        self.ast._define(
-            ['value'],
-            []
-        )
+                    self._token(".")
+                self._error("expecting one of: ! .")
+        self.ast._define(["value"], [])
 
     @tatsumasu()
     def _let_us_(self):  # noqa
         with self._choice():
             with self._option():
-                self._token('Let')
-                self._token('us')
+                self._token("Let")
+                self._token("us")
             with self._option():
-                self._token('We')
-                self._token('shall')
+                self._token("We")
+                self._token("shall")
             with self._option():
-                self._token('We')
-                self._token('must')
-            self._error('expecting one of: Let We')
+                self._token("We")
+                self._token("must")
+            self._error("expecting one of: Let We")
 
     @tatsumasu()
     def _proceed_to_(self):  # noqa
         with self._choice():
             with self._option():
-                self._token('proceed')
-                self._token('to')
+                self._token("proceed")
+                self._token("to")
             with self._option():
-                self._token('return')
-                self._token('to')
-            self._error('expecting one of: proceed return')
+                self._token("return")
+                self._token("to")
+            self._error("expecting one of: proceed return")
 
     @tatsumasu()
     def _roman_numeral_(self):  # noqa
-        self._pattern('(?i)M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})')
+        self._pattern("(?i)M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})")
 
     @tatsumasu()
     def _goto_(self):  # noqa
@@ -1311,24 +1308,21 @@ class shakespeareParser(Parser):
                     self._negative_if_()
                 with self._option():
                     self._positive_if_()
-                self._error('expecting one of: negative_if positive_if')
-        self.name_last_node('condition')
+                self._error("expecting one of: negative_if positive_if")
+        self.name_last_node("condition")
         self._let_us_()
         self._proceed_to_()
-        self._token('scene')
+        self._token("scene")
         self._roman_numeral_()
-        self.name_last_node('destination')
+        self.name_last_node("destination")
         with self._group():
             with self._choice():
                 with self._option():
-                    self._token('!')
+                    self._token("!")
                 with self._option():
-                    self._token('.')
-                self._error('expecting one of: ! .')
-        self.ast._define(
-            ['condition', 'destination'],
-            []
-        )
+                    self._token(".")
+                self._error("expecting one of: ! .")
+        self.ast._define(["condition", "destination"], [])
 
     @tatsumasu()
     def _output_(self):  # noqa
@@ -1336,28 +1330,25 @@ class shakespeareParser(Parser):
             with self._choice():
                 with self._option():
                     with self._group():
-                        self._token('open')
+                        self._token("open")
                         self._second_person_possessive_()
-                        self._token('heart')
-                    self.name_last_node('output_number')
+                        self._token("heart")
+                    self.name_last_node("output_number")
                 with self._option():
                     with self._group():
-                        self._token('speak')
+                        self._token("speak")
                         self._second_person_possessive_()
-                        self._token('mind')
-                    self.name_last_node('output_char')
-                self._error('expecting one of: open speak')
+                        self._token("mind")
+                    self.name_last_node("output_char")
+                self._error("expecting one of: open speak")
         with self._group():
             with self._choice():
                 with self._option():
-                    self._token('!')
+                    self._token("!")
                 with self._option():
-                    self._token('.')
-                self._error('expecting one of: ! .')
-        self.ast._define(
-            ['output_char', 'output_number'],
-            []
-        )
+                    self._token(".")
+                self._error("expecting one of: ! .")
+        self.ast._define(["output_char", "output_number"], [])
 
     @tatsumasu()
     def _input_(self):  # noqa
@@ -1365,63 +1356,54 @@ class shakespeareParser(Parser):
             with self._choice():
                 with self._option():
                     with self._group():
-                        self._token('listen')
-                        self._token('to')
+                        self._token("listen")
+                        self._token("to")
                         self._second_person_possessive_()
-                        self._token('heart')
-                    self.name_last_node('input_number')
+                        self._token("heart")
+                    self.name_last_node("input_number")
                 with self._option():
                     with self._group():
-                        self._token('open')
+                        self._token("open")
                         self._second_person_possessive_()
-                        self._token('mind')
-                    self.name_last_node('input_char')
-                self._error('expecting one of: listen open')
+                        self._token("mind")
+                    self.name_last_node("input_char")
+                self._error("expecting one of: listen open")
         with self._group():
             with self._choice():
                 with self._option():
-                    self._token('!')
+                    self._token("!")
                 with self._option():
-                    self._token('.')
-                self._error('expecting one of: ! .')
-        self.ast._define(
-            ['input_char', 'input_number'],
-            []
-        )
+                    self._token(".")
+                self._error("expecting one of: ! .")
+        self.ast._define(["input_char", "input_number"], [])
 
     @tatsumasu()
     def _push_(self):  # noqa
-        self._token('Remember')
+        self._token("Remember")
         self._value_()
-        self.name_last_node('value')
+        self.name_last_node("value")
         with self._group():
             with self._choice():
                 with self._option():
-                    self._token('!')
+                    self._token("!")
                 with self._option():
-                    self._token('.')
-                self._error('expecting one of: ! .')
-        self.ast._define(
-            ['value'],
-            []
-        )
+                    self._token(".")
+                self._error("expecting one of: ! .")
+        self.ast._define(["value"], [])
 
     @tatsumasu()
     def _pop_(self):  # noqa
-        self._token('Recall')
+        self._token("Recall")
         self._text_before_punctuation_()
-        self.name_last_node('recall_string')
+        self.name_last_node("recall_string")
         with self._group():
             with self._choice():
                 with self._option():
-                    self._token('!')
+                    self._token("!")
                 with self._option():
-                    self._token('.')
-                self._error('expecting one of: ! .')
-        self.ast._define(
-            ['recall_string'],
-            []
-        )
+                    self._token(".")
+                self._error("expecting one of: ! .")
+        self.ast._define(["recall_string"], [])
 
     @tatsumasu()
     def _sentence_(self):  # noqa
@@ -1440,94 +1422,85 @@ class shakespeareParser(Parser):
                 self._push_()
             with self._option():
                 self._pop_()
-            self._error('expecting one of: If Let Recall Remember We am are art assignment be goto input is let_us listen negative_if open output pop positive_if push question second_person speak thee thou you')
+            self._error(
+                "expecting one of: If Let Recall Remember We am are art assignment be goto input is let_us listen negative_if open output pop positive_if push question second_person speak thee thou you"
+            )
 
     @tatsumasu()
     def _line_(self):  # noqa
         self._character_()
-        self.name_last_node('character')
-        self._token(':')
+        self.name_last_node("character")
+        self._token(":")
         with self._group():
 
             def block2():
                 self._sentence_()
+
             self._positive_closure(block2)
-        self.name_last_node('contents')
-        self.ast._define(
-            ['character', 'contents'],
-            []
-        )
+        self.name_last_node("contents")
+        self.ast._define(["character", "contents"], [])
 
     @tatsumasu()
     def _character_list_(self):  # noqa
         with self._choice():
             with self._option():
                 self._character_()
-                self.add_last_node_to_name('@')
+                self.add_last_node_to_name("@")
 
                 def block1():
-                    self._token(',')
+                    self._token(",")
                     self._character_()
-                    self.add_last_node_to_name('@')
+                    self.add_last_node_to_name("@")
+
                 self._closure(block1)
-                self._token('and')
+                self._token("and")
                 self._character_()
-                self.add_last_node_to_name('@')
+                self.add_last_node_to_name("@")
             with self._option():
                 self._character_()
-                self.add_last_node_to_name('@')
-            self._error('expecting one of: Achilles Adonis Adriana Aegeon Aemilia Agamemnon Agrippa Ajax Alonso Andromache Angelo Antiochus Antonio Arthur Autolycus Balthazar Banquo Beatrice Benedick Benvolio Bianca Brabantio Brutus Capulet Cassandra Cassius Christopher Cicero Claudio Claudius Cleopatra Cordelia Cornelius Cressida Cymberline Demetrius Desdemona Dionyza Doctor Dogberry Don Donalbain Dorcas Duncan Egeus Emilia Escalus Falstaff Fenton Ferdinand Ford Fortinbras Francisca Friar Gertrude Goneril Hamlet Hecate Hector Helen Helena Hermia Hermonie Hippolyta Horatio Imogen Isabella John Julia Juliet Julius King Lady Lennox Leonato Luciana Lucio Lychorida Lysander Macbeth Macduff Malcolm Mariana Mark Mercutio Miranda Mistress Montague Mopsa Oberon Octavia Octavius Olivia Ophelia Orlando Orsino Othello Page Pantino Paris Pericles Pinch Polonius Pompeius Portia Priam Prince Prospero Proteus Publius Puck Queen Regan Robin Romeo Rosalind Sebastian Shallow Shylock Slender Solinus Stephano Thaisa The Theseus Thurio Timon Titania Titus Troilus Tybalt Ulysses Valentine Venus Vincentio Viola character')
+                self.add_last_node_to_name("@")
+            self._error(
+                "expecting one of: Achilles Adonis Adriana Aegeon Aemilia Agamemnon Agrippa Ajax Alonso Andromache Angelo Antiochus Antonio Arthur Autolycus Balthazar Banquo Beatrice Benedick Benvolio Bianca Brabantio Brutus Capulet Cassandra Cassius Christopher Cicero Claudio Claudius Cleopatra Cordelia Cornelius Cressida Cymberline Demetrius Desdemona Dionyza Doctor Dogberry Don Donalbain Dorcas Duncan Egeus Emilia Escalus Falstaff Fenton Ferdinand Ford Fortinbras Francisca Friar Gertrude Goneril Hamlet Hecate Hector Helen Helena Hermia Hermonie Hippolyta Horatio Imogen Isabella John Julia Juliet Julius King Lady Lennox Leonato Luciana Lucio Lychorida Lysander Macbeth Macduff Malcolm Mariana Mark Mercutio Miranda Mistress Montague Mopsa Oberon Octavia Octavius Olivia Ophelia Orlando Orsino Othello Page Pantino Paris Pericles Pinch Polonius Pompeius Portia Priam Prince Prospero Proteus Publius Puck Queen Regan Robin Romeo Rosalind Sebastian Shallow Shylock Slender Solinus Stephano Thaisa The Theseus Thurio Timon Titania Titus Troilus Tybalt Ulysses Valentine Venus Vincentio Viola character"
+            )
 
     @tatsumasu()
     def _breakpoint_(self):  # noqa
         with self._group():
-            self._token('[')
-            self._token('A')
-            self._token('pause')
-            self._token(']')
-        self.name_last_node('dummy')
-        self.ast._define(
-            ['dummy'],
-            []
-        )
+            self._token("[")
+            self._token("A")
+            self._token("pause")
+            self._token("]")
+        self.name_last_node("dummy")
+        self.ast._define(["dummy"], [])
 
     @tatsumasu()
     def _entrance_(self):  # noqa
-        self._token('[')
-        self._token('Enter')
+        self._token("[")
+        self._token("Enter")
         self._character_list_()
-        self.name_last_node('characters')
-        self._token(']')
-        self.ast._define(
-            ['characters'],
-            []
-        )
+        self.name_last_node("characters")
+        self._token("]")
+        self.ast._define(["characters"], [])
 
     @tatsumasu()
     def _exit_(self):  # noqa
-        self._token('[')
-        self._token('Exit')
+        self._token("[")
+        self._token("Exit")
         self._character_()
-        self.name_last_node('character')
-        self._token(']')
-        self.ast._define(
-            ['character'],
-            []
-        )
+        self.name_last_node("character")
+        self._token("]")
+        self.ast._define(["character"], [])
 
     @tatsumasu()
     def _exeunt_(self):  # noqa
-        self._token('[')
-        self._token('Exeunt')
-        self.name_last_node('action')
+        self._token("[")
+        self._token("Exeunt")
+        self.name_last_node("action")
         with self._optional():
             self._character_list_()
-            self.name_last_node('characters')
-        self._token(']')
-        self.ast._define(
-            ['action', 'characters'],
-            []
-        )
+            self.name_last_node("characters")
+        self._token("]")
+        self.ast._define(["action", "characters"], [])
 
     @tatsumasu()
     def _event_(self):  # noqa
@@ -1542,7 +1515,9 @@ class shakespeareParser(Parser):
                 self._exit_()
             with self._option():
                 self._exeunt_()
-            self._error('expecting one of: Achilles Adonis Adriana Aegeon Aemilia Agamemnon Agrippa Ajax Alonso Andromache Angelo Antiochus Antonio Arthur Autolycus Balthazar Banquo Beatrice Benedick Benvolio Bianca Brabantio Brutus Capulet Cassandra Cassius Christopher Cicero Claudio Claudius Cleopatra Cordelia Cornelius Cressida Cymberline Demetrius Desdemona Dionyza Doctor Dogberry Don Donalbain Dorcas Duncan Egeus Emilia Escalus Falstaff Fenton Ferdinand Ford Fortinbras Francisca Friar Gertrude Goneril Hamlet Hecate Hector Helen Helena Hermia Hermonie Hippolyta Horatio Imogen Isabella John Julia Juliet Julius King Lady Lennox Leonato Luciana Lucio Lychorida Lysander Macbeth Macduff Malcolm Mariana Mark Mercutio Miranda Mistress Montague Mopsa Oberon Octavia Octavius Olivia Ophelia Orlando Orsino Othello Page Pantino Paris Pericles Pinch Polonius Pompeius Portia Priam Prince Prospero Proteus Publius Puck Queen Regan Robin Romeo Rosalind Sebastian Shallow Shylock Slender Solinus Stephano Thaisa The Theseus Thurio Timon Titania Titus Troilus Tybalt Ulysses Valentine Venus Vincentio Viola [ breakpoint character entrance exeunt exit line')
+            self._error(
+                "expecting one of: Achilles Adonis Adriana Aegeon Aemilia Agamemnon Agrippa Ajax Alonso Andromache Angelo Antiochus Antonio Arthur Autolycus Balthazar Banquo Beatrice Benedick Benvolio Bianca Brabantio Brutus Capulet Cassandra Cassius Christopher Cicero Claudio Claudius Cleopatra Cordelia Cornelius Cressida Cymberline Demetrius Desdemona Dionyza Doctor Dogberry Don Donalbain Dorcas Duncan Egeus Emilia Escalus Falstaff Fenton Ferdinand Ford Fortinbras Francisca Friar Gertrude Goneril Hamlet Hecate Hector Helen Helena Hermia Hermonie Hippolyta Horatio Imogen Isabella John Julia Juliet Julius King Lady Lennox Leonato Luciana Lucio Lychorida Lysander Macbeth Macduff Malcolm Mariana Mark Mercutio Miranda Mistress Montague Mopsa Oberon Octavia Octavius Olivia Ophelia Orlando Orsino Othello Page Pantino Paris Pericles Pinch Polonius Pompeius Portia Priam Prince Prospero Proteus Publius Puck Queen Regan Robin Romeo Rosalind Sebastian Shallow Shylock Slender Solinus Stephano Thaisa The Theseus Thurio Timon Titania Titus Troilus Tybalt Ulysses Valentine Venus Vincentio Viola [ breakpoint character entrance exeunt exit line"
+            )
 
     @tatsumasu()
     def _repl_input_(self):  # noqa
@@ -1551,146 +1526,137 @@ class shakespeareParser(Parser):
                 with self._ifnot():
                     with self._group():
                         self._character_()
-                        self._token(':')
+                        self._token(":")
                 self._character_()
-                self.name_last_node('character')
+                self.name_last_node("character")
                 self._check_eof()
             with self._option():
                 with self._ifnot():
                     with self._group():
                         self._character_()
-                        self._token(':')
-                        self._pattern('.*\\.')
+                        self._token(":")
+                        self._pattern(".*\\.")
                 with self._optional():
                     self._character_()
-                    self.name_last_node('character')
-                    self._token(':')
+                    self.name_last_node("character")
+                    self._token(":")
                 self._value_()
-                self.name_last_node('value')
+                self.name_last_node("value")
                 self._check_eof()
             with self._option():
                 self._event_()
-                self.name_last_node('event')
+                self.name_last_node("event")
                 self._check_eof()
             with self._option():
                 with self._group():
 
                     def block5():
                         self._sentence_()
+
                     self._positive_closure(block5)
-                self.name_last_node('sentences')
+                self.name_last_node("sentences")
                 self._check_eof()
-            self._error("expecting one of: Achilles Adonis Adriana Aegeon Aemilia Agamemnon Agrippa Ajax Alonso Andromache Angelo Antiochus Antonio Arthur Autolycus Balthazar Banquo Beatrice Benedick Benvolio Bianca Brabantio Brutus Capulet Cassandra Cassius Christopher Cicero Claudio Claudius Cleopatra Cordelia Cornelius Cressida Cymberline Demetrius Desdemona Dionyza Doctor Dogberry Don Donalbain Dorcas Duncan Egeus Emilia Escalus Falstaff Fenton Ferdinand Ford Fortinbras Francisca Friar Gertrude Goneril Hamlet Heaven Hecate Hector Helen Helena Hell Hermia Hermonie Hippolyta Horatio I If Imogen Isabella John Julia Juliet Julius King Lady Lennox Leonato Let Lord Luciana Lucio Lychorida Lysander Macbeth Macduff Malcolm Mariana Mark Mercutio Microsoft Miranda Mistress Montague Mopsa Oberon Octavia Octavius Olivia Ophelia Orlando Orsino Othello Page Pantino Paris Pericles Pinch Polonius Pompeius Portia Priam Prince Prospero Proteus Publius Puck Queen Recall Regan Remember Robin Romeo Rosalind Sebastian Shallow Shylock Slender Solinus Stephano Thaisa The Theseus Thurio Timon Titania Titus Troilus Tybalt Ulysses Valentine Venus Vincentio Viola We [ a am amazing an angel animal are art article assignment aunt bad bastard be beautiful beggar big binary_expression binary_operation black blister blossoming blue bluest bold bottomless brave breakpoint brother cat character character_name charming chihuahua clearest codpiece cousin cow coward cowardly cunning curse cursed cute damned daughter death delicious devil dirty disgusting distasteful door draught dusty embroidered entrance event evil exeunt exit expression face fair famine fat fat-kidneyed father fatherless fellow fine first_person first_person_possessive first_person_reflexive first_person_value flirt-gill flower foul furry gentle goat golden good goto granddaughter grandfather grandmother grandson green hair hairy half-witted hamster handsome happiness happy hard hate healthy her hero his hog honest horrible horrid horse hound huge infected input is its joy kingdom lamp lantern large leech let_us lie line listen little lovely loving lying me mighty mine miserable mistletoe misused moon morning mother my myself negative_adjective negative_if negative_noun negative_noun_phrase nephew neutral_adjective neutral_noun niece noble normal nose nothing noun_phrase old oozing open output peaceful pig plague plum pony pop positive_adjective positive_if positive_noun positive_noun_phrase positive_or_neutral_adjective positive_or_neutral_noun possessive pretty prompt proud purple purse push question red reddest rich road roman rose rotten rural second_person second_person_possessive second_person_reflexive second_person_value sentence sister sky small smelly smooth snotty son sorry speak squirrel starvation stinking stone stuffed stupid summer's sunny sweet sweetest the thee their thine thing third_person_possessive thou thy thyself tiny toad town tree trustworthy twice unary_expression unary_operation uncle value vile villainous war warm white wind wolf worried yellow you your yourself zero")
-        self.ast._define(
-            ['character', 'event', 'sentences', 'value'],
-            []
-        )
+            self._error(
+                "expecting one of: Achilles Adonis Adriana Aegeon Aemilia Agamemnon Agrippa Ajax Alonso Andromache Angelo Antiochus Antonio Arthur Autolycus Balthazar Banquo Beatrice Benedick Benvolio Bianca Brabantio Brutus Capulet Cassandra Cassius Christopher Cicero Claudio Claudius Cleopatra Cordelia Cornelius Cressida Cymberline Demetrius Desdemona Dionyza Doctor Dogberry Don Donalbain Dorcas Duncan Egeus Emilia Escalus Falstaff Fenton Ferdinand Ford Fortinbras Francisca Friar Gertrude Goneril Hamlet Heaven Hecate Hector Helen Helena Hell Hermia Hermonie Hippolyta Horatio I If Imogen Isabella John Julia Juliet Julius King Lady Lennox Leonato Let Lord Luciana Lucio Lychorida Lysander Macbeth Macduff Malcolm Mariana Mark Mercutio Microsoft Miranda Mistress Montague Mopsa Oberon Octavia Octavius Olivia Ophelia Orlando Orsino Othello Page Pantino Paris Pericles Pinch Polonius Pompeius Portia Priam Prince Prospero Proteus Publius Puck Queen Recall Regan Remember Robin Romeo Rosalind Sebastian Shallow Shylock Slender Solinus Stephano Thaisa The Theseus Thurio Timon Titania Titus Troilus Tybalt Ulysses Valentine Venus Vincentio Viola We [ a am amazing an angel animal are art article assignment aunt bad bastard be beautiful beggar big binary_expression binary_operation black blister blossoming blue bluest bold bottomless brave breakpoint brother cat character character_name charming chihuahua clearest codpiece cousin cow coward cowardly cunning curse cursed cute damned daughter death delicious devil dirty disgusting distasteful door draught dusty embroidered entrance event evil exeunt exit expression face fair famine fat fat-kidneyed father fatherless fellow fine first_person first_person_possessive first_person_reflexive first_person_value flirt-gill flower foul furry gentle goat golden good goto granddaughter grandfather grandmother grandson green hair hairy half-witted hamster handsome happiness happy hard hate healthy her hero his hog honest horrible horrid horse hound huge infected input is its joy kingdom lamp lantern large leech let_us lie line listen little lovely loving lying me mighty mine miserable mistletoe misused moon morning mother my myself negative_adjective negative_if negative_noun negative_noun_phrase nephew neutral_adjective neutral_noun niece noble normal nose nothing noun_phrase old oozing open output peaceful pig plague plum pony pop positive_adjective positive_if positive_noun positive_noun_phrase positive_or_neutral_adjective positive_or_neutral_noun possessive pretty prompt proud purple purse push question red reddest rich road roman rose rotten rural second_person second_person_possessive second_person_reflexive second_person_value sentence sister sky small smelly smooth snotty son sorry speak squirrel starvation stinking stone stuffed stupid summer's sunny sweet sweetest the thee their thine thing third_person_possessive thou thy thyself tiny toad town tree trustworthy twice unary_expression unary_operation uncle value vile villainous war warm white wind wolf worried yellow you your yourself zero"
+            )
+        self.ast._define(["character", "event", "sentences", "value"], [])
 
     @tatsumasu()
     def _text_before_punctuation_(self):  # noqa
-        self._pattern('[^!\\.]*')
+        self._pattern("[^!\\.]*")
 
     @tatsumasu()
     def _scene_(self):  # noqa
-        self._token('Scene')
+        self._token("Scene")
         self._roman_numeral_()
-        self.name_last_node('number')
-        self._token(':')
+        self.name_last_node("number")
+        self._token(":")
         self._text_before_punctuation_()
-        self.name_last_node('name')
+        self.name_last_node("name")
         with self._group():
             with self._choice():
                 with self._option():
-                    self._token('!')
+                    self._token("!")
                 with self._option():
-                    self._token('.')
-                self._error('expecting one of: ! .')
+                    self._token(".")
+                self._error("expecting one of: ! .")
         with self._group():
 
             def block4():
                 self._event_()
+
             self._closure(block4)
-        self.name_last_node('events')
-        self.ast._define(
-            ['events', 'name', 'number'],
-            []
-        )
+        self.name_last_node("events")
+        self.ast._define(["events", "name", "number"], [])
 
     @tatsumasu()
     def _act_(self):  # noqa
-        self._token('Act')
+        self._token("Act")
         self._roman_numeral_()
-        self.name_last_node('number')
-        self._token(':')
+        self.name_last_node("number")
+        self._token(":")
         self._text_before_punctuation_()
-        self.name_last_node('name')
+        self.name_last_node("name")
         with self._group():
             with self._choice():
                 with self._option():
-                    self._token('!')
+                    self._token("!")
                 with self._option():
-                    self._token('.')
-                self._error('expecting one of: ! .')
+                    self._token(".")
+                self._error("expecting one of: ! .")
         with self._group():
 
             def block4():
                 self._scene_()
+
             self._closure(block4)
-        self.name_last_node('scenes')
-        self.ast._define(
-            ['name', 'number', 'scenes'],
-            []
-        )
+        self.name_last_node("scenes")
+        self.ast._define(["name", "number", "scenes"], [])
 
     @tatsumasu()
     def _dramatis_persona_(self):  # noqa
         self._character_()
-        self.name_last_node('character')
-        self._token(',')
+        self.name_last_node("character")
+        self._token(",")
         self._text_before_punctuation_()
         with self._group():
             with self._choice():
                 with self._option():
-                    self._token('!')
+                    self._token("!")
                 with self._option():
-                    self._token('.')
-                self._error('expecting one of: ! .')
-        self.ast._define(
-            ['character'],
-            []
-        )
+                    self._token(".")
+                self._error("expecting one of: ! .")
+        self.ast._define(["character"], [])
 
     @tatsumasu()
     def _dramatis_personae_(self):  # noqa
-
         def block0():
             self._dramatis_persona_()
+
         self._closure(block0)
 
     @tatsumasu()
     def _play_(self):  # noqa
         self._text_before_punctuation_()
-        self.name_last_node('title')
+        self.name_last_node("title")
         with self._group():
             with self._choice():
                 with self._option():
-                    self._token('!')
+                    self._token("!")
                 with self._option():
-                    self._token('.')
-                self._error('expecting one of: ! .')
+                    self._token(".")
+                self._error("expecting one of: ! .")
         self._dramatis_personae_()
-        self.name_last_node('dramatis_personae')
+        self.name_last_node("dramatis_personae")
         with self._group():
 
             def block4():
                 self._act_()
+
             self._closure(block4)
-        self.name_last_node('acts')
+        self.name_last_node("acts")
         self._check_eof()
-        self.ast._define(
-            ['acts', 'dramatis_personae', 'title'],
-            []
-        )
+        self.ast._define(["acts", "dramatis_personae", "title"], [])
 
 
 class shakespeareSemantics(object):
@@ -1883,8 +1849,8 @@ class shakespeareSemantics(object):
 
 def main(filename, start=None, **kwargs):
     if start is None:
-        start = 'be'
-    if not filename or filename == '-':
+        start = "be"
+    if not filename or filename == "-":
         text = sys.stdin.read()
     else:
         with open(filename) as f:
@@ -1893,14 +1859,14 @@ def main(filename, start=None, **kwargs):
     return parser.parse(text, rule_name=start, filename=filename, **kwargs)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import json
     from tatsu.util import asjson
 
-    ast = generic_main(main, shakespeareParser, name='shakespeare')
-    print('AST:')
+    ast = generic_main(main, shakespeareParser, name="shakespeare")
+    print("AST:")
     print(ast)
     print()
-    print('JSON:')
+    print("JSON:")
     print(json.dumps(asjson(ast), indent=2))
     print()
