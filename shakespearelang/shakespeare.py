@@ -6,7 +6,9 @@ Shakespeare -- An interpreter for the Shakespeare Programming Language
 
 from .shakespeare_parser import shakespeareParser
 from .errors import ShakespeareRuntimeError
-from .utils import parseinfo_context
+from .input import BasicInputManager, InteractiveInputManager
+from .output import BasicOutputManager, VerboseOutputManager
+from .utils import parseinfo_context, normalize_name
 from .character import Character
 from .state import State
 import math
@@ -47,14 +49,15 @@ class Shakespeare:
 
         return decorator
 
-    def __init__(self, play):
+    def __init__(self, play, input_style="basic", output_style="basic"):
+        self.set_input_style(input_style)
+        self.set_output_style(output_style)
         self.parser = shakespeareParser()
         self.ast = self._parse_if_necessary(play, "play")
         self.state = State(self.ast.dramatis_personae)
 
         self.current_position = {"act": 0, "scene": 0, "event": 0}
         self._make_position_consistent()
-        self._input_buffer = ""
 
     # PUBLIC METHODS
 
@@ -81,10 +84,18 @@ class Shakespeare:
 
     @_add_interpreter_context_to_errors
     def step_forward(self):
-        """
-        Run the next event in the play.
-        """
+        """Run the next event in the play."""
         event_to_run = self._next_event()
+        if event_to_run.parseinfo.rule == "breakpoint":
+            self._advance_position()
+            return
+        self._debug_output(
+            lambda: f"----------\nat line {event_to_run.parseinfo.line}\n-----\n"
+            + parseinfo_context(event_to_run.parseinfo)
+            + "-----\n"
+            + str(self.state)
+            + "\n----------"
+        )
         has_goto = self.run_event(event_to_run)
 
         if self.current_position and not has_goto:
@@ -211,6 +222,37 @@ class Shakespeare:
             self, value, character
         )
 
+    _INPUT_MANAGERS = {
+        "basic": BasicInputManager,
+        "interactive": InteractiveInputManager,
+    }
+
+    def set_input_style(self, input_style):
+        if input_style not in self._INPUT_MANAGERS:
+            raise ValueError("Unknown input style")
+
+        self._input_manager = self._INPUT_MANAGERS[input_style]()
+        self._input_style = input_style
+
+    def get_input_style(self):
+        return self._input_style
+
+    _OUTPUT_MANAGERS = {
+        "basic": BasicOutputManager,
+        "verbose": VerboseOutputManager,
+        "debug": VerboseOutputManager,
+    }
+
+    def set_output_style(self, output_style):
+        if output_style not in self._OUTPUT_MANAGERS:
+            raise ValueError("Unknown output style")
+
+        self._output_manager = self._OUTPUT_MANAGERS[output_style]()
+        self._output_style = output_style
+
+    def get_output_style(self):
+        return self._output_style
+
     # HELPERS
 
     def _parse_if_necessary(self, item, rule_name):
@@ -274,6 +316,18 @@ class Shakespeare:
     def _advance_position(self):
         self.current_position["event"] += 1
         self._make_position_consistent()
+
+    def _verbose_output(self, out):
+        self._output_by_style(out, ["verbose", "debug"])
+
+    def _debug_output(self, out):
+        self._output_by_style(out, ["debug"])
+
+    def _output_by_style(self, out, style_list):
+        if self._output_style in style_list:
+            if callable(out):
+                out = out()
+            print(out)
 
     # EXPRESSION TYPES
 
@@ -347,80 +401,61 @@ class Shakespeare:
         character_opposite = self.state.character_opposite(character)
         character_opposite.value = self.evaluate_expression(sentence.value, character)
 
+        self._verbose_output(
+            f"{character_opposite.name} set to {character_opposite.value}"
+        )
+
     def _run_question(self, question, character):
         self.state.global_boolean = self.evaluate_question(question, character)
+
+        self._verbose_output(f"Setting global boolean to {self.state.global_boolean}")
 
     def _run_goto(self, goto):
         condition = goto.condition
         condition_type = condition and condition.parseinfo.rule == "positive_if"
         if (not condition) or (condition_type == self.state.global_boolean):
             self._goto_scene(goto.destination)
+            self._verbose_output(f"Jumping to Scene {goto.destination}")
             return True
+        else:
+            self._verbose_output(
+                f"Not jumping to Scene {goto.destination} because global boolean is {self.state.global_boolean}"
+            )
 
-    def _run_output(self, output, character):
+    def _run_output(self, output, speaking_character):
+        character_to_output = self.state.character_opposite(speaking_character)
+        self._verbose_output(f"Outputting {character_to_output.name}")
+        value = character_to_output.value
         if output.output_number:
-            number = self.state.character_opposite(character).value
-            print(number, end="")
+            self._output_manager.output_number(value)
         elif output.output_char:
-            char_code = self.state.character_opposite(character).value
-            try:
-                char = chr(char_code)
-            except ValueError:
-                raise ShakespeareRuntimeError(
-                    "Invalid character code: " + str(char_code)
-                )
-            print(char, end="")
+            self._output_manager.output_character(value)
         else:
             raise ShakespeareRuntimeError("Unknown output type!")
 
-    def _run_input(self, input_op, character):
-        try:
-            self._ensure_input_buffer()
+    def _run_input(self, input_op, speaking_character):
+        character_to_set = self.state.character_opposite(speaking_character)
+        if input_op.input_number:
+            value = self._input_manager.consume_numeric_input()
+        elif input_op.input_char:
+            value = self._input_manager.consume_character_input()
+        else:
+            raise ShakespeareRuntimeError("Unknown input type!")
 
-            if input_op.input_number:
-                value_consumed = self._consume_numeric_input()
-            elif input_op.input_char:
-                value_consumed = self._consume_character_input()
-            else:
-                raise ShakespeareRuntimeError("Unknown input type!")
-        except EOFError:
-            if input_op.input_char:
-                value_consumed = -1
-            else:
-                raise ShakespeareRuntimeError("End of file encountered.")
-
-        self.state.character_opposite(character).value = value_consumed
-
-    def _ensure_input_buffer(self):
-        if not self._input_buffer:
-            self._input_buffer = input() + "\n"
-
-    def _consume_numeric_input(self):
-        number_input = ""
-        while self._input_buffer[0].isdigit():
-            number_input += self._input_buffer[0]
-            self._input_buffer = self._input_buffer[1:]
-
-        if len(number_input) == 0:
-            raise ShakespeareRuntimeError("No numeric input was given.")
-
-        if self._input_buffer[0] == "\n":
-            self._input_buffer = self._input_buffer[1:]
-
-        return int(number_input)
-
-    def _consume_character_input(self):
-        input_char = ord(self._input_buffer[0])
-        self._input_buffer = self._input_buffer[1:]
-        return input_char
+        self._verbose_output(
+            f"Setting {character_to_set.name} to input value {repr(value)}"
+        )
+        character_to_set.value = value
 
     def _run_push(self, push, speaking_character):
         pushing_character = self.state.character_opposite(speaking_character)
         value = self.evaluate_expression(push.value, speaking_character)
+        self._verbose_output(f"{pushing_character.name} pushed {value}")
         pushing_character.push(value)
 
     def _run_pop(self, pop, speaking_character):
         popping_character = self.state.character_opposite(speaking_character)
+        self._verbose_output(f"Popping stack of {popping_character.name}")
         popping_character.pop()
 
     # EVENT TYPES
@@ -435,13 +470,21 @@ class Shakespeare:
                 return True
 
     def _run_entrance(self, entrance):
+        self._verbose_output(
+            lambda: f"Enter {', '.join([normalize_name(c) for c in entrance.characters])}"
+        )
         self.state.enter_characters(entrance.characters)
 
     def _run_exeunt(self, exeunt):
         if exeunt.characters:
+            self._verbose_output(
+                lambda: f"Exeunt {', '.join([normalize_name(c) for c in exeunt.characters])}"
+            )
             self.state.exeunt_characters(exeunt.characters)
         else:
+            self._verbose_output(f"Exeunt all")
             self.state.exeunt_all()
 
     def _run_exit(self, exit):
+        self._verbose_output(lambda: f"Exit {normalize_name(exit.character)}")
         self.state.exit_character(exit.character)

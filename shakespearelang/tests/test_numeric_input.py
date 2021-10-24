@@ -32,11 +32,14 @@ def test_consumes_trailing_newline(monkeypatch, capsys):
     s.run_event("[Enter Romeo and Juliet]")
     s.run_sentence("Listen to your heart!", "Juliet")
     assert s.state.character_by_name("Romeo").value == 4257
-    assert s._input_buffer == ""
     assert input() == "a"
     captured = capsys.readouterr()
     assert captured.out == ""
     assert captured.err == ""
+
+    # Make sure there isn't a '\n' still living in the buffer
+    s.run_sentence("Open your mind!", "Juliet")
+    assert s.state.character_by_name("Romeo").value == -1
 
 
 def test_errors_without_digits(monkeypatch, capsys):

@@ -1,5 +1,6 @@
 from .errors import ShakespeareRuntimeError
 from .character import Character
+from .utils import normalize_name
 
 
 class State:
@@ -51,8 +52,7 @@ class State:
         return characters_opposite[0]
 
     def character_by_name(self, name):
-        if not isinstance(name, str):
-            name = " ".join(name)
+        name = normalize_name(name)
         match = next(
             (x for x in self.characters if x.name.lower() == name.lower()), None
         )

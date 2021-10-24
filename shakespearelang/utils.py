@@ -1,3 +1,9 @@
+def normalize_name(name):
+    if not isinstance(name, str):
+        name = " ".join(name)
+    return name
+
+
 def parseinfo_context(parseinfo, context_amount=3):
     before_context_lines = _before_context_lines(parseinfo, context_amount)
     parsed_item_lines = _highlighted_source_text(parseinfo)

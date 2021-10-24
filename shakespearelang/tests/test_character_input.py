@@ -87,10 +87,6 @@ def test_eof_character_code(monkeypatch, capsys):
     s.run_sentence("Open your mind!", "Juliet")
     assert s.state.character_by_name("Romeo").value == 38
 
-    # shakespearelang assumes an implicit \n at the end of files
-    s.run_sentence("Open your mind!", "Juliet")
-    assert s.state.character_by_name("Romeo").value == 10
-
     s.run_sentence("Open your mind!", "Juliet")
     assert s.state.character_by_name("Romeo").value == -1
 

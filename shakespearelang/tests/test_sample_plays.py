@@ -39,7 +39,7 @@ def test_runs_reverse(monkeypatch, capsys):
     set_input(monkeypatch, "first\nsecond\nthird")
     run_sample_play("reverse.spl")
 
-    assert_output(capsys, "\ndriht\ndnoces\ntsrif")
+    assert_output(capsys, "driht\ndnoces\ntsrif")
 
 
 def test_runs_sierpinski(monkeypatch, capsys):

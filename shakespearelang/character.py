@@ -18,7 +18,7 @@ class Character:
         return cls(name)
 
     def __str__(self):
-        return f'{self.name} = {self.value} ({" ".join([str(v) for v in self.stack])})'
+        return f'{self.name} = {self.value} ({" ".join([str(v) for v in self.stack][::-1])})'
 
     def push(self, newValue):
         """Push a value onto the character's stack."""

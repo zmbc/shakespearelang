@@ -36,17 +36,21 @@ def console(characters):
 
 @main.command()
 @click.argument("file")
+@click.option("--input-style", default="basic")
+@click.option("--output-style", default="basic")
 @pretty_print_shakespeare_errors
-def run(file):
+def run(file, input_style, output_style):
     with open(file, "r") as f:
         play = f.read()
-    Shakespeare(play).run()
+    Shakespeare(play, input_style=input_style, output_style=output_style).run()
 
 
 @main.command()
 @click.argument("file")
+@click.option("--input-style", default="interactive")
+@click.option("--output-style", default="verbose")
 @pretty_print_shakespeare_errors
-def debug(file):
+def debug(file, input_style, output_style):
     with open(file, "r") as f:
         play = f.read()
-    debug_play(play)
+    debug_play(play, input_style=input_style, output_style=output_style)

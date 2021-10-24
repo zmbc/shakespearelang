@@ -27,11 +27,84 @@ Not Real, a player.
     )
 
 
+def test_works_with_arbitrary_characters(monkeypatch, capsys):
+    monkeypatch.setattr(
+        "sys.stdin", StringIO("[Exeunt]\n[Enter Lady Capulet]\n[Enter Horatio]\nexit\n")
+    )
+
+    with pytest.raises(SystemExit) as exc:
+        start_console(["Lady Capulet", "The Ghost", "Horatio"])
+
+    assert_output(
+        capsys,
+        """
+A REPL-tastic Adventure.
+
+Lady Capulet, a player.
+The Ghost, a player.
+Horatio, a player.
+
+                    Act I: All the World.
+                    Scene I: A Stage.
+
+[Enter Lady Capulet, The Ghost and Horatio]
+
+>> Exeunt all
+>> Enter Lady Capulet
+>> Enter Horatio
+>> """,
+    )
+
+
 def test_runs_noop(monkeypatch, capsys):
     monkeypatch.setattr("sys.stdin", StringIO("exit\n"))
 
     with pytest.raises(SystemExit) as exc:
         start_console()
+
+    assert_output(
+        capsys,
+        """
+A REPL-tastic Adventure.
+
+Romeo, a player.
+Juliet, a player.
+
+                    Act I: All the World.
+                    Scene I: A Stage.
+
+[Enter Romeo and Juliet]
+
+>> """,
+    )
+
+
+def test_runs_next(monkeypatch, capsys):
+    monkeypatch.setattr("sys.stdin", StringIO("next\n"))
+
+    start_console()
+
+    assert_output(
+        capsys,
+        """
+A REPL-tastic Adventure.
+
+Romeo, a player.
+Juliet, a player.
+
+                    Act I: All the World.
+                    Scene I: A Stage.
+
+[Enter Romeo and Juliet]
+
+>> """,
+    )
+
+
+def test_runs_continue(monkeypatch, capsys):
+    monkeypatch.setattr("sys.stdin", StringIO("continue\n"))
+
+    start_console()
 
     assert_output(
         capsys,
@@ -69,9 +142,7 @@ Juliet, a player.
 
 [Enter Romeo and Juliet]
 
->> \n\
-
-That doesn't look right:
+>> That doesn't look right:
  (1:1) expecting one of: Achilles Adonis Adriana Aegeon Aemilia Agamemnon Agrippa Ajax Alonso Andromache Angelo Antiochus Antonio Arthur Autolycus Balthazar Banquo Beatrice Benedick Benvolio Bianca Brabantio Brutus Capulet Cassandra Cassius Christopher Cicero Claudio Claudius Cleopatra Cordelia Cornelius Cressida Cymberline Demetrius Desdemona Dionyza Doctor Dogberry Don Donalbain Dorcas Duncan Egeus Emilia Escalus Falstaff Fenton Ferdinand Ford Fortinbras Francisca Friar Gertrude Goneril Hamlet Hecate Hector Helen Helena Hermia Hermonie Hippolyta Horatio Imogen Isabella John Julia Juliet Julius King Lady Lennox Leonato Luciana Lucio Lychorida Lysander Macbeth Macduff Malcolm Mariana Mark Mercutio Miranda Mistress Montague Mopsa Oberon Octavia Octavius Olivia Ophelia Orlando Orsino Othello Page Pantino Paris Pericles Pinch Polonius Pompeius Portia Priam Prince Prospero Proteus Publius Puck Queen Regan Robin Romeo Rosalind Sebastian Shallow Shylock Slender Solinus Stephano Thaisa The Theseus Thurio Timon Titania Titus Troilus Tybalt Ulysses Valentine Venus Vincentio Viola :
 foobar
 ^
@@ -155,7 +226,9 @@ def test_last_character_speaking(monkeypatch, capsys):
     monkeypatch.setattr(
         "sys.stdin",
         StringIO(
-            "Juliet: You are as good as nothing.\nYou are nothing.\nRomeo: You are nothing.\nYou are nothing.\nexit\n"
+            "Juliet: You are as good as nothing.\nYou are nothing.\n"
+            + "Romeo: You are nothing.\nYou are nothing.\nThe sum of thyself and a pig\n"
+            + "Juliet: The sum of thyself and a fat pig\nexit\n"
         ),
     )
 
@@ -179,6 +252,8 @@ Juliet, a player.
 >> Romeo set to 0
 >> Juliet set to 0
 >> Juliet set to 0
+>> -1
+>> -2
 >> """,
     )
 
@@ -208,20 +283,18 @@ Juliet, a player.
 [Enter Romeo and Juliet]
 
 >> Romeo set to 64
-Romeo outputted self as character:
-@
-
-Romeo taking input number:
->> Romeo outputted self as number:
-10
-
+Outputting Romeo
+Outputting character: '@'
+Taking input number: Setting Romeo to input value 10
+>> Outputting Romeo
+Outputting number: 10
 >> """,
     )
 
 
 def test_display_character(monkeypatch, capsys):
     monkeypatch.setattr(
-        "sys.stdin", StringIO("Juliet: Remember thyself! You are a pig!\nRomeo\nquit\n")
+        "sys.stdin", StringIO("Juliet: Remember thyself! You are a pig! Remember bad Hell! Remember a good animal!\nRomeo\nquit\n")
     )
 
     with pytest.raises(SystemExit) as exc:
@@ -242,7 +315,9 @@ Juliet, a player.
 
 >> Romeo pushed 0
 Romeo set to -1
->> Romeo = -1 (0)
+Romeo pushed -2
+Romeo pushed 2
+>> Romeo = -1 (2 -2 0)
 >> """,
     )
 

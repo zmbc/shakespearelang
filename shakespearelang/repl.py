@@ -6,28 +6,6 @@ import readline
 import sys
 
 
-def _prefix_input_output(sentence, opposite_character):
-    if sentence.parseinfo.rule == "output" and sentence.output_number:
-        print(opposite_character.name, "outputted self as number:")
-    elif sentence.parseinfo.rule == "output" and sentence.output_char:
-        print(opposite_character.name, "outputted self as character:")
-    elif sentence.parseinfo.rule == "input" and sentence.input_number:
-        print(opposite_character.name, "taking input number:")
-    elif sentence.parseinfo.rule == "input" and sentence.input_char:
-        print(opposite_character.name, "taking input character:")
-
-
-def _show_result_of_sentence(sentence, opposite_character, interpreter):
-    if sentence.parseinfo.rule == "question":
-        print(interpreter.global_boolean)
-    elif sentence.parseinfo.rule == "assignment":
-        print(opposite_character.name, "set to", opposite_character.value)
-    elif sentence.parseinfo.rule == "push":
-        print(opposite_character.name, "pushed", opposite_character.stack[0])
-    elif sentence.parseinfo.rule == "pop":
-        print(opposite_character.name, "popped", opposite_character.value)
-
-
 def _print_character(character_name, interpreter):
     character = interpreter.state.character_by_name(character_name)
     print(character)
@@ -35,20 +13,12 @@ def _print_character(character_name, interpreter):
 
 def _run_sentences(sentences, speaking_character, opposite_character, interpreter):
     for sentence in sentences:
-        _prefix_input_output(sentence, opposite_character)
-
         if sentence.parseinfo.rule == "goto":
             print("Control flow isn't allowed in REPL.")
             # Stop this entire line of sentences
             return
 
         interpreter.run_sentence(sentence, speaking_character)
-
-        # Newline after output for next input cycle
-        if sentence.parseinfo.rule == "output":
-            print("\n")
-
-        _show_result_of_sentence(sentence, opposite_character, interpreter)
 
 
 DEFAULT_PLAY_TEMPLATE = """
@@ -84,8 +54,8 @@ def _entrance_list_from_characters(characters):
     return " and ".join(split_on_last)
 
 
-def debug_play(text):
-    interpreter = Shakespeare(text)
+def debug_play(text, input_style="interactive", output_style="verbose"):
+    interpreter = Shakespeare(text, input_style=input_style, output_style=output_style)
 
     def on_breakpoint():
         print("-----\n", interpreter.next_event_text(), "\n-----\n")
@@ -95,6 +65,10 @@ def debug_play(text):
 
 
 def run_repl(interpreter):
+    previous_input_style = interpreter.get_input_style()
+    previous_output_style = interpreter.get_output_style()
+    interpreter.set_input_style("interactive")
+    interpreter.set_output_style("verbose")
     current_character = None
 
     while True:
@@ -119,9 +93,12 @@ def run_repl(interpreter):
                     interpreter, repl_input, current_character
                 )
         except FailedParse as parseException:
-            print("\n\nThat doesn't look right:\n", parseException)
+            print("That doesn't look right:\n", parseException)
         except ShakespeareRuntimeError as runtimeError:
             print(str(runtimeError))
+
+    interpreter.set_input_style(previous_input_style)
+    interpreter.set_output_style(previous_output_style)
 
 
 def _run_repl_input(interpreter, repl_input, current_character):
@@ -142,9 +119,6 @@ def _run_repl_input(interpreter, repl_input, current_character):
         # Note we do not have to worry about control flow here because only lines
         # can cause that -- these have been extracted to sentences above.
         interpreter.run_event(event)
-
-        if event.parseinfo.rule in ["entrance", "exeunt", "exit"]:
-            _print_stage(interpreter)
     elif sentences:
         if not current_character:
             print("Who's saying this?")
@@ -160,7 +134,7 @@ def _run_repl_input(interpreter, repl_input, current_character):
             current_character = character
 
         speaking_character = interpreter.state.character_by_name(current_character)
-        interpreter.state.assert_character_on_stage(current_character)
+        interpreter.state.assert_character_on_stage(speaking_character)
         result = interpreter.evaluate_expression(value, speaking_character)
 
         print(result)
