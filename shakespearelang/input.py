@@ -56,6 +56,6 @@ class InteractiveInputManager:
         if value == "EOF":
             return -1
         elif value == "":
-            return ord('\n')
+            return ord("\n")
         else:
             return ord(value[0])

@@ -294,7 +294,10 @@ Outputting number: 10
 
 def test_display_character(monkeypatch, capsys):
     monkeypatch.setattr(
-        "sys.stdin", StringIO("Juliet: Remember thyself! You are a pig! Remember bad Hell! Remember a good animal!\nRomeo\nquit\n")
+        "sys.stdin",
+        StringIO(
+            "Juliet: Remember thyself! You are a pig! Remember bad Hell! Remember a good animal!\nRomeo\nquit\n"
+        ),
     )
 
     with pytest.raises(SystemExit) as exc:
