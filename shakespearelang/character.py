@@ -1,4 +1,5 @@
 from .errors import ShakespeareRuntimeError
+from .utils import normalize_name
 
 
 class Character:
@@ -12,10 +13,7 @@ class Character:
 
     @classmethod
     def from_dramatis_persona(cls, persona):
-        name = persona.character
-        if not isinstance(name, str):
-            name = " ".join(name)
-        return cls(name)
+        return cls(normalize_name(persona.character))
 
     def __str__(self):
         return f'{self.name} = {self.value} ({" ".join([str(v) for v in self.stack][::-1])})'
