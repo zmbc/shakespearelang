@@ -37,6 +37,9 @@ class BasicInputManager:
 
     def _ensure_input_buffer(self):
         if not self._input_buffer:
+            # We want all output that has already happened to appear before we
+            # ask the user for input
+            sys.stdout.flush()
             self._input_buffer = sys.stdin.readline()
             if not self._input_buffer:
                 raise EOFError()
