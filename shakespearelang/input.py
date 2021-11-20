@@ -10,7 +10,7 @@ class BasicInputManager:
         try:
             self._ensure_input_buffer()
         except EOFError:
-            raise ShakespeareRuntimeError("End of file encountered.")
+            raise ShakespeareRuntimeError("End of file encountered.") from None
 
         number_input = ""
         while self._input_buffer and self._input_buffer[0].isdigit():
