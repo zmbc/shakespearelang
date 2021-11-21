@@ -1,8 +1,9 @@
 #! /usr/bin/env python
 
 import click
+import sys
 from .shakespeare import Shakespeare
-from .errors import ShakespeareRuntimeError
+from .errors import ShakespeareError
 from .repl import start_console, debug_play
 from functools import wraps, partial
 
@@ -12,8 +13,8 @@ def pretty_print_shakespeare_errors(func):
     def wrapper(*args, **kwargs):
         try:
             func(*args, **kwargs)
-        except ShakespeareRuntimeError as e:
-            print(str(e))
+        except ShakespeareError as e:
+            print(str(e), file=sys.stderr)
 
     return wrapper
 

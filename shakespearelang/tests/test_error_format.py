@@ -31,8 +31,8 @@ def test_full_error_format():
         s.run()
     assert str(exc.value) == textwrap.dedent(
         """\
-    SPL Error: Tried to pop from an empty stack. Character: Juliet
-      at line 12
+    SPL runtime error: Tried to pop from an empty stack. Character: Juliet
+      at line 13
     ----- context -----
                         Scene I: A Stage.
 
@@ -60,4 +60,4 @@ def test_error_format_without_anything():
     with pytest.raises(ShakespeareRuntimeError) as exc:
         raise ShakespeareRuntimeError("How did this happen?")
 
-    assert str(exc.value) == "SPL Error: How did this happen?"
+    assert str(exc.value) == "SPL runtime error: How did this happen?"

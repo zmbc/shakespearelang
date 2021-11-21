@@ -5,7 +5,8 @@ Shakespeare -- An interpreter for the Shakespeare Programming Language
 """
 
 from .shakespeare_parser import shakespeareParser
-from .errors import ShakespeareRuntimeError
+from tatsu.exceptions import FailedParse
+from .errors import ShakespeareRuntimeError, ShakespeareParseError
 from .input import BasicInputManager, InteractiveInputManager
 from .output import BasicOutputManager, VerboseOutputManager
 from .utils import parseinfo_context, normalize_name
@@ -253,13 +254,18 @@ class Shakespeare:
     def get_output_style(self):
         return self._output_style
 
+    def parse(self, item, rule_name):
+        try:
+            return self.parser.parse(item, rule_name=rule_name)
+        except FailedParse as parseException:
+            raise ShakespeareParseError(parseException) from None
+
     # HELPERS
 
     def _parse_if_necessary(self, item, rule_name):
-        if isinstance(item, str):
-            return self.parser.parse(item, rule_name=rule_name)
-        else:
+        if not isinstance(item, str):
             return item
+        return self.parse(item, rule_name)
 
     def _scene_number_from_roman_numeral(self, roman_numeral):
         for index, scene in enumerate(self.current_act.scenes):

@@ -26,6 +26,7 @@ tox = "^3.20.1"
 coverage = "^5.3.1"
 black = "^21.9b0"
 snakeviz = "^2.1.1"
+pexpect = "^4.8.0"
 
 [tool.poetry.scripts]
 shakespeare = "shakespearelang.cli:main"

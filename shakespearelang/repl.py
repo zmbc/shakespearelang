@@ -1,5 +1,5 @@
 from .shakespeare import Shakespeare
-from .errors import ShakespeareRuntimeError
+from .errors import ShakespeareError
 from tatsu.exceptions import FailedParse
 
 import readline
@@ -92,17 +92,15 @@ def run_repl(interpreter):
                 current_character = _run_repl_input(
                     interpreter, repl_input, current_character
                 )
-        except FailedParse as parseException:
-            print("That doesn't look right:\n", parseException)
-        except ShakespeareRuntimeError as runtimeError:
-            print(str(runtimeError))
+        except ShakespeareError as e:
+            print(str(e), file=sys.stderr)
 
     interpreter.set_input_style(previous_input_style)
     interpreter.set_output_style(previous_output_style)
 
 
 def _run_repl_input(interpreter, repl_input, current_character):
-    ast = interpreter.parser.parse(repl_input + "\n", rule_name="repl_input")
+    ast = interpreter.parse(repl_input + "\n", "repl_input")
 
     event = ast.event
     sentences = ast.sentences
