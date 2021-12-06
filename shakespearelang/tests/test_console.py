@@ -245,12 +245,9 @@ def expect_interaction(cli, to_send, to_receive, prompt=True):
 
 
 def expect_output_exactly(cli, output, eof=False):
-    try:
-        cli.expect_exact(output.replace("\n", "\r\n").encode("UTF-8"), timeout=0.5)
-    except pexpect.exceptions.TIMEOUT:
-        assert cli.before.decode("UTF-8") == output.replace("\n", "\r\n")
-    assert cli.before.decode("UTF-8") == ""
+    output = output.replace("\n", "\r\n")
+    bytes_length = len(output.encode("utf-8"))
+    assert cli.read(bytes_length).decode("utf-8") == output
 
     if eof:
-        cli.expect(pexpect.EOF, timeout=0.5)
-        assert cli.before.decode("UTF-8") == ""
+        assert cli.read().decode("utf-8") == ""
