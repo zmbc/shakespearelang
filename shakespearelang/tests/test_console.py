@@ -19,7 +19,7 @@ Juliet, a player.
 
 
 def test_errors_on_nonsense_characters():
-    cli = pexpect.spawn("shakespeare --characters='Foobar,Not Real'")
+    cli = pexpect.spawn("shakespeare --characters='Foobar,Not Real'", timeout=60)
     expect_output_exactly(
         cli,
         """
@@ -57,7 +57,7 @@ full error message:
 
 
 def test_works_with_arbitrary_characters():
-    cli = pexpect.spawn("shakespeare --characters='Lady Capulet,The Ghost,Horatio'")
+    cli = pexpect.spawn("shakespeare --characters='Lady Capulet,The Ghost,Horatio'", timeout=60)
 
     expect_output_exactly(
         cli,
@@ -83,7 +83,7 @@ Horatio, a player.
 
 
 def test_runs_noop():
-    cli = pexpect.spawn("shakespeare")
+    cli = pexpect.spawn("shakespeare", timeout=60)
 
     expect_output_exactly(cli, STANDARD_REPL_BEGINNING)
     expect_interaction(cli, "exit", "", prompt=False)
@@ -91,7 +91,7 @@ def test_runs_noop():
 
 
 def test_runs_next():
-    cli = pexpect.spawn("shakespeare")
+    cli = pexpect.spawn("shakespeare", timeout=60)
 
     expect_output_exactly(cli, STANDARD_REPL_BEGINNING)
     expect_interaction(cli, "next", "", prompt=False)
@@ -99,7 +99,7 @@ def test_runs_next():
 
 
 def test_runs_continue():
-    cli = pexpect.spawn("shakespeare")
+    cli = pexpect.spawn("shakespeare", timeout=60)
 
     expect_output_exactly(cli, STANDARD_REPL_BEGINNING)
     expect_interaction(cli, "continue", "", prompt=False)
@@ -107,7 +107,7 @@ def test_runs_continue():
 
 
 def test_display_parse_error():
-    cli = pexpect.spawn("shakespeare")
+    cli = pexpect.spawn("shakespeare", timeout=60)
 
     expect_output_exactly(cli, STANDARD_REPL_BEGINNING)
     expect_interaction(
@@ -130,7 +130,7 @@ full error message:
 
 
 def test_display_runtime_error():
-    cli = pexpect.spawn("shakespeare")
+    cli = pexpect.spawn("shakespeare", timeout=60)
 
     expect_output_exactly(cli, STANDARD_REPL_BEGINNING)
     expect_interaction(
@@ -153,7 +153,7 @@ off stage:""",
 
 
 def test_display_repl_specific_error():
-    cli = pexpect.spawn("shakespeare")
+    cli = pexpect.spawn("shakespeare", timeout=60)
 
     expect_output_exactly(cli, STANDARD_REPL_BEGINNING)
     expect_interaction(cli, "You are as good as nothing.", "Who's saying this?")
@@ -170,7 +170,7 @@ def test_display_repl_specific_error():
 
 
 def test_last_character_speaking():
-    cli = pexpect.spawn("shakespeare")
+    cli = pexpect.spawn("shakespeare", timeout=60)
 
     expect_output_exactly(cli, STANDARD_REPL_BEGINNING)
     expect_interaction(cli, "Juliet: You are as good as nothing.", "Romeo set to 0")
@@ -184,7 +184,7 @@ def test_last_character_speaking():
 
 
 def test_detailed_logging():
-    cli = pexpect.spawn("shakespeare")
+    cli = pexpect.spawn("shakespeare", timeout=60)
 
     expect_output_exactly(cli, STANDARD_REPL_BEGINNING)
     cli.sendline(
@@ -208,7 +208,7 @@ Taking input number: """,
 
 
 def test_display_character():
-    cli = pexpect.spawn("shakespeare")
+    cli = pexpect.spawn("shakespeare", timeout=60)
 
     expect_output_exactly(cli, STANDARD_REPL_BEGINNING)
     expect_interaction(cli, "Juliet: Remember thyself! You are a pig! Remember bad Hell! Remember a good animal!", """Romeo pushed 0
@@ -221,7 +221,7 @@ Romeo pushed 2""")
 
 
 def test_display_state():
-    cli = pexpect.spawn("shakespeare")
+    cli = pexpect.spawn("shakespeare", timeout=60)
 
     expect_output_exactly(cli, STANDARD_REPL_BEGINNING)
     expect_interaction(cli, "Juliet: Remember thyself! You are a pig!", "Romeo pushed 0\nRomeo set to -1")
