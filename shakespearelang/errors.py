@@ -2,16 +2,23 @@ from ._utils import parseinfo_context, pos_context
 
 
 class ShakespeareError(Exception):
+    """
+    The base class for errors caused by problems in Shakespeare Programming
+    Language code.
+    """
+
     pass
 
 
 class ShakespeareParseError(ShakespeareError):
     """
-    Wraps the TatSu FailedParse exception, to inherit from ShakespeareError, make
-    the display more consistent with runtime errors, and hide the Python stack
-    traces.
+    An error caused by malformed Shakespeare Programming Language code. Inherits
+    from [ShakespeareError][shakespearelang.ShakespeareError].
     """
 
+    # Wraps the TatSu FailedParse exception, to inherit from ShakespeareError, make
+    # the display more consistent with runtime errors, and hide the Python stack
+    # traces.
     def __init__(self, failed_parse_exception):
         self.message = failed_parse_exception.item
         self.tokenizer = failed_parse_exception.tokenizer
@@ -45,6 +52,12 @@ class ShakespeareParseError(ShakespeareError):
 
 
 class ShakespeareRuntimeError(ShakespeareError):
+    """
+    An error caused by Shakespeare Programming Language code that is well-formed
+    but does some illegal operation at runtime. Inherits from
+    [ShakespeareError][shakespearelang.ShakespeareError].
+    """
+
     def __init__(self, message, parseinfo=None, interpreter=None):
         self.message = message
         self.parseinfo = parseinfo

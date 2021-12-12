@@ -1,4 +1,4 @@
-## Good morrow!
+# Good morrow!
 
 Welcome to the home of shakespearelang, a friendly interpreter for the Shakespeare
 Programming Language (SPL) implemented in Python and available as a package on PyPI.
@@ -69,19 +69,21 @@ To use the debugger, run the file again with the `debug` command, like so:
 
 ```
 $ shakespeare debug first_play.spl
-H
-
+Enter Hamlet, Juliet
+Hamlet set to 72
+Outputting Hamlet
+Outputting character: 'H'
 -----
+         mind!
 
-Juliet: Thou art the sum of an amazing healthy honest noble peaceful
-        fine Lord and a lovely sweet golden summer's day. Speak your
-        mind!
+[A pause]
 
-> [A pause]
-
-Juliet: Thou art the sum of thyself and a King. Speak your mind!
+>>Juliet: Thou art the sum of thyself and a King. Speak your mind!
 
         Thou art the sum of an amazing healthy honest hamster and a golden
+        chihuahua. Speak your mind!<<
+
+[Exeunt]
 
 -----
 
@@ -90,9 +92,12 @@ Juliet: Thou art the sum of thyself and a King. Speak your mind!
 
 ### Understanding the debugger and console
 
-The "H" at the top is the first letter of output from our play. Then, the
-stage direction causes the interpreter to pause. It shows us where in the play
-it is--the line starting with `>` indicates the next line to run.
+When a play is run with the debugger, it gives more step-by-step information
+about the execution of a play. Here, we can see that Hamlet and Juliet entered
+the stage, Hamlet was set to the value 72, and then output the character 'H'.
+
+Now, we've hit the breakpoint. The part of the text highlighted by `>>` and `<<`
+shows us what's about to run next.
 
 The last line (starting with `>>`) is a prompt, waiting for your input. This is
 called the "console" or the ["REPL"](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop).
@@ -123,60 +128,57 @@ Hamlet set to -1
 
 In addition to normal lines, the console also accepts standalone expressions,
 the result of which it displays. These cannot end with periods. The answers
-to questions are also displayed.
+to questions are also displayed, but note that like all questions in SPL, they
+modify the global state!
 
 ```
 >> Juliet: The sum of thyself and a King
-74
->> Juliet: Are you nicer than a golden chihuahua?
-True
+0
+>> Are you nicer than a golden chihuahua?
+Setting global boolean to False
 >>
 ```
 
-#### Inspecting the stage and characters
+#### Inspecting the current state
 
-To see a list of characters currently on stage, enter `stage` into the console.
+To see the who's on stage and the values of characters and of the global boolean,
+type `state` into the console.
 
 ```
->> stage
-On stage:
-Hamlet
-Juliet
-
-Off stage:
+>> state
+global boolean = False
+on stage:
+  Hamlet = -1 ()
+  Juliet = 0 ()
+off stage:
 ```
 
-To inspect a character, simply enter their name.
+In this display, the number next to a character is the current value, while the
+parentheses hold the values on their stack (the rightmost values are at the top).
+To see a single character only, you can enter their name.
 
 ```
 >> Hamlet
-Hamlet
-Value: 74
-Stack:
+Hamlet = -1 ()
 >> Juliet: Remember thyself!
-Hamlet pushed 74
+Hamlet pushed -1
 >> Hamlet
-Hamlet
-Value: 74
-Stack:
-74
->>
+Hamlet = -1 (-1)
 ```
 
 #### Commands
 
-The commands `next` and `continue` are special. `next` executes the next line or
-event in the play, returning you to the interactive console afterwards. `continue`
-simply continues running the play--it will not stop again unless it hits another
-breakpoint.
+There are three special commands you can use in the console:
+
+- `next` executes the next sentence or event in the play, returning you to the interactive console afterwards.
+- `continue` continues running the play--it will not stop again unless it hits another breakpoint.
+- `quit` or `exit` stop execution of the play completely.
 
 ## Using the console outside the debugger
 
 If you don't have a play yet and just want to mess around, you can open the
 console in the context of an empty play with the `shakespeare console` command,
 or simply `shakespeare`.
-
-In this mode, use `quit` or `exit` to quit out of the console.
 
 ## Other implementations
 
@@ -187,9 +189,9 @@ Other options:
 
 - [The reference implementation](http://shakespearelang.sf.net/download/spl-1.2.1.tar.gz),
 an SPL-to-C source-to-source compiler
-  - Note: you may need to downgrade `flex` to version 2.5.4 to compile the
-    reference implementation due to [this issue](https://github.com/westes/flex/issues/193).
-    On Ubuntu, this can be easily achieved with the [flex-old package](https://launchpad.net/ubuntu/+source/flex-old).
+    - Note: you may need to downgrade `flex` to version 2.5.4 to compile the
+      reference implementation due to [this issue](https://github.com/westes/flex/issues/193).
+      On Ubuntu, this can be easily achieved with the [flex-old package](https://launchpad.net/ubuntu/+source/flex-old).
 - [Lingua::Shakespeare](http://search.cpan.org/dist/Lingua-Shakespeare/lib/Lingua/Shakespeare.pod), a source filter in Perl
 - [Spl](https://github.com/drsam94/Spl), an SPL-to-C compiler in Python
 - [horatio](https://github.com/mileszim/horatio), an interpreter in Javascript

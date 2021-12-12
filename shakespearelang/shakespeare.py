@@ -13,13 +13,44 @@ from ._utils import parseinfo_context, normalize_name
 from ._character import Character
 from ._state import State
 import math
+from tatsu.ast import AST
 from functools import wraps
+from typing import Callable, Literal, Union
 
 
 class Shakespeare:
     """
     Interpreter for the Shakespeare Programming Language.
     """
+
+    def __init__(
+        self,
+        play: Union[str, AST],
+        input_style: Literal["basic", "interactive"] = "basic",
+        output_style: Literal["basic", "verbose", "debug"] = "basic",
+    ):
+        """
+        Arguments:
+            play: The AST or source code of the SPL play to be interpreted. Must
+                be provided and cannot be changed after initialization of the
+                interpreter.
+            input_style: The input style to initialize the interpreter with. See
+                [set_input_style][shakespearelang.Shakespeare.set_input_style]
+                for more information about the options.
+            output_style: The output style to initialize the interpreter with. See
+                [set_output_style][shakespearelang.Shakespeare.set_output_style]
+                for more information about the options.
+        """
+        self.set_input_style(input_style)
+        self.set_output_style(output_style)
+        self.parser = shakespeareParser()
+        self.ast = self._parse_if_necessary(play, "play")
+        self.state = State(self.ast.dramatis_personae)
+
+        self.current_position = {"act": 0, "scene": 0, "event": 0}
+        self._make_position_consistent()
+
+    # DECORATORS
 
     def _add_interpreter_context_to_errors(func):
         @wraps(func)
@@ -50,26 +81,17 @@ class Shakespeare:
 
         return decorator
 
-    def __init__(self, play, input_style="basic", output_style="basic"):
-        self.set_input_style(input_style)
-        self.set_output_style(output_style)
-        self.parser = shakespeareParser()
-        self.ast = self._parse_if_necessary(play, "play")
-        self.state = State(self.ast.dramatis_personae)
-
-        self.current_position = {"act": 0, "scene": 0, "event": 0}
-        self._make_position_consistent()
-
     # PUBLIC METHODS
 
     @_add_interpreter_context_to_errors
-    def run(self, breakpoint_callback=lambda: None):
+    def run(self, breakpoint_callback: Callable[[], None] = lambda: None) -> None:
         """
-        Run the SPL play.
+        Execute the entire SPL play, optionally pausing at breakpoints.
 
         Arguments:
-        breakpoint_callback -- An optional callback, to be called if a debug
-                               breakpoint is hit
+            breakpoint_callback: An optional callback, to be called if a debug
+                breakpoint is hit. After the callback returns, execution
+                continues. The default is to do nothing.
         """
         while not self.play_over():
             if self._next_event().parseinfo.rule == "breakpoint":
@@ -79,13 +101,18 @@ class Shakespeare:
                 self.step_forward()
 
     @_add_interpreter_context_to_errors
-    def play_over(self):
-        """Return whether the play has finished."""
+    def play_over(self) -> bool:
+        """
+        Returns:
+            Whether the play has finished.
+        """
         return self.current_position["act"] >= len(self.ast.acts)
 
     @_add_interpreter_context_to_errors
-    def step_forward(self):
-        """Run the next event in the play."""
+    def step_forward(self) -> None:
+        """
+        Run the next event in the play.
+        """
         event_to_run = self._next_event()
         if event_to_run.parseinfo.rule == "breakpoint":
             self._advance_position()
@@ -103,8 +130,12 @@ class Shakespeare:
             self._advance_position()
 
     @_add_interpreter_context_to_errors
-    def next_event_text(self):
-        """Return the contents of the next event in the play."""
+    def next_event_text(self) -> str:
+        """
+        Returns:
+            The SPL source code of the next event to run in the play, with
+            context before and after.
+        """
         current_event = self._next_event()
         return parseinfo_context(current_event.parseinfo)
 
@@ -117,13 +148,13 @@ class Shakespeare:
 
     @_add_interpreter_context_to_errors
     @_parse_first_argument("event")
-    def run_event(self, event):
+    def run_event(self, event: Union[str, AST]) -> None:
         """
-        Run an event in the current executing context.
+        Run an event in the current execution context.
 
         Arguments:
-        event -- A string or AST representation of an event (line, entrance,
-                 exit, etc.)
+            event: A string or AST representation of an event (line, entrance,
+                exit, etc).
         """
         if event.parseinfo.rule not in self._EVENT_TYPE_HANDLERS:
             raise ShakespeareRuntimeError("Unknown event type: " + event.parseinfo.rule)
@@ -141,14 +172,14 @@ class Shakespeare:
 
     @_add_interpreter_context_to_errors
     @_parse_first_argument("sentence")
-    def run_sentence(self, sentence, character):
+    def run_sentence(self, sentence: Union[str, AST], character: Union[str, Character]):
         """
         Run a sentence in the current execution context.
 
         Arguments:
-        sentence -- A string or AST representation of a sentence
-        character -- A name or shakespearelang.Character representation of the
-                     character speaking the sentence.
+            sentence: A string or AST representation of a sentence.
+            character: A name or Character representation of the
+                character speaking the sentence.
         """
         character = self.state.character_by_name_if_necessary(character)
         self.state.assert_character_on_stage(character)
@@ -169,14 +200,19 @@ class Shakespeare:
 
     @_add_interpreter_context_to_errors
     @_parse_first_argument("question")
-    def evaluate_question(self, question, character):
+    def evaluate_question(
+        self, question: Union[str, AST], character: Union[str, Character]
+    ) -> bool:
         """
         Evaluate a question in the current execution context.
 
         Arguments:
-        question -- A string or AST representation of a question
-        character -- A name or shakespearelang.Character representation of the
-                     character asking the question.
+            question: A string or AST representation of a question.
+            character: A name or Character representation of the
+                character asking the question.
+
+        Returns:
+            The answer to the question.
         """
         character = self.state.character_by_name_if_necessary(character)
         self.state.assert_character_on_stage(character)
@@ -194,33 +230,38 @@ class Shakespeare:
         "second_person_value": lambda self, v, c: self.state.character_opposite(
             c
         ).value,
-        "negative_noun_phrase": lambda self, v, c: -pow(2, len(v.adjectives)),
-        "positive_noun_phrase": lambda self, v, c: pow(2, len(v.adjectives)),
-        "character_name": lambda self, v, c: self.state.character_by_name(v.name).value,
-        "nothing": lambda self, v, c: 0,
-        "unary_expression": lambda self, v, c: self._evaluate_unary_operation(v, c),
-        "binary_expression": lambda self, v, c: self._evaluate_binary_operation(v, c),
+        "negative_noun_phrase": lambda self, e, c: -pow(2, len(e.adjectives)),
+        "positive_noun_phrase": lambda self, e, c: pow(2, len(e.adjectives)),
+        "character_name": lambda self, e, c: self.state.character_by_name(e.name).value,
+        "nothing": lambda self, e, c: 0,
+        "unary_expression": lambda self, e, c: self._evaluate_unary_operation(e, c),
+        "binary_expression": lambda self, e, c: self._evaluate_binary_operation(e, c),
     }
 
     @_add_interpreter_context_to_errors
     @_parse_first_argument("value")
-    def evaluate_expression(self, value, character):
+    def evaluate_expression(
+        self, expression: Union[str, AST], character: Union[str, Character]
+    ) -> int:
         """
         Evaluate an expression in the current execution context.
 
         Arguments:
-        expression -- A string or AST representation of an expression
-        character -- A name or shakespearelang.Character representation of the
-                     character speaking the expression.
+            expression: A string or AST representation of an expression.
+            character: A name or Character representation of the
+                character speaking the expression.
+
+        Returns:
+            The integer value of the expression.
         """
         character = self.state.character_by_name_if_necessary(character)
 
-        if value.parseinfo.rule not in self._EXPRESSION_TYPE_HANDLERS:
+        if expression.parseinfo.rule not in self._EXPRESSION_TYPE_HANDLERS:
             raise ShakespeareRuntimeError(
                 "Unknown expression type: " + value.parseinfo.rule
             )
-        return self._EXPRESSION_TYPE_HANDLERS[value.parseinfo.rule](
-            self, value, character
+        return self._EXPRESSION_TYPE_HANDLERS[expression.parseinfo.rule](
+            self, expression, character
         )
 
     _INPUT_MANAGERS = {
@@ -228,14 +269,35 @@ class Shakespeare:
         "interactive": InteractiveInputManager,
     }
 
-    def set_input_style(self, input_style):
+    def set_input_style(self, input_style: Literal["basic", "interactive"]) -> None:
+        """
+        Set the input style for the interpreter.
+
+        Arguments:
+            input_style: An input style option.
+
+                "basic" is no-frills and better
+                for piped input -- input is simply taken from stdin,
+                character-by-character, including newlines. In basic mode,
+                requesting numeric input will consume as many digits as are
+                available and then an optional newline.
+
+                "interactive" is nicer to
+                use when the program is taking input from an actual user. It will
+                print a prompt specifying the type of input needed, and won't consume
+                the input until the user hits enter.
+        """
         if input_style not in self._INPUT_MANAGERS:
             raise ValueError("Unknown input style")
 
         self._input_manager = self._INPUT_MANAGERS[input_style]()
         self._input_style = input_style
 
-    def get_input_style(self):
+    def get_input_style(self) -> Literal["basic", "interactive"]:
+        """
+        Returns:
+            The input style the interpreter is currently using.
+        """
         return self._input_style
 
     _OUTPUT_MANAGERS = {
@@ -244,14 +306,35 @@ class Shakespeare:
         "debug": VerboseOutputManager,
     }
 
-    def set_output_style(self, output_style):
+    def set_output_style(
+        self, output_style: Literal["basic", "verbose", "debug"]
+    ) -> None:
+        """
+        Set the output style for the interpreter.
+
+        Arguments:
+            output_style: An output style option.
+
+                "basic" is no-frills and outputs exactly what the SPL play says
+                to output to stdout.
+
+                "verbose" adds explanatory text annotating what kind of output is
+                happening, and displays readable representations of special characters.
+
+                "debug" is the same as "verbose", but also causes the interpreter
+                to log detailed step-by-step information about its execution.
+        """
         if output_style not in self._OUTPUT_MANAGERS:
             raise ValueError("Unknown output style")
 
         self._output_manager = self._OUTPUT_MANAGERS[output_style]()
         self._output_style = output_style
 
-    def get_output_style(self):
+    def get_output_style(self) -> Literal["basic", "verbose", "debug"]:
+        """
+        Returns:
+            The output style the interpreter is currently using.
+        """
         return self._output_style
 
     def parse(self, item, rule_name):

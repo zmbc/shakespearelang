@@ -1,5 +1,23 @@
 site_name: shakespearelang
+nav:
+  - Getting started: index.md
+  - Command line usage reference: CLI.md
+  - Python API reference: API.md
 theme:
-  name: journal
+  name: material
+  palette:
+    primary: teal
 plugins:
-- mkdocstrings
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          rendering:
+            show_root_heading: true
+            members_order: source
+      watch:
+        - shakespearelang
+markdown_extensions:
+  - mkdocs-click
+  - toc:
+      permalink: "#"
