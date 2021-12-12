@@ -232,10 +232,14 @@ def test_display_character():
     cli.waitnoecho()
 
     expect_output_exactly(cli, STANDARD_REPL_BEGINNING)
-    expect_interaction(cli, "Juliet: Remember thyself! You are a pig! Remember bad Hell! Remember a good animal!", """Romeo pushed 0
+    expect_interaction(
+        cli,
+        "Juliet: Remember thyself! You are a pig! Remember bad Hell! Remember a good animal!",
+        """Romeo pushed 0
 Romeo set to -1
 Romeo pushed -2
-Romeo pushed 2""")
+Romeo pushed 2""",
+    )
     expect_interaction(cli, "Romeo", "Romeo = -1 (2 -2 0)")
     expect_interaction(cli, "exit", "", prompt=False)
     expect_output_exactly(cli, "", eof=True)
@@ -247,12 +251,20 @@ def test_display_state():
     cli.waitnoecho()
 
     expect_output_exactly(cli, STANDARD_REPL_BEGINNING)
-    expect_interaction(cli, "Juliet: Remember thyself! You are a pig!", "Romeo pushed 0\nRomeo set to -1")
-    expect_interaction(cli, "state", """global boolean = False
+    expect_interaction(
+        cli,
+        "Juliet: Remember thyself! You are a pig!",
+        "Romeo pushed 0\nRomeo set to -1",
+    )
+    expect_interaction(
+        cli,
+        "state",
+        """global boolean = False
 on stage:
   Romeo = -1 (0)
   Juliet = 0 ()
-off stage:""")
+off stage:""",
+    )
     expect_interaction(cli, "exit", "", prompt=False)
     expect_output_exactly(cli, "", eof=True)
 
@@ -271,8 +283,13 @@ def expect_output_exactly(cli, output, eof=False):
     output = output.replace("\n", "\r\n")
     output_index = 0
     while output_index < len(output):
-        output_received = cli.read_nonblocking(len(output) - output_index).decode("utf-8")
-        assert output_received == output[output_index:(output_index + len(output_received))]
+        output_received = cli.read_nonblocking(len(output) - output_index).decode(
+            "utf-8"
+        )
+        assert (
+            output_received
+            == output[output_index : (output_index + len(output_received))]
+        )
         output_index = output_index + len(output_received)
 
     if eof:
