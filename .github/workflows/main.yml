@@ -11,6 +11,10 @@ on:
   workflow_dispatch:
 
 jobs:
+  style:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: RojerGS/python-black-check@master
   test:
     runs-on: ubuntu-latest
     strategy:

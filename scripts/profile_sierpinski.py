@@ -4,4 +4,4 @@ import cProfile
 
 path = Path(__file__).parent / f"shakespearelang/tests/sample_plays/sierpinski.spl"
 with path.open() as f:
-    cProfile.run('Shakespeare(f.read()).run()', 'profilestats')
+    cProfile.run("Shakespeare(f.read()).run()", "profilestats")
