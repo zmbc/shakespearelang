@@ -1,6 +1,6 @@
 from .errors import ShakespeareRuntimeError
-from .character import Character
-from .utils import normalize_name
+from ._character import Character
+from ._utils import normalize_name
 
 
 class State:

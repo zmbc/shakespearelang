@@ -4,14 +4,14 @@
 Shakespeare -- An interpreter for the Shakespeare Programming Language
 """
 
-from .shakespeare_parser import shakespeareParser
+from ._parser import shakespeareParser
 from tatsu.exceptions import FailedParse
 from .errors import ShakespeareRuntimeError, ShakespeareParseError
-from .input import BasicInputManager, InteractiveInputManager
-from .output import BasicOutputManager, VerboseOutputManager
-from .utils import parseinfo_context, normalize_name
-from .character import Character
-from .state import State
+from ._input import BasicInputManager, InteractiveInputManager
+from ._output import BasicOutputManager, VerboseOutputManager
+from ._utils import parseinfo_context, normalize_name
+from ._character import Character
+from ._state import State
 import math
 from functools import wraps
 

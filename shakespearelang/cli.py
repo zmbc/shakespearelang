@@ -4,7 +4,7 @@ import click
 import sys
 from .shakespeare import Shakespeare
 from .errors import ShakespeareError
-from .repl import start_console, debug_play
+from ._repl import start_console, debug_play
 from functools import wraps, partial
 
 

@@ -1,5 +1,5 @@
 from .errors import ShakespeareRuntimeError
-from .utils import normalize_name
+from ._utils import normalize_name
 
 
 class Character:

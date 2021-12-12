@@ -1,4 +1,4 @@
-from .utils import parseinfo_context, pos_context
+from ._utils import parseinfo_context, pos_context
 
 
 class ShakespeareError(Exception):

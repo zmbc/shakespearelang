@@ -1,4 +1,3 @@
-from shakespearelang.repl import start_console
 from tatsu.exceptions import FailedParse
 from io import StringIO
 import pytest
