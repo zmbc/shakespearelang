@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 # CAVEAT UTILITOR
 #
@@ -10,15 +9,14 @@
 # Any changes you make to it will be overwritten the next time
 # the file is generated.
 
-
-from __future__ import generator_stop
+from __future__ import annotations
 
 import sys
 
 from tatsu.buffering import Buffer
 from tatsu.parsing import Parser
-from tatsu.parsing import tatsumasu, leftrec, nomemo
-from tatsu.parsing import leftrec, nomemo  # noqa
+from tatsu.parsing import tatsumasu
+from tatsu.parsing import leftrec, nomemo, isname  # noqa
 from tatsu.util import re, generic_main  # noqa
 
 
@@ -93,7 +91,7 @@ class shakespeareParser(Parser):
                 self._token("be")
             with self._option():
                 self._token("is")
-            self._error("expecting one of: am are art be is")
+            self._error("expecting one of: " "'am' 'are' 'art' 'be' 'is'")
 
     @tatsumasu()
     def _article_(self):  # noqa
@@ -104,7 +102,7 @@ class shakespeareParser(Parser):
                 self._token("an")
             with self._option():
                 self._token("the")
-            self._error("expecting one of: a an the")
+            self._error("expecting one of: " "'a' 'an' 'the'")
 
     @tatsumasu()
     def _first_person_(self):  # noqa
@@ -113,7 +111,7 @@ class shakespeareParser(Parser):
                 self._token("I")
             with self._option():
                 self._token("me")
-            self._error("expecting one of: I me")
+            self._error("expecting one of: " "'I' 'me'")
 
     @tatsumasu()
     def _first_person_reflexive_(self):  # noqa
@@ -126,7 +124,7 @@ class shakespeareParser(Parser):
                 self._token("mine")
             with self._option():
                 self._token("my")
-            self._error("expecting one of: mine my")
+            self._error("expecting one of: " "'mine' 'my'")
 
     @tatsumasu()
     def _second_person_(self):  # noqa
@@ -137,7 +135,7 @@ class shakespeareParser(Parser):
                 self._token("thou")
             with self._option():
                 self._token("you")
-            self._error("expecting one of: thee thou you")
+            self._error("expecting one of: " "'thee' 'thou' 'you'")
 
     @tatsumasu()
     def _second_person_reflexive_(self):  # noqa
@@ -146,7 +144,7 @@ class shakespeareParser(Parser):
                 self._token("thyself")
             with self._option():
                 self._token("yourself")
-            self._error("expecting one of: thyself yourself")
+            self._error("expecting one of: " "'thyself' 'yourself'")
 
     @tatsumasu()
     def _second_person_possessive_(self):  # noqa
@@ -157,7 +155,7 @@ class shakespeareParser(Parser):
                 self._token("thy")
             with self._option():
                 self._token("your")
-            self._error("expecting one of: thine thy your")
+            self._error("expecting one of: " "'thine' 'thy' 'your'")
 
     @tatsumasu()
     def _third_person_possessive_(self):  # noqa
@@ -170,7 +168,7 @@ class shakespeareParser(Parser):
                 self._token("its")
             with self._option():
                 self._token("their")
-            self._error("expecting one of: her his its their")
+            self._error("expecting one of: " "'his' 'her' 'its' 'their'")
 
     @tatsumasu()
     def _possessive_(self):  # noqa
@@ -182,7 +180,11 @@ class shakespeareParser(Parser):
             with self._option():
                 self._third_person_possessive_()
             self._error(
-                "expecting one of: first_person_possessive her his its mine my second_person_possessive their thine third_person_possessive thy your"
+                "expecting one of: "
+                "'mine' 'my' <first_person_possessive>"
+                "'thine' 'thy' 'your'"
+                "<second_person_possessive> 'his' 'her'"
+                "'its' 'their' <third_person_possessive>"
             )
 
     @tatsumasu()
@@ -205,11 +207,13 @@ class shakespeareParser(Parser):
                     self._token("more")
                     self._positive_adjective_()
                 self._error(
-                    "expecting one of: better bigger fresher friendlier jollier more nicer"
+                    "expecting one of: "
+                    "'better' 'bigger' 'fresher' 'friendlier'"
+                    "'nicer' 'jollier' 'more'"
                 )
         self.name_last_node("comparison")
         self._token("than")
-        self.ast._define(["comparison"], [])
+        self._define(["comparison"], [])
 
     @tatsumasu()
     def _negative_comparative_(self):  # noqa
@@ -224,10 +228,10 @@ class shakespeareParser(Parser):
                 with self._option():
                     self._token("more")
                     self._negative_adjective_()
-                self._error("expecting one of: more punier smaller worse")
+                self._error("expecting one of: " "'punier' 'smaller' 'worse' 'more'")
         self.name_last_node("comparison")
         self._token("than")
-        self.ast._define(["comparison"], [])
+        self._define(["comparison"], [])
 
     @tatsumasu()
     def _negative_adjective_(self):  # noqa
@@ -299,7 +303,16 @@ class shakespeareParser(Parser):
             with self._option():
                 self._token("worried")
             self._error(
-                "expecting one of: bad cowardly cursed damned dirty disgusting distasteful dusty evil fat fat-kidneyed fatherless foul hairy half-witted horrible horrid infected lying miserable misused oozing rotten smelly snotty sorry stinking stuffed stupid vile villainous worried"
+                "expecting one of: "
+                "'bad' 'cowardly' 'cursed' 'damned'"
+                "'dirty' 'disgusting' 'distasteful'"
+                "'dusty' 'evil' 'fat-kidneyed'"
+                "'fatherless' 'fat' 'foul' 'hairy' 'half-"
+                "witted' 'horrible' 'horrid' 'infected'"
+                "'lying' 'miserable' 'misused' 'oozing'"
+                "'rotten' 'smelly' 'snotty' 'sorry'"
+                "'stinking' 'stuffed' 'stupid' 'vile'"
+                "'villainous' 'worried'"
             )
 
     @tatsumasu()
@@ -346,7 +359,12 @@ class shakespeareParser(Parser):
             with self._option():
                 self._token("yellow")
             self._error(
-                "expecting one of: big black blue bluest bottomless furry green hard huge large little normal old purple red rural small tiny white yellow"
+                "expecting one of: "
+                "'big' 'black' 'blue' 'bluest'"
+                "'bottomless' 'furry' 'green' 'hard'"
+                "'huge' 'large' 'little' 'normal' 'old'"
+                "'purple' 'red' 'rural' 'small' 'tiny'"
+                "'white' 'yellow'"
             )
 
     @tatsumasu()
@@ -425,7 +443,17 @@ class shakespeareParser(Parser):
             with self._option():
                 self._token("warm")
             self._error(
-                "expecting one of: amazing beautiful blossoming bold brave charming clearest cunning cute delicious embroidered fair fine gentle golden good handsome happy healthy honest lovely loving mighty noble peaceful pretty prompt proud reddest rich smooth sunny sweet sweetest trustworthy warm"
+                "expecting one of: "
+                "'amazing' 'beautiful' 'blossoming'"
+                "'bold' 'brave' 'charming' 'clearest'"
+                "'cunning' 'cute' 'delicious'"
+                "'embroidered' 'fair' 'fine' 'gentle'"
+                "'golden' 'good' 'handsome' 'happy'"
+                "'healthy' 'honest' 'lovely' 'loving'"
+                "'mighty' 'noble' 'peaceful' 'pretty'"
+                "'prompt' 'proud' 'reddest' 'rich'"
+                "'smooth' 'sunny' 'sweet' 'sweetest'"
+                "'trustworthy' 'warm'"
             )
 
     @tatsumasu()
@@ -482,7 +510,13 @@ class shakespeareParser(Parser):
             with self._option():
                 self._token("wolf")
             self._error(
-                "expecting one of: Hell Microsoft bastard beggar blister codpiece coward curse death devil draught famine flirt-gill goat hate hog hound leech lie pig plague starvation toad war wolf"
+                "expecting one of: "
+                "'Hell' 'Microsoft' 'bastard' 'beggar'"
+                "'blister' 'codpiece' 'coward' 'curse'"
+                "'death' 'devil' 'draught' 'famine'"
+                "'flirt-gill' 'goat' 'hate' 'hog' 'hound'"
+                "'leech' 'lie' 'pig' 'plague'"
+                "'starvation' 'toad' 'war' 'wolf'"
             )
 
     @tatsumasu()
@@ -572,7 +606,18 @@ class shakespeareParser(Parser):
             with self._option():
                 self._token("wind")
             self._error(
-                "expecting one of: animal aunt brother cat chihuahua cousin cow daughter door face father fellow granddaughter grandfather grandmother grandson hair hamster horse lamp lantern mistletoe moon morning mother nephew niece nose purse road roman sister sky son squirrel stone thing town tree uncle wind"
+                "expecting one of: "
+                "'animal' 'aunt' 'brother' 'cat'"
+                "'chihuahua' 'cousin' 'cow' 'daughter'"
+                "'door' 'face' 'father' 'fellow'"
+                "'granddaughter' 'grandfather'"
+                "'grandmother' 'grandson' 'hair'"
+                "'hamster' 'horse' 'lamp' 'lantern'"
+                "'mistletoe' 'moon' 'morning' 'mother'"
+                "'nephew' 'niece' 'nose' 'purse' 'road'"
+                "'roman' 'sister' 'sky' 'son' 'squirrel'"
+                "'stone' 'thing' 'town' 'tree' 'uncle'"
+                "'wind'"
             )
 
     @tatsumasu()
@@ -606,7 +651,10 @@ class shakespeareParser(Parser):
             with self._option():
                 self._token("pony")
             self._error(
-                "expecting one of: Heaven King Lord angel flower happiness hero joy kingdom plum pony rose summer's"
+                "expecting one of: "
+                "'Heaven' 'King' 'Lord' 'angel' 'flower'"
+                "'happiness' 'joy' 'plum' \"summer's\""
+                "'hero' 'rose' 'kingdom' 'pony'"
             )
 
     @tatsumasu()
@@ -957,7 +1005,44 @@ class shakespeareParser(Parser):
             with self._option():
                 self._token("Viola")
             self._error(
-                "expecting one of: Achilles Adonis Adriana Aegeon Aemilia Agamemnon Agrippa Ajax Alonso Andromache Angelo Antiochus Antonio Arthur Autolycus Balthazar Banquo Beatrice Benedick Benvolio Bianca Brabantio Brutus Capulet Cassandra Cassius Christopher Cicero Claudio Claudius Cleopatra Cordelia Cornelius Cressida Cymberline Demetrius Desdemona Dionyza Doctor Dogberry Don Donalbain Dorcas Duncan Egeus Emilia Escalus Falstaff Fenton Ferdinand Ford Fortinbras Francisca Friar Gertrude Goneril Hamlet Hecate Hector Helen Helena Hermia Hermonie Hippolyta Horatio Imogen Isabella John Julia Juliet Julius King Lady Lennox Leonato Luciana Lucio Lychorida Lysander Macbeth Macduff Malcolm Mariana Mark Mercutio Miranda Mistress Montague Mopsa Oberon Octavia Octavius Olivia Ophelia Orlando Orsino Othello Page Pantino Paris Pericles Pinch Polonius Pompeius Portia Priam Prince Prospero Proteus Publius Puck Queen Regan Robin Romeo Rosalind Sebastian Shallow Shylock Slender Solinus Stephano Thaisa The Theseus Thurio Timon Titania Titus Troilus Tybalt Ulysses Valentine Venus Vincentio Viola"
+                "expecting one of: "
+                "'Achilles' 'Adonis' 'Adriana' 'Aegeon'"
+                "'Aemilia' 'Agamemnon' 'Agrippa' 'Ajax'"
+                "'Alonso' 'Andromache' 'Angelo'"
+                "'Antiochus' 'Antonio' 'Arthur'"
+                "'Autolycus' 'Balthazar' 'Banquo'"
+                "'Beatrice' 'Benedick' 'Benvolio'"
+                "'Bianca' 'Brabantio' 'Brutus' 'Capulet'"
+                "'Cassandra' 'Cassius' 'Christopher'"
+                "'Cicero' 'Claudio' 'Claudius'"
+                "'Cleopatra' 'Cordelia' 'Cornelius'"
+                "'Cressida' 'Cymberline' 'Demetrius'"
+                "'Desdemona' 'Dionyza' 'Doctor'"
+                "'Dogberry' 'Don' 'Donalbain' 'Dorcas'"
+                "'Duncan' 'Egeus' 'Emilia' 'Escalus'"
+                "'Falstaff' 'Fenton' 'Ferdinand' 'Ford'"
+                "'Fortinbras' 'Francisca' 'Friar'"
+                "'Gertrude' 'Goneril' 'Hamlet' 'Hecate'"
+                "'Hector' 'Helen' 'Helena' 'Hermia'"
+                "'Hermonie' 'Hippolyta' 'Horatio'"
+                "'Imogen' 'Isabella' 'John' 'Julia'"
+                "'Juliet' 'Julius' 'King' 'Lady' 'Lennox'"
+                "'Leonato' 'Luciana' 'Lucio' 'Lychorida'"
+                "'Lysander' 'Macbeth' 'Macduff' 'Malcolm'"
+                "'Mariana' 'Mark' 'Mercutio' 'Miranda'"
+                "'Mistress' 'Montague' 'Mopsa' 'Oberon'"
+                "'Octavia' 'Octavius' 'Olivia' 'Ophelia'"
+                "'Orlando' 'Orsino' 'Othello' 'Page'"
+                "'Pantino' 'Paris' 'Pericles' 'Pinch'"
+                "'Polonius' 'Pompeius' 'Portia' 'Priam'"
+                "'Prince' 'Prospero' 'Proteus' 'Publius'"
+                "'Puck' 'Queen' 'Regan' 'Robin' 'Romeo'"
+                "'Rosalind' 'Sebastian' 'Shallow'"
+                "'Shylock' 'Slender' 'Solinus' 'Stephano'"
+                "'Thaisa' 'The' 'Theseus' 'Thurio'"
+                "'Timon' 'Titania' 'Titus' 'Troilus'"
+                "'Tybalt' 'Ulysses' 'Valentine' 'Venus'"
+                "'Vincentio' 'Viola'"
             )
 
     @tatsumasu()
@@ -968,9 +1053,9 @@ class shakespeareParser(Parser):
                     self._token("nothing")
                 with self._option():
                     self._token("zero")
-                self._error("expecting one of: nothing zero")
+                self._error("expecting one of: " "'nothing' 'zero'")
         self.name_last_node("nothing_word")
-        self.ast._define(["nothing_word"], [])
+        self._define(["nothing_word"], [])
 
     @tatsumasu()
     def _positive_or_neutral_adjective_(self):  # noqa
@@ -980,7 +1065,23 @@ class shakespeareParser(Parser):
             with self._option():
                 self._neutral_adjective_()
             self._error(
-                "expecting one of: amazing beautiful big black blossoming blue bluest bold bottomless brave charming clearest cunning cute delicious embroidered fair fine furry gentle golden good green handsome happy hard healthy honest huge large little lovely loving mighty neutral_adjective noble normal old peaceful positive_adjective pretty prompt proud purple red reddest rich rural small smooth sunny sweet sweetest tiny trustworthy warm white yellow"
+                "expecting one of: "
+                "'amazing' 'beautiful' 'blossoming'"
+                "'bold' 'brave' 'charming' 'clearest'"
+                "'cunning' 'cute' 'delicious'"
+                "'embroidered' 'fair' 'fine' 'gentle'"
+                "'golden' 'good' 'handsome' 'happy'"
+                "'healthy' 'honest' 'lovely' 'loving'"
+                "'mighty' 'noble' 'peaceful' 'pretty'"
+                "'prompt' 'proud' 'reddest' 'rich'"
+                "'smooth' 'sunny' 'sweet' 'sweetest'"
+                "'trustworthy' 'warm'"
+                "<positive_adjective> 'big' 'black'"
+                "'blue' 'bluest' 'bottomless' 'furry'"
+                "'green' 'hard' 'huge' 'large' 'little'"
+                "'normal' 'old' 'purple' 'red' 'rural'"
+                "'small' 'tiny' 'white' 'yellow'"
+                "<neutral_adjective>"
             )
 
     @tatsumasu()
@@ -991,7 +1092,21 @@ class shakespeareParser(Parser):
             with self._option():
                 self._neutral_noun_()
             self._error(
-                "expecting one of: Heaven King Lord angel animal aunt brother cat chihuahua cousin cow daughter door face father fellow flower granddaughter grandfather grandmother grandson hair hamster happiness hero horse joy kingdom lamp lantern mistletoe moon morning mother nephew neutral_noun niece nose plum pony positive_noun purse road roman rose sister sky son squirrel stone summer's thing town tree uncle wind"
+                "expecting one of: "
+                "'Heaven' 'King' 'Lord' 'angel' 'flower'"
+                "'happiness' 'joy' 'plum' \"summer's\""
+                "'hero' 'rose' 'kingdom' 'pony'"
+                "<positive_noun> 'animal' 'aunt'"
+                "'brother' 'cat' 'chihuahua' 'cousin'"
+                "'cow' 'daughter' 'door' 'face' 'father'"
+                "'fellow' 'granddaughter' 'grandfather'"
+                "'grandmother' 'grandson' 'hair'"
+                "'hamster' 'horse' 'lamp' 'lantern'"
+                "'mistletoe' 'moon' 'morning' 'mother'"
+                "'nephew' 'niece' 'nose' 'purse' 'road'"
+                "'roman' 'sister' 'sky' 'son' 'squirrel'"
+                "'stone' 'thing' 'town' 'tree' 'uncle'"
+                "'wind' <neutral_noun>"
             )
 
     @tatsumasu()
@@ -1004,11 +1119,13 @@ class shakespeareParser(Parser):
                 with self._option():
                     self._positive_or_neutral_adjective_()
                 self._error(
-                    "expecting one of: negative_adjective positive_or_neutral_adjective"
+                    "expecting one of: "
+                    "<negative_adjective>"
+                    "<positive_or_neutral_adjective>"
                 )
         self.name_last_node("comparison")
         self._token("as")
-        self.ast._define(["comparison"], [])
+        self._define(["comparison"], [])
 
     @tatsumasu()
     def _negative_noun_phrase_(self):  # noqa
@@ -1018,7 +1135,7 @@ class shakespeareParser(Parser):
                     self._article_()
                 with self._option():
                     self._possessive_()
-                self._error("expecting one of: article possessive")
+                self._error("expecting one of: " "<article> <possessive>")
 
         def block2():
             with self._group():
@@ -1028,14 +1145,14 @@ class shakespeareParser(Parser):
                     with self._option():
                         self._neutral_adjective_()
                     self._error(
-                        "expecting one of: negative_adjective neutral_adjective"
+                        "expecting one of: " "<negative_adjective> <neutral_adjective>"
                     )
 
         self._closure(block2)
         self.name_last_node("adjectives")
         self._negative_noun_()
         self.name_last_node("noun")
-        self.ast._define(["adjectives", "noun"], [])
+        self._define(["adjectives", "noun"], [])
 
     @tatsumasu()
     def _positive_noun_phrase_(self):  # noqa
@@ -1045,7 +1162,7 @@ class shakespeareParser(Parser):
                     self._article_()
                 with self._option():
                     self._possessive_()
-                self._error("expecting one of: article possessive")
+                self._error("expecting one of: " "<article> <possessive>")
 
         def block2():
             self._positive_or_neutral_adjective_()
@@ -1054,7 +1171,7 @@ class shakespeareParser(Parser):
         self.name_last_node("adjectives")
         self._positive_or_neutral_noun_()
         self.name_last_node("noun")
-        self.ast._define(["adjectives", "noun"], [])
+        self._define(["adjectives", "noun"], [])
 
     @tatsumasu()
     def _noun_phrase_(self):  # noqa
@@ -1064,7 +1181,61 @@ class shakespeareParser(Parser):
             with self._option():
                 self._positive_noun_phrase_()
             self._error(
-                "expecting one of: Heaven Hell King Lord Microsoft a amazing an angel animal article aunt bad bastard beautiful beggar big black blister blossoming blue bluest bold bottomless brave brother cat charming chihuahua clearest codpiece cousin cow coward cowardly cunning curse cursed cute damned daughter death delicious devil dirty disgusting distasteful door draught dusty embroidered evil face fair famine fat fat-kidneyed father fatherless fellow fine first_person_possessive flirt-gill flower foul furry gentle goat golden good granddaughter grandfather grandmother grandson green hair hairy half-witted hamster handsome happiness happy hard hate healthy her hero his hog honest horrible horrid horse hound huge infected its joy kingdom lamp lantern large leech lie little lovely loving lying mighty mine miserable mistletoe misused moon morning mother my negative_adjective negative_noun negative_noun_phrase nephew neutral_adjective neutral_noun niece noble normal nose old oozing peaceful pig plague plum pony positive_adjective positive_noun positive_noun_phrase positive_or_neutral_adjective positive_or_neutral_noun possessive pretty prompt proud purple purse red reddest rich road roman rose rotten rural second_person_possessive sister sky small smelly smooth snotty son sorry squirrel starvation stinking stone stuffed stupid summer's sunny sweet sweetest the their thine thing third_person_possessive thy tiny toad town tree trustworthy uncle vile villainous war warm white wind wolf worried yellow your"
+                "expecting one of: "
+                "'Hell' 'Microsoft' 'bastard' 'beggar'"
+                "'blister' 'codpiece' 'coward' 'curse'"
+                "'death' 'devil' 'draught' 'famine'"
+                "'flirt-gill' 'goat' 'hate' 'hog' 'hound'"
+                "'leech' 'lie' 'pig' 'plague'"
+                "'starvation' 'toad' 'war' 'wolf'"
+                "<negative_noun> 'bad' 'cowardly'"
+                "'cursed' 'damned' 'dirty' 'disgusting'"
+                "'distasteful' 'dusty' 'evil' 'fat-"
+                "kidneyed' 'fatherless' 'fat' 'foul'"
+                "'hairy' 'half-witted' 'horrible'"
+                "'horrid' 'infected' 'lying' 'miserable'"
+                "'misused' 'oozing' 'rotten' 'smelly'"
+                "'snotty' 'sorry' 'stinking' 'stuffed'"
+                "'stupid' 'vile' 'villainous' 'worried'"
+                "<negative_adjective> 'big' 'black'"
+                "'blue' 'bluest' 'bottomless' 'furry'"
+                "'green' 'hard' 'huge' 'large' 'little'"
+                "'normal' 'old' 'purple' 'red' 'rural'"
+                "'small' 'tiny' 'white' 'yellow'"
+                "<neutral_adjective> 'a' 'an' 'the'"
+                "<article> 'mine' 'my'"
+                "<first_person_possessive> 'thine' 'thy'"
+                "'your' <second_person_possessive> 'his'"
+                "'her' 'its' 'their'"
+                "<third_person_possessive> <possessive>"
+                "<negative_noun_phrase> 'Heaven' 'King'"
+                "'Lord' 'angel' 'flower' 'happiness'"
+                "'joy' 'plum' \"summer's\" 'hero' 'rose'"
+                "'kingdom' 'pony' <positive_noun>"
+                "'animal' 'aunt' 'brother' 'cat'"
+                "'chihuahua' 'cousin' 'cow' 'daughter'"
+                "'door' 'face' 'father' 'fellow'"
+                "'granddaughter' 'grandfather'"
+                "'grandmother' 'grandson' 'hair'"
+                "'hamster' 'horse' 'lamp' 'lantern'"
+                "'mistletoe' 'moon' 'morning' 'mother'"
+                "'nephew' 'niece' 'nose' 'purse' 'road'"
+                "'roman' 'sister' 'sky' 'son' 'squirrel'"
+                "'stone' 'thing' 'town' 'tree' 'uncle'"
+                "'wind' <neutral_noun>"
+                "<positive_or_neutral_noun> 'amazing'"
+                "'beautiful' 'blossoming' 'bold' 'brave'"
+                "'charming' 'clearest' 'cunning' 'cute'"
+                "'delicious' 'embroidered' 'fair' 'fine'"
+                "'gentle' 'golden' 'good' 'handsome'"
+                "'happy' 'healthy' 'honest' 'lovely'"
+                "'loving' 'mighty' 'noble' 'peaceful'"
+                "'pretty' 'prompt' 'proud' 'reddest'"
+                "'rich' 'smooth' 'sunny' 'sweet'"
+                "'sweetest' 'trustworthy' 'warm'"
+                "<positive_adjective>"
+                "<positive_or_neutral_adjective>"
+                "<positive_noun_phrase>"
             )
 
     @tatsumasu()
@@ -1076,10 +1247,12 @@ class shakespeareParser(Parser):
                 with self._option():
                     self._first_person_reflexive_()
                 self._error(
-                    "expecting one of: I first_person first_person_reflexive me myself"
+                    "expecting one of: "
+                    "'I' 'me' <first_person> 'myself'"
+                    "<first_person_reflexive>"
                 )
         self.name_last_node("first_person_word")
-        self.ast._define(["first_person_word"], [])
+        self._define(["first_person_word"], [])
 
     @tatsumasu()
     def _second_person_value_(self):  # noqa
@@ -1090,16 +1263,19 @@ class shakespeareParser(Parser):
                 with self._option():
                     self._second_person_reflexive_()
                 self._error(
-                    "expecting one of: second_person second_person_reflexive thee thou thyself you yourself"
+                    "expecting one of: "
+                    "'thee' 'thou' 'you' <second_person>"
+                    "'thyself' 'yourself'"
+                    "<second_person_reflexive>"
                 )
         self.name_last_node("second_person_word")
-        self.ast._define(["second_person_word"], [])
+        self._define(["second_person_word"], [])
 
     @tatsumasu()
     def _character_name_(self):  # noqa
         self._character_()
         self.name_last_node("name")
-        self.ast._define(["name"], [])
+        self._define(["name"], [])
 
     @tatsumasu()
     def _value_(self):  # noqa
@@ -1117,7 +1293,106 @@ class shakespeareParser(Parser):
             with self._option():
                 self._nothing_()
             self._error(
-                "expecting one of: Achilles Adonis Adriana Aegeon Aemilia Agamemnon Agrippa Ajax Alonso Andromache Angelo Antiochus Antonio Arthur Autolycus Balthazar Banquo Beatrice Benedick Benvolio Bianca Brabantio Brutus Capulet Cassandra Cassius Christopher Cicero Claudio Claudius Cleopatra Cordelia Cornelius Cressida Cymberline Demetrius Desdemona Dionyza Doctor Dogberry Don Donalbain Dorcas Duncan Egeus Emilia Escalus Falstaff Fenton Ferdinand Ford Fortinbras Francisca Friar Gertrude Goneril Hamlet Heaven Hecate Hector Helen Helena Hell Hermia Hermonie Hippolyta Horatio I Imogen Isabella John Julia Juliet Julius King Lady Lennox Leonato Lord Luciana Lucio Lychorida Lysander Macbeth Macduff Malcolm Mariana Mark Mercutio Microsoft Miranda Mistress Montague Mopsa Oberon Octavia Octavius Olivia Ophelia Orlando Orsino Othello Page Pantino Paris Pericles Pinch Polonius Pompeius Portia Priam Prince Prospero Proteus Publius Puck Queen Regan Robin Romeo Rosalind Sebastian Shallow Shylock Slender Solinus Stephano Thaisa The Theseus Thurio Timon Titania Titus Troilus Tybalt Ulysses Valentine Venus Vincentio Viola a amazing an angel animal article aunt bad bastard beautiful beggar big binary_expression binary_operation black blister blossoming blue bluest bold bottomless brave brother cat character character_name charming chihuahua clearest codpiece cousin cow coward cowardly cunning curse cursed cute damned daughter death delicious devil dirty disgusting distasteful door draught dusty embroidered evil expression face fair famine fat fat-kidneyed father fatherless fellow fine first_person first_person_possessive first_person_reflexive first_person_value flirt-gill flower foul furry gentle goat golden good granddaughter grandfather grandmother grandson green hair hairy half-witted hamster handsome happiness happy hard hate healthy her hero his hog honest horrible horrid horse hound huge infected its joy kingdom lamp lantern large leech lie little lovely loving lying me mighty mine miserable mistletoe misused moon morning mother my myself negative_adjective negative_noun negative_noun_phrase nephew neutral_adjective neutral_noun niece noble normal nose nothing noun_phrase old oozing peaceful pig plague plum pony positive_adjective positive_noun positive_noun_phrase positive_or_neutral_adjective positive_or_neutral_noun possessive pretty prompt proud purple purse red reddest rich road roman rose rotten rural second_person second_person_possessive second_person_reflexive second_person_value sister sky small smelly smooth snotty son sorry squirrel starvation stinking stone stuffed stupid summer's sunny sweet sweetest the thee their thine thing third_person_possessive thou thy thyself tiny toad town tree trustworthy twice unary_expression unary_operation uncle vile villainous war warm white wind wolf worried yellow you your yourself zero"
+                "expecting one of: "
+                "'the' <binary_operation>"
+                "<binary_expression> 'twice'"
+                "<unary_operation> <unary_expression>"
+                "<expression> 'I' 'me' <first_person>"
+                "'myself' <first_person_reflexive>"
+                "<first_person_value> 'thee' 'thou' 'you'"
+                "<second_person> 'thyself' 'yourself'"
+                "<second_person_reflexive>"
+                "<second_person_value> 'Hell' 'Microsoft'"
+                "'bastard' 'beggar' 'blister' 'codpiece'"
+                "'coward' 'curse' 'death' 'devil'"
+                "'draught' 'famine' 'flirt-gill' 'goat'"
+                "'hate' 'hog' 'hound' 'leech' 'lie' 'pig'"
+                "'plague' 'starvation' 'toad' 'war'"
+                "'wolf' <negative_noun> 'bad' 'cowardly'"
+                "'cursed' 'damned' 'dirty' 'disgusting'"
+                "'distasteful' 'dusty' 'evil' 'fat-"
+                "kidneyed' 'fatherless' 'fat' 'foul'"
+                "'hairy' 'half-witted' 'horrible'"
+                "'horrid' 'infected' 'lying' 'miserable'"
+                "'misused' 'oozing' 'rotten' 'smelly'"
+                "'snotty' 'sorry' 'stinking' 'stuffed'"
+                "'stupid' 'vile' 'villainous' 'worried'"
+                "<negative_adjective> 'big' 'black'"
+                "'blue' 'bluest' 'bottomless' 'furry'"
+                "'green' 'hard' 'huge' 'large' 'little'"
+                "'normal' 'old' 'purple' 'red' 'rural'"
+                "'small' 'tiny' 'white' 'yellow'"
+                "<neutral_adjective> 'a' 'an' <article>"
+                "'mine' 'my' <first_person_possessive>"
+                "'thine' 'thy' 'your'"
+                "<second_person_possessive> 'his' 'her'"
+                "'its' 'their' <third_person_possessive>"
+                "<possessive> <negative_noun_phrase>"
+                "'Heaven' 'King' 'Lord' 'angel' 'flower'"
+                "'happiness' 'joy' 'plum' \"summer's\""
+                "'hero' 'rose' 'kingdom' 'pony'"
+                "<positive_noun> 'animal' 'aunt'"
+                "'brother' 'cat' 'chihuahua' 'cousin'"
+                "'cow' 'daughter' 'door' 'face' 'father'"
+                "'fellow' 'granddaughter' 'grandfather'"
+                "'grandmother' 'grandson' 'hair'"
+                "'hamster' 'horse' 'lamp' 'lantern'"
+                "'mistletoe' 'moon' 'morning' 'mother'"
+                "'nephew' 'niece' 'nose' 'purse' 'road'"
+                "'roman' 'sister' 'sky' 'son' 'squirrel'"
+                "'stone' 'thing' 'town' 'tree' 'uncle'"
+                "'wind' <neutral_noun>"
+                "<positive_or_neutral_noun> 'amazing'"
+                "'beautiful' 'blossoming' 'bold' 'brave'"
+                "'charming' 'clearest' 'cunning' 'cute'"
+                "'delicious' 'embroidered' 'fair' 'fine'"
+                "'gentle' 'golden' 'good' 'handsome'"
+                "'happy' 'healthy' 'honest' 'lovely'"
+                "'loving' 'mighty' 'noble' 'peaceful'"
+                "'pretty' 'prompt' 'proud' 'reddest'"
+                "'rich' 'smooth' 'sunny' 'sweet'"
+                "'sweetest' 'trustworthy' 'warm'"
+                "<positive_adjective>"
+                "<positive_or_neutral_adjective>"
+                "<positive_noun_phrase> <noun_phrase>"
+                "'Achilles' 'Adonis' 'Adriana' 'Aegeon'"
+                "'Aemilia' 'Agamemnon' 'Agrippa' 'Ajax'"
+                "'Alonso' 'Andromache' 'Angelo'"
+                "'Antiochus' 'Antonio' 'Arthur'"
+                "'Autolycus' 'Balthazar' 'Banquo'"
+                "'Beatrice' 'Benedick' 'Benvolio'"
+                "'Bianca' 'Brabantio' 'Brutus' 'Capulet'"
+                "'Cassandra' 'Cassius' 'Christopher'"
+                "'Cicero' 'Claudio' 'Claudius'"
+                "'Cleopatra' 'Cordelia' 'Cornelius'"
+                "'Cressida' 'Cymberline' 'Demetrius'"
+                "'Desdemona' 'Dionyza' 'Doctor'"
+                "'Dogberry' 'Don' 'Donalbain' 'Dorcas'"
+                "'Duncan' 'Egeus' 'Emilia' 'Escalus'"
+                "'Falstaff' 'Fenton' 'Ferdinand' 'Ford'"
+                "'Fortinbras' 'Francisca' 'Friar'"
+                "'Gertrude' 'Goneril' 'Hamlet' 'Hecate'"
+                "'Hector' 'Helen' 'Helena' 'Hermia'"
+                "'Hermonie' 'Hippolyta' 'Horatio'"
+                "'Imogen' 'Isabella' 'John' 'Julia'"
+                "'Juliet' 'Julius' 'Lady' 'Lennox'"
+                "'Leonato' 'Luciana' 'Lucio' 'Lychorida'"
+                "'Lysander' 'Macbeth' 'Macduff' 'Malcolm'"
+                "'Mariana' 'Mark' 'Mercutio' 'Miranda'"
+                "'Mistress' 'Montague' 'Mopsa' 'Oberon'"
+                "'Octavia' 'Octavius' 'Olivia' 'Ophelia'"
+                "'Orlando' 'Orsino' 'Othello' 'Page'"
+                "'Pantino' 'Paris' 'Pericles' 'Pinch'"
+                "'Polonius' 'Pompeius' 'Portia' 'Priam'"
+                "'Prince' 'Prospero' 'Proteus' 'Publius'"
+                "'Puck' 'Queen' 'Regan' 'Robin' 'Romeo'"
+                "'Rosalind' 'Sebastian' 'Shallow'"
+                "'Shylock' 'Slender' 'Solinus' 'Stephano'"
+                "'Thaisa' 'The' 'Theseus' 'Thurio'"
+                "'Timon' 'Titania' 'Titus' 'Troilus'"
+                "'Tybalt' 'Ulysses' 'Valentine' 'Venus'"
+                "'Vincentio' 'Viola' <character>"
+                "<character_name> 'nothing' 'zero'"
             )
 
     @tatsumasu()
@@ -1146,7 +1421,7 @@ class shakespeareParser(Parser):
                 self._token("the")
                 self._token("sum")
                 self._token("of")
-            self._error("expecting one of: the")
+            self._error("expecting one of: " "'the'")
 
     @tatsumasu()
     def _binary_expression_(self):  # noqa
@@ -1157,7 +1432,7 @@ class shakespeareParser(Parser):
         self._token("and")
         self._value_()
         self.name_last_node("second_value")
-        self.ast._define(["first_value", "operation", "second_value"], [])
+        self._define(["first_value", "operation", "second_value"], [])
 
     @tatsumasu()
     def _unary_operation_(self):  # noqa
@@ -1181,7 +1456,7 @@ class shakespeareParser(Parser):
                 self._token("of")
             with self._option():
                 self._token("twice")
-            self._error("expecting one of: the twice")
+            self._error("expecting one of: " "'the' 'twice'")
 
     @tatsumasu()
     def _unary_expression_(self):  # noqa
@@ -1189,7 +1464,7 @@ class shakespeareParser(Parser):
         self.name_last_node("operation")
         self._value_()
         self.name_last_node("value")
-        self.ast._define(["operation", "value"], [])
+        self._define(["operation", "value"], [])
 
     @tatsumasu()
     def _expression_(self):  # noqa
@@ -1199,7 +1474,10 @@ class shakespeareParser(Parser):
             with self._option():
                 self._unary_expression_()
             self._error(
-                "expecting one of: binary_expression binary_operation the twice unary_expression unary_operation"
+                "expecting one of: "
+                "'the' <binary_operation>"
+                "<binary_expression> 'twice'"
+                "<unary_operation> <unary_expression>"
             )
 
     @tatsumasu()
@@ -1209,7 +1487,7 @@ class shakespeareParser(Parser):
             self._token("not")
             self._token(",")
         self.name_last_node("if_")
-        self.ast._define(["if_"], [])
+        self._define(["if_"], [])
 
     @tatsumasu()
     def _positive_if_(self):  # noqa
@@ -1218,7 +1496,7 @@ class shakespeareParser(Parser):
             self._token("so")
             self._token(",")
         self.name_last_node("if_")
-        self.ast._define(["if_"], [])
+        self._define(["if_"], [])
 
     @tatsumasu()
     def _question_(self):  # noqa
@@ -1234,13 +1512,16 @@ class shakespeareParser(Parser):
                 with self._option():
                     self._negative_comparative_()
                 self._error(
-                    "expecting one of: negative_comparative neutral_comparative positive_comparative"
+                    "expecting one of: "
+                    "<positive_comparative>"
+                    "<neutral_comparative>"
+                    "<negative_comparative>"
                 )
         self.name_last_node("comparative")
         self._value_()
         self.name_last_node("second_value")
         self._token("?")
-        self.ast._define(["comparative", "first_value", "second_value"], [])
+        self._define(["comparative", "first_value", "second_value"], [])
 
     @tatsumasu()
     def _assignment_(self):  # noqa
@@ -1257,7 +1538,9 @@ class shakespeareParser(Parser):
                         with self._option():
                             self._negative_adjective_()
                         self._error(
-                            "expecting one of: negative_adjective positive_or_neutral_adjective"
+                            "expecting one of: "
+                            "<positive_or_neutral_adjective>"
+                            "<negative_adjective>"
                         )
                 self._token("as")
         self._value_()
@@ -1268,8 +1551,8 @@ class shakespeareParser(Parser):
                     self._token("!")
                 with self._option():
                     self._token(".")
-                self._error("expecting one of: ! .")
-        self.ast._define(["value"], [])
+                self._error("expecting one of: " "'!' '.'")
+        self._define(["value"], [])
 
     @tatsumasu()
     def _let_us_(self):  # noqa
@@ -1283,7 +1566,7 @@ class shakespeareParser(Parser):
             with self._option():
                 self._token("We")
                 self._token("must")
-            self._error("expecting one of: Let We")
+            self._error("expecting one of: " "'Let' 'We'")
 
     @tatsumasu()
     def _proceed_to_(self):  # noqa
@@ -1294,7 +1577,7 @@ class shakespeareParser(Parser):
             with self._option():
                 self._token("return")
                 self._token("to")
-            self._error("expecting one of: proceed return")
+            self._error("expecting one of: " "'proceed' 'return'")
 
     @tatsumasu()
     def _roman_numeral_(self):  # noqa
@@ -1308,7 +1591,7 @@ class shakespeareParser(Parser):
                     self._negative_if_()
                 with self._option():
                     self._positive_if_()
-                self._error("expecting one of: negative_if positive_if")
+                self._error("expecting one of: " "<negative_if> <positive_if>")
         self.name_last_node("condition")
         self._let_us_()
         self._proceed_to_()
@@ -1321,8 +1604,8 @@ class shakespeareParser(Parser):
                     self._token("!")
                 with self._option():
                     self._token(".")
-                self._error("expecting one of: ! .")
-        self.ast._define(["condition", "destination"], [])
+                self._error("expecting one of: " "'!' '.'")
+        self._define(["condition", "destination"], [])
 
     @tatsumasu()
     def _output_(self):  # noqa
@@ -1340,15 +1623,15 @@ class shakespeareParser(Parser):
                         self._second_person_possessive_()
                         self._token("mind")
                     self.name_last_node("output_char")
-                self._error("expecting one of: open speak")
+                self._error("expecting one of: " "'open' 'speak'")
         with self._group():
             with self._choice():
                 with self._option():
                     self._token("!")
                 with self._option():
                     self._token(".")
-                self._error("expecting one of: ! .")
-        self.ast._define(["output_char", "output_number"], [])
+                self._error("expecting one of: " "'!' '.'")
+        self._define(["output_char", "output_number"], [])
 
     @tatsumasu()
     def _input_(self):  # noqa
@@ -1367,15 +1650,15 @@ class shakespeareParser(Parser):
                         self._second_person_possessive_()
                         self._token("mind")
                     self.name_last_node("input_char")
-                self._error("expecting one of: listen open")
+                self._error("expecting one of: " "'listen' 'open'")
         with self._group():
             with self._choice():
                 with self._option():
                     self._token("!")
                 with self._option():
                     self._token(".")
-                self._error("expecting one of: ! .")
-        self.ast._define(["input_char", "input_number"], [])
+                self._error("expecting one of: " "'!' '.'")
+        self._define(["input_char", "input_number"], [])
 
     @tatsumasu()
     def _push_(self):  # noqa
@@ -1388,8 +1671,8 @@ class shakespeareParser(Parser):
                     self._token("!")
                 with self._option():
                     self._token(".")
-                self._error("expecting one of: ! .")
-        self.ast._define(["value"], [])
+                self._error("expecting one of: " "'!' '.'")
+        self._define(["value"], [])
 
     @tatsumasu()
     def _pop_(self):  # noqa
@@ -1402,8 +1685,8 @@ class shakespeareParser(Parser):
                     self._token("!")
                 with self._option():
                     self._token(".")
-                self._error("expecting one of: ! .")
-        self.ast._define(["recall_string"], [])
+                self._error("expecting one of: " "'!' '.'")
+        self._define(["recall_string"], [])
 
     @tatsumasu()
     def _sentence_(self):  # noqa
@@ -1423,7 +1706,13 @@ class shakespeareParser(Parser):
             with self._option():
                 self._pop_()
             self._error(
-                "expecting one of: If Let Recall Remember We am are art assignment be goto input is let_us listen negative_if open output pop positive_if push question second_person speak thee thou you"
+                "expecting one of: "
+                "'am' 'are' 'art' 'be' 'is' <question>"
+                "'thee' 'thou' 'you' <second_person>"
+                "<assignment> 'Let' 'We' <let_us> 'If'"
+                "<negative_if> <positive_if> <goto>"
+                "'open' 'speak' <output> 'listen' <input>"
+                "'Remember' <push> 'Recall' <pop>"
             )
 
     @tatsumasu()
@@ -1438,7 +1727,7 @@ class shakespeareParser(Parser):
 
             self._positive_closure(block2)
         self.name_last_node("contents")
-        self.ast._define(["character", "contents"], [])
+        self._define(["character", "contents"], [])
 
     @tatsumasu()
     def _character_list_(self):  # noqa
@@ -1460,7 +1749,44 @@ class shakespeareParser(Parser):
                 self._character_()
                 self.add_last_node_to_name("@")
             self._error(
-                "expecting one of: Achilles Adonis Adriana Aegeon Aemilia Agamemnon Agrippa Ajax Alonso Andromache Angelo Antiochus Antonio Arthur Autolycus Balthazar Banquo Beatrice Benedick Benvolio Bianca Brabantio Brutus Capulet Cassandra Cassius Christopher Cicero Claudio Claudius Cleopatra Cordelia Cornelius Cressida Cymberline Demetrius Desdemona Dionyza Doctor Dogberry Don Donalbain Dorcas Duncan Egeus Emilia Escalus Falstaff Fenton Ferdinand Ford Fortinbras Francisca Friar Gertrude Goneril Hamlet Hecate Hector Helen Helena Hermia Hermonie Hippolyta Horatio Imogen Isabella John Julia Juliet Julius King Lady Lennox Leonato Luciana Lucio Lychorida Lysander Macbeth Macduff Malcolm Mariana Mark Mercutio Miranda Mistress Montague Mopsa Oberon Octavia Octavius Olivia Ophelia Orlando Orsino Othello Page Pantino Paris Pericles Pinch Polonius Pompeius Portia Priam Prince Prospero Proteus Publius Puck Queen Regan Robin Romeo Rosalind Sebastian Shallow Shylock Slender Solinus Stephano Thaisa The Theseus Thurio Timon Titania Titus Troilus Tybalt Ulysses Valentine Venus Vincentio Viola character"
+                "expecting one of: "
+                "'Achilles' 'Adonis' 'Adriana' 'Aegeon'"
+                "'Aemilia' 'Agamemnon' 'Agrippa' 'Ajax'"
+                "'Alonso' 'Andromache' 'Angelo'"
+                "'Antiochus' 'Antonio' 'Arthur'"
+                "'Autolycus' 'Balthazar' 'Banquo'"
+                "'Beatrice' 'Benedick' 'Benvolio'"
+                "'Bianca' 'Brabantio' 'Brutus' 'Capulet'"
+                "'Cassandra' 'Cassius' 'Christopher'"
+                "'Cicero' 'Claudio' 'Claudius'"
+                "'Cleopatra' 'Cordelia' 'Cornelius'"
+                "'Cressida' 'Cymberline' 'Demetrius'"
+                "'Desdemona' 'Dionyza' 'Doctor'"
+                "'Dogberry' 'Don' 'Donalbain' 'Dorcas'"
+                "'Duncan' 'Egeus' 'Emilia' 'Escalus'"
+                "'Falstaff' 'Fenton' 'Ferdinand' 'Ford'"
+                "'Fortinbras' 'Francisca' 'Friar'"
+                "'Gertrude' 'Goneril' 'Hamlet' 'Hecate'"
+                "'Hector' 'Helen' 'Helena' 'Hermia'"
+                "'Hermonie' 'Hippolyta' 'Horatio'"
+                "'Imogen' 'Isabella' 'John' 'Julia'"
+                "'Juliet' 'Julius' 'King' 'Lady' 'Lennox'"
+                "'Leonato' 'Luciana' 'Lucio' 'Lychorida'"
+                "'Lysander' 'Macbeth' 'Macduff' 'Malcolm'"
+                "'Mariana' 'Mark' 'Mercutio' 'Miranda'"
+                "'Mistress' 'Montague' 'Mopsa' 'Oberon'"
+                "'Octavia' 'Octavius' 'Olivia' 'Ophelia'"
+                "'Orlando' 'Orsino' 'Othello' 'Page'"
+                "'Pantino' 'Paris' 'Pericles' 'Pinch'"
+                "'Polonius' 'Pompeius' 'Portia' 'Priam'"
+                "'Prince' 'Prospero' 'Proteus' 'Publius'"
+                "'Puck' 'Queen' 'Regan' 'Robin' 'Romeo'"
+                "'Rosalind' 'Sebastian' 'Shallow'"
+                "'Shylock' 'Slender' 'Solinus' 'Stephano'"
+                "'Thaisa' 'The' 'Theseus' 'Thurio'"
+                "'Timon' 'Titania' 'Titus' 'Troilus'"
+                "'Tybalt' 'Ulysses' 'Valentine' 'Venus'"
+                "'Vincentio' 'Viola' <character>"
             )
 
     @tatsumasu()
@@ -1471,7 +1797,7 @@ class shakespeareParser(Parser):
             self._token("pause")
             self._token("]")
         self.name_last_node("dummy")
-        self.ast._define(["dummy"], [])
+        self._define(["dummy"], [])
 
     @tatsumasu()
     def _entrance_(self):  # noqa
@@ -1480,7 +1806,7 @@ class shakespeareParser(Parser):
         self._character_list_()
         self.name_last_node("characters")
         self._token("]")
-        self.ast._define(["characters"], [])
+        self._define(["characters"], [])
 
     @tatsumasu()
     def _exit_(self):  # noqa
@@ -1489,7 +1815,7 @@ class shakespeareParser(Parser):
         self._character_()
         self.name_last_node("character")
         self._token("]")
-        self.ast._define(["character"], [])
+        self._define(["character"], [])
 
     @tatsumasu()
     def _exeunt_(self):  # noqa
@@ -1500,7 +1826,7 @@ class shakespeareParser(Parser):
             self._character_list_()
             self.name_last_node("characters")
         self._token("]")
-        self.ast._define(["action", "characters"], [])
+        self._define(["action", "characters"], [])
 
     @tatsumasu()
     def _event_(self):  # noqa
@@ -1516,7 +1842,46 @@ class shakespeareParser(Parser):
             with self._option():
                 self._exeunt_()
             self._error(
-                "expecting one of: Achilles Adonis Adriana Aegeon Aemilia Agamemnon Agrippa Ajax Alonso Andromache Angelo Antiochus Antonio Arthur Autolycus Balthazar Banquo Beatrice Benedick Benvolio Bianca Brabantio Brutus Capulet Cassandra Cassius Christopher Cicero Claudio Claudius Cleopatra Cordelia Cornelius Cressida Cymberline Demetrius Desdemona Dionyza Doctor Dogberry Don Donalbain Dorcas Duncan Egeus Emilia Escalus Falstaff Fenton Ferdinand Ford Fortinbras Francisca Friar Gertrude Goneril Hamlet Hecate Hector Helen Helena Hermia Hermonie Hippolyta Horatio Imogen Isabella John Julia Juliet Julius King Lady Lennox Leonato Luciana Lucio Lychorida Lysander Macbeth Macduff Malcolm Mariana Mark Mercutio Miranda Mistress Montague Mopsa Oberon Octavia Octavius Olivia Ophelia Orlando Orsino Othello Page Pantino Paris Pericles Pinch Polonius Pompeius Portia Priam Prince Prospero Proteus Publius Puck Queen Regan Robin Romeo Rosalind Sebastian Shallow Shylock Slender Solinus Stephano Thaisa The Theseus Thurio Timon Titania Titus Troilus Tybalt Ulysses Valentine Venus Vincentio Viola [ breakpoint character entrance exeunt exit line"
+                "expecting one of: "
+                "'Achilles' 'Adonis' 'Adriana' 'Aegeon'"
+                "'Aemilia' 'Agamemnon' 'Agrippa' 'Ajax'"
+                "'Alonso' 'Andromache' 'Angelo'"
+                "'Antiochus' 'Antonio' 'Arthur'"
+                "'Autolycus' 'Balthazar' 'Banquo'"
+                "'Beatrice' 'Benedick' 'Benvolio'"
+                "'Bianca' 'Brabantio' 'Brutus' 'Capulet'"
+                "'Cassandra' 'Cassius' 'Christopher'"
+                "'Cicero' 'Claudio' 'Claudius'"
+                "'Cleopatra' 'Cordelia' 'Cornelius'"
+                "'Cressida' 'Cymberline' 'Demetrius'"
+                "'Desdemona' 'Dionyza' 'Doctor'"
+                "'Dogberry' 'Don' 'Donalbain' 'Dorcas'"
+                "'Duncan' 'Egeus' 'Emilia' 'Escalus'"
+                "'Falstaff' 'Fenton' 'Ferdinand' 'Ford'"
+                "'Fortinbras' 'Francisca' 'Friar'"
+                "'Gertrude' 'Goneril' 'Hamlet' 'Hecate'"
+                "'Hector' 'Helen' 'Helena' 'Hermia'"
+                "'Hermonie' 'Hippolyta' 'Horatio'"
+                "'Imogen' 'Isabella' 'John' 'Julia'"
+                "'Juliet' 'Julius' 'King' 'Lady' 'Lennox'"
+                "'Leonato' 'Luciana' 'Lucio' 'Lychorida'"
+                "'Lysander' 'Macbeth' 'Macduff' 'Malcolm'"
+                "'Mariana' 'Mark' 'Mercutio' 'Miranda'"
+                "'Mistress' 'Montague' 'Mopsa' 'Oberon'"
+                "'Octavia' 'Octavius' 'Olivia' 'Ophelia'"
+                "'Orlando' 'Orsino' 'Othello' 'Page'"
+                "'Pantino' 'Paris' 'Pericles' 'Pinch'"
+                "'Polonius' 'Pompeius' 'Portia' 'Priam'"
+                "'Prince' 'Prospero' 'Proteus' 'Publius'"
+                "'Puck' 'Queen' 'Regan' 'Robin' 'Romeo'"
+                "'Rosalind' 'Sebastian' 'Shallow'"
+                "'Shylock' 'Slender' 'Solinus' 'Stephano'"
+                "'Thaisa' 'The' 'Theseus' 'Thurio'"
+                "'Timon' 'Titania' 'Titus' 'Troilus'"
+                "'Tybalt' 'Ulysses' 'Valentine' 'Venus'"
+                "'Vincentio' 'Viola' <character> <line>"
+                "'[' <breakpoint> <entrance> <exit>"
+                "<exeunt>"
             )
 
     @tatsumasu()
@@ -1557,9 +1922,116 @@ class shakespeareParser(Parser):
                 self.name_last_node("sentences")
                 self._check_eof()
             self._error(
-                "expecting one of: Achilles Adonis Adriana Aegeon Aemilia Agamemnon Agrippa Ajax Alonso Andromache Angelo Antiochus Antonio Arthur Autolycus Balthazar Banquo Beatrice Benedick Benvolio Bianca Brabantio Brutus Capulet Cassandra Cassius Christopher Cicero Claudio Claudius Cleopatra Cordelia Cornelius Cressida Cymberline Demetrius Desdemona Dionyza Doctor Dogberry Don Donalbain Dorcas Duncan Egeus Emilia Escalus Falstaff Fenton Ferdinand Ford Fortinbras Francisca Friar Gertrude Goneril Hamlet Heaven Hecate Hector Helen Helena Hell Hermia Hermonie Hippolyta Horatio I If Imogen Isabella John Julia Juliet Julius King Lady Lennox Leonato Let Lord Luciana Lucio Lychorida Lysander Macbeth Macduff Malcolm Mariana Mark Mercutio Microsoft Miranda Mistress Montague Mopsa Oberon Octavia Octavius Olivia Ophelia Orlando Orsino Othello Page Pantino Paris Pericles Pinch Polonius Pompeius Portia Priam Prince Prospero Proteus Publius Puck Queen Recall Regan Remember Robin Romeo Rosalind Sebastian Shallow Shylock Slender Solinus Stephano Thaisa The Theseus Thurio Timon Titania Titus Troilus Tybalt Ulysses Valentine Venus Vincentio Viola We [ a am amazing an angel animal are art article assignment aunt bad bastard be beautiful beggar big binary_expression binary_operation black blister blossoming blue bluest bold bottomless brave breakpoint brother cat character character_name charming chihuahua clearest codpiece cousin cow coward cowardly cunning curse cursed cute damned daughter death delicious devil dirty disgusting distasteful door draught dusty embroidered entrance event evil exeunt exit expression face fair famine fat fat-kidneyed father fatherless fellow fine first_person first_person_possessive first_person_reflexive first_person_value flirt-gill flower foul furry gentle goat golden good goto granddaughter grandfather grandmother grandson green hair hairy half-witted hamster handsome happiness happy hard hate healthy her hero his hog honest horrible horrid horse hound huge infected input is its joy kingdom lamp lantern large leech let_us lie line listen little lovely loving lying me mighty mine miserable mistletoe misused moon morning mother my myself negative_adjective negative_if negative_noun negative_noun_phrase nephew neutral_adjective neutral_noun niece noble normal nose nothing noun_phrase old oozing open output peaceful pig plague plum pony pop positive_adjective positive_if positive_noun positive_noun_phrase positive_or_neutral_adjective positive_or_neutral_noun possessive pretty prompt proud purple purse push question red reddest rich road roman rose rotten rural second_person second_person_possessive second_person_reflexive second_person_value sentence sister sky small smelly smooth snotty son sorry speak squirrel starvation stinking stone stuffed stupid summer's sunny sweet sweetest the thee their thine thing third_person_possessive thou thy thyself tiny toad town tree trustworthy twice unary_expression unary_operation uncle value vile villainous war warm white wind wolf worried yellow you your yourself zero"
+                "expecting one of: "
+                "'Achilles' 'Adonis' 'Adriana' 'Aegeon'"
+                "'Aemilia' 'Agamemnon' 'Agrippa' 'Ajax'"
+                "'Alonso' 'Andromache' 'Angelo'"
+                "'Antiochus' 'Antonio' 'Arthur'"
+                "'Autolycus' 'Balthazar' 'Banquo'"
+                "'Beatrice' 'Benedick' 'Benvolio'"
+                "'Bianca' 'Brabantio' 'Brutus' 'Capulet'"
+                "'Cassandra' 'Cassius' 'Christopher'"
+                "'Cicero' 'Claudio' 'Claudius'"
+                "'Cleopatra' 'Cordelia' 'Cornelius'"
+                "'Cressida' 'Cymberline' 'Demetrius'"
+                "'Desdemona' 'Dionyza' 'Doctor'"
+                "'Dogberry' 'Don' 'Donalbain' 'Dorcas'"
+                "'Duncan' 'Egeus' 'Emilia' 'Escalus'"
+                "'Falstaff' 'Fenton' 'Ferdinand' 'Ford'"
+                "'Fortinbras' 'Francisca' 'Friar'"
+                "'Gertrude' 'Goneril' 'Hamlet' 'Hecate'"
+                "'Hector' 'Helen' 'Helena' 'Hermia'"
+                "'Hermonie' 'Hippolyta' 'Horatio'"
+                "'Imogen' 'Isabella' 'John' 'Julia'"
+                "'Juliet' 'Julius' 'King' 'Lady' 'Lennox'"
+                "'Leonato' 'Luciana' 'Lucio' 'Lychorida'"
+                "'Lysander' 'Macbeth' 'Macduff' 'Malcolm'"
+                "'Mariana' 'Mark' 'Mercutio' 'Miranda'"
+                "'Mistress' 'Montague' 'Mopsa' 'Oberon'"
+                "'Octavia' 'Octavius' 'Olivia' 'Ophelia'"
+                "'Orlando' 'Orsino' 'Othello' 'Page'"
+                "'Pantino' 'Paris' 'Pericles' 'Pinch'"
+                "'Polonius' 'Pompeius' 'Portia' 'Priam'"
+                "'Prince' 'Prospero' 'Proteus' 'Publius'"
+                "'Puck' 'Queen' 'Regan' 'Robin' 'Romeo'"
+                "'Rosalind' 'Sebastian' 'Shallow'"
+                "'Shylock' 'Slender' 'Solinus' 'Stephano'"
+                "'Thaisa' 'The' 'Theseus' 'Thurio'"
+                "'Timon' 'Titania' 'Titus' 'Troilus'"
+                "'Tybalt' 'Ulysses' 'Valentine' 'Venus'"
+                "'Vincentio' 'Viola' <character>"
+                "<expression> 'I' 'me' <first_person>"
+                "'myself' <first_person_reflexive>"
+                "<first_person_value> 'thee' 'thou' 'you'"
+                "<second_person> 'thyself' 'yourself'"
+                "<second_person_reflexive>"
+                "<second_person_value> 'Hell' 'Microsoft'"
+                "'bastard' 'beggar' 'blister' 'codpiece'"
+                "'coward' 'curse' 'death' 'devil'"
+                "'draught' 'famine' 'flirt-gill' 'goat'"
+                "'hate' 'hog' 'hound' 'leech' 'lie' 'pig'"
+                "'plague' 'starvation' 'toad' 'war'"
+                "'wolf' <negative_noun> 'bad' 'cowardly'"
+                "'cursed' 'damned' 'dirty' 'disgusting'"
+                "'distasteful' 'dusty' 'evil' 'fat-"
+                "kidneyed' 'fatherless' 'fat' 'foul'"
+                "'hairy' 'half-witted' 'horrible'"
+                "'horrid' 'infected' 'lying' 'miserable'"
+                "'misused' 'oozing' 'rotten' 'smelly'"
+                "'snotty' 'sorry' 'stinking' 'stuffed'"
+                "'stupid' 'vile' 'villainous' 'worried'"
+                "<negative_adjective> 'big' 'black'"
+                "'blue' 'bluest' 'bottomless' 'furry'"
+                "'green' 'hard' 'huge' 'large' 'little'"
+                "'normal' 'old' 'purple' 'red' 'rural'"
+                "'small' 'tiny' 'white' 'yellow'"
+                "<neutral_adjective> 'a' 'an' 'the'"
+                "<article> 'mine' 'my'"
+                "<first_person_possessive> 'thine' 'thy'"
+                "'your' <second_person_possessive> 'his'"
+                "'her' 'its' 'their'"
+                "<third_person_possessive> <possessive>"
+                "<negative_noun_phrase> 'Heaven' 'Lord'"
+                "'angel' 'flower' 'happiness' 'joy'"
+                "'plum' \"summer's\" 'hero' 'rose'"
+                "'kingdom' 'pony' <positive_noun>"
+                "'animal' 'aunt' 'brother' 'cat'"
+                "'chihuahua' 'cousin' 'cow' 'daughter'"
+                "'door' 'face' 'father' 'fellow'"
+                "'granddaughter' 'grandfather'"
+                "'grandmother' 'grandson' 'hair'"
+                "'hamster' 'horse' 'lamp' 'lantern'"
+                "'mistletoe' 'moon' 'morning' 'mother'"
+                "'nephew' 'niece' 'nose' 'purse' 'road'"
+                "'roman' 'sister' 'sky' 'son' 'squirrel'"
+                "'stone' 'thing' 'town' 'tree' 'uncle'"
+                "'wind' <neutral_noun>"
+                "<positive_or_neutral_noun> 'amazing'"
+                "'beautiful' 'blossoming' 'bold' 'brave'"
+                "'charming' 'clearest' 'cunning' 'cute'"
+                "'delicious' 'embroidered' 'fair' 'fine'"
+                "'gentle' 'golden' 'good' 'handsome'"
+                "'happy' 'healthy' 'honest' 'lovely'"
+                "'loving' 'mighty' 'noble' 'peaceful'"
+                "'pretty' 'prompt' 'proud' 'reddest'"
+                "'rich' 'smooth' 'sunny' 'sweet'"
+                "'sweetest' 'trustworthy' 'warm'"
+                "<positive_adjective>"
+                "<positive_or_neutral_adjective>"
+                "<positive_noun_phrase> <noun_phrase>"
+                "<character_name> 'nothing' 'zero'"
+                "<binary_operation> <binary_expression>"
+                "'twice' <unary_operation>"
+                "<unary_expression> <value> <line> '['"
+                "<breakpoint> <entrance> <exit> <exeunt>"
+                "<event> 'am' 'are' 'art' 'be' 'is'"
+                "<question> <assignment> 'Let' 'We'"
+                "<let_us> 'If' <negative_if>"
+                "<positive_if> <goto> 'open' 'speak'"
+                "<output> 'listen' <input> 'Remember'"
+                "<push> 'Recall' <pop> <sentence>"
             )
-        self.ast._define(["character", "event", "sentences", "value"], [])
+        self._define(["character", "event", "sentences", "value"], [])
 
     @tatsumasu()
     def _text_before_punctuation_(self):  # noqa
@@ -1579,7 +2051,7 @@ class shakespeareParser(Parser):
                     self._token("!")
                 with self._option():
                     self._token(".")
-                self._error("expecting one of: ! .")
+                self._error("expecting one of: " "'!' '.'")
         with self._group():
 
             def block4():
@@ -1587,7 +2059,7 @@ class shakespeareParser(Parser):
 
             self._closure(block4)
         self.name_last_node("events")
-        self.ast._define(["events", "name", "number"], [])
+        self._define(["events", "name", "number"], [])
 
     @tatsumasu()
     def _act_(self):  # noqa
@@ -1603,7 +2075,7 @@ class shakespeareParser(Parser):
                     self._token("!")
                 with self._option():
                     self._token(".")
-                self._error("expecting one of: ! .")
+                self._error("expecting one of: " "'!' '.'")
         with self._group():
 
             def block4():
@@ -1611,7 +2083,7 @@ class shakespeareParser(Parser):
 
             self._closure(block4)
         self.name_last_node("scenes")
-        self.ast._define(["name", "number", "scenes"], [])
+        self._define(["name", "number", "scenes"], [])
 
     @tatsumasu()
     def _dramatis_persona_(self):  # noqa
@@ -1625,8 +2097,8 @@ class shakespeareParser(Parser):
                     self._token("!")
                 with self._option():
                     self._token(".")
-                self._error("expecting one of: ! .")
-        self.ast._define(["character"], [])
+                self._error("expecting one of: " "'!' '.'")
+        self._define(["character"], [])
 
     @tatsumasu()
     def _dramatis_personae_(self):  # noqa
@@ -1645,7 +2117,7 @@ class shakespeareParser(Parser):
                     self._token("!")
                 with self._option():
                     self._token(".")
-                self._error("expecting one of: ! .")
+                self._error("expecting one of: " "'!' '.'")
         self._dramatis_personae_()
         self.name_last_node("dramatis_personae")
         with self._group():
@@ -1656,7 +2128,7 @@ class shakespeareParser(Parser):
             self._closure(block4)
         self.name_last_node("acts")
         self._check_eof()
-        self.ast._define(["acts", "dramatis_personae", "title"], [])
+        self._define(["acts", "dramatis_personae", "title"], [])
 
 
 class shakespeareSemantics(object):
@@ -1864,9 +2336,5 @@ if __name__ == "__main__":
     from tatsu.util import asjson
 
     ast = generic_main(main, shakespeareParser, name="shakespeare")
-    print("AST:")
-    print(ast)
-    print()
-    print("JSON:")
-    print(json.dumps(asjson(ast), indent=2))
-    print()
+    data = asjson(ast)
+    print(json.dumps(data, indent=2))
