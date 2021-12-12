@@ -1,1 +1,2 @@
-from .shakespeare import Shakespeare
+from .shakespeare import *
+from .errors import *
