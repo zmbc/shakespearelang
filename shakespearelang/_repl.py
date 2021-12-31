@@ -58,7 +58,7 @@ def debug_play(text, input_style="interactive", output_style="verbose"):
     interpreter = Shakespeare(text, input_style=input_style, output_style=output_style)
 
     def on_breakpoint():
-        print("-----\n", interpreter.next_event_text(), "\n-----\n")
+        print("-----\n" + interpreter.next_event_text() + "\n-----\n")
         run_repl(interpreter)
 
     interpreter.run(on_breakpoint)
@@ -84,7 +84,7 @@ def run_repl(interpreter):
                 interpreter.step_forward()
                 if interpreter.play_over():
                     break
-                print("\n-----\n", interpreter.next_event_text(), "\n-----\n")
+                print("\n-----\n" + interpreter.next_event_text() + "\n-----\n")
             elif repl_input == "state":
                 print(str(interpreter.state))
             else:

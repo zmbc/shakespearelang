@@ -2,6 +2,7 @@ from tatsu.exceptions import FailedParse
 from io import StringIO
 import pytest
 import pexpect
+from .utils import expect_interaction, expect_output_exactly
 
 STANDARD_REPL_BEGINNING = """
 A REPL-tastic Adventure.
@@ -267,30 +268,3 @@ off stage:""",
     )
     expect_interaction(cli, "exit", "", prompt=False)
     expect_output_exactly(cli, "", eof=True)
-
-
-def expect_interaction(cli, to_send, to_receive, prompt=True):
-    cli.sendline(to_send)
-    full_output = ""
-    if to_receive:
-        full_output = to_receive + "\n"
-    if prompt:
-        full_output = full_output + ">> "
-    expect_output_exactly(cli, full_output)
-
-
-def expect_output_exactly(cli, output, eof=False):
-    output = output.replace("\n", "\r\n")
-    output_index = 0
-    while output_index < len(output):
-        output_received = cli.read_nonblocking(len(output) - output_index).decode(
-            "utf-8"
-        )
-        assert (
-            output_received
-            == output[output_index : (output_index + len(output_received))]
-        )
-        output_index = output_index + len(output_received)
-
-    if eof:
-        assert cli.read().decode("utf-8") == ""
