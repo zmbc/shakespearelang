@@ -22,9 +22,9 @@ class State:
     def __str__(self):
         return "\n".join(
             [f"global boolean = {self.global_boolean}", "on stage:"]
-            + [f"  {c}" for _, c in self.characters.items() if c.on_stage]
+            + [f"  {c}" for _, c in self._characters_on_stage.items()]
             + ["off stage:"]
-            + [f"  {c}" for _, c in self.characters.items() if not c.on_stage]
+            + [f"  {c}" for n, c in self.characters.items() if not n in self._characters_on_stage]
         )
 
     def enter_characters(self, characters):
@@ -49,13 +49,11 @@ class State:
 
     def _enter_character(self, character_name):
         character = self.characters[character_name]
-        character.on_stage = True
         self._characters_on_stage[character_name] = character
         self._update_opposites()
 
     def _exit_character(self, character_name):
         character = self.characters[character_name]
-        character.on_stage = False
         del self._characters_on_stage[character_name]
         self._update_opposites()
 

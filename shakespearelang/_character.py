@@ -8,7 +8,6 @@ class Character:
     def __init__(self, name):
         self.value = 0
         self.stack = []
-        self.on_stage = False
         self.name = name
 
     @classmethod
