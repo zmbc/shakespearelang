@@ -28,36 +28,35 @@ class State:
         )
 
     def enter_characters(self, characters):
-        characters_to_enter = [self.character_by_name(name) for name in characters]
-        for character in characters_to_enter:
-            self.assert_character_off_stage(character)
-        for character in characters_to_enter:
-            self._enter_character(character)
+        for character_name in characters:
+            self.assert_character_off_stage(character_name)
+        for character_name in characters:
+            self._enter_character(character_name)
 
     def exeunt_characters(self, characters):
-        characters_to_exeunt = [self.character_by_name(name) for name in characters]
-        for character in characters_to_exeunt:
-            self.assert_character_on_stage(character)
-        for character in characters_to_exeunt:
-            self._exit_character(character)
+        for character_name in characters:
+            self.assert_character_on_stage(character_name)
+        for character_name in characters:
+            self._exit_character(character_name)
 
     def exeunt_all(self):
-        for character in list(self._characters_on_stage.values()):
-            self._exit_character(character)
+        for character_name in list(self._characters_on_stage.keys()):
+            self._exit_character(character_name)
 
-    def exit_character(self, character):
-        character = self.character_by_name(character)
-        self.assert_character_on_stage(character)
-        self._exit_character(character)
+    def exit_character(self, character_name):
+        self.assert_character_on_stage(character_name)
+        self._exit_character(character_name)
 
-    def _enter_character(self, character):
+    def _enter_character(self, character_name):
+        character = self.characters[character_name]
         character.on_stage = True
-        self._characters_on_stage[character.name] = character
+        self._characters_on_stage[character_name] = character
         self._update_opposites()
 
-    def _exit_character(self, character):
+    def _exit_character(self, character_name):
+        character = self.characters[character_name]
         character.on_stage = False
-        del self._characters_on_stage[character.name]
+        del self._characters_on_stage[character_name]
         self._update_opposites()
 
     def _update_opposites(self):
@@ -91,15 +90,15 @@ class State:
         else:
             return character
 
-    def assert_character_on_stage(self, character):
-        character_name = character.name if isinstance(character, Character) else character
+    def assert_character_on_stage(self, character_name):
         if character_name not in self._characters_on_stage:
             if character_name not in self.characters:
                 raise ShakespeareRuntimeError(f"{character_name} was not initialized!")
             else:
                 raise ShakespeareRuntimeError(f"{character_name} is not on stage!")
 
-    def assert_character_off_stage(self, character):
-        character_name = character.name if isinstance(character, Character) else character
+    def assert_character_off_stage(self, character_name):
         if character_name in self._characters_on_stage:
             raise ShakespeareRuntimeError(f"{character_name} is already on stage!")
+        if character_name not in self.characters:
+            raise ShakespeareRuntimeError(f"{character_name} was not initialized!")

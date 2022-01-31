@@ -101,8 +101,6 @@ def _run_repl_input(interpreter, repl_input, current_character):
         event = None
 
     if event:
-        # Note we do not have to worry about control flow here because only lines
-        # can cause that -- these have been extracted to sentences above.
         interpreter.run_event(event)
     elif sentences:
         if not current_character:
@@ -117,6 +115,8 @@ def _run_repl_input(interpreter, repl_input, current_character):
 
         print(interpreter.evaluate_expression(ast.value, current_character))
     elif ast.display_character:
-        print(interpreter.state.character_by_name(normalize_name(ast.display_character)))
+        print(
+            interpreter.state.character_by_name(normalize_name(ast.display_character))
+        )
 
     return current_character

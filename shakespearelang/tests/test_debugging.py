@@ -1128,7 +1128,8 @@ def test_exit_loop_by_boolean_state(tmp_path):
     expect_interaction(
         cli,
         "next",
-        dedent("""\
+        dedent(
+            """\
             Outputting Hamlet
             Outputting number: 1
 

@@ -8,7 +8,6 @@ from ._parser import shakespeareParser
 from tatsu.exceptions import FailedParse
 from .errors import ShakespeareRuntimeError, ShakespeareParseError
 from ._utils import parseinfo_context, normalize_name
-from ._character import Character
 from ._state import State
 from ._preprocess import Play
 from ._settings import Settings
@@ -159,38 +158,30 @@ class Shakespeare:
 
     @_add_interpreter_context_to_errors
     @_parse_first_argument("sentence")
-    def run_sentence(self, sentence: Union[str, AST], character: Union[str, Character]):
+    def run_sentence(self, sentence: Union[str, AST], character: str):
         """
         Run a sentence in the current execution context.
 
         Arguments:
             sentence: A string or AST representation of a sentence.
-            character: A name or Character representation of the
-                character speaking the sentence.
+            character: The name of the character speaking the sentence.
         """
-        if isinstance(character, Character):
-            character = character.name
         operation = operation_from_sentence(sentence, character)
         self._run_operation(operation)
 
     @_add_interpreter_context_to_errors
     @_parse_first_argument("value")
-    def evaluate_expression(
-        self, expression: Union[str, AST], character: Union[str, Character]
-    ) -> int:
+    def evaluate_expression(self, expression: Union[str, AST], character: str) -> int:
         """
         Evaluate an expression in the current execution context.
 
         Arguments:
             expression: A string or AST representation of an expression.
-            character: A name or Character representation of the
-                character speaking the expression.
+            character: The name of the character speaking the expression.
 
         Returns:
             The integer value of the expression.
         """
-        if isinstance(character, Character):
-            character = character.name
         expression = expression_from_ast(expression, character)
         return expression.evaluate(self.state)
 

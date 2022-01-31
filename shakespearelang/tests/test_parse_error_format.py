@@ -22,6 +22,7 @@ def test_full_error_format_empty():
             expecting one of: '!' '.'"""
     )
 
+
 def test_full_error_format_title():
     with pytest.raises(ShakespeareParseError) as exc:
         Shakespeare("Foobar")
@@ -40,6 +41,7 @@ def test_full_error_format_title():
         full error message:
             expecting one of: '!' '.'"""
     )
+
 
 def test_full_error_format_realistic():
     with pytest.raises(ShakespeareParseError) as exc:
@@ -79,6 +81,7 @@ def test_full_error_format_realistic():
         full error message:
             expecting ':'"""
     )
+
 
 def test_full_error_format_long():
     with pytest.raises(ShakespeareParseError) as exc:
