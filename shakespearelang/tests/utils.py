@@ -24,3 +24,7 @@ def expect_output_exactly(cli, output, eof=False):
 
     if eof:
         assert cli.read().decode("utf-8") == ""
+
+def create_play_file(path, contents):
+    with open(path, "w") as f:
+        f.write(contents)

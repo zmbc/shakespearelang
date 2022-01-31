@@ -105,3 +105,14 @@ def test_conditional(monkeypatch, capsys):
     captured = capsys.readouterr()
     assert captured.out == ""
     assert captured.err == ""
+
+def test_interactive_style(monkeypatch, capsys):
+    monkeypatch.setattr("sys.stdin", StringIO("4257\n3211"))
+    s = Shakespeare("Foo. Juliet, a test. Romeo, a test.", input_style="interactive")
+    s.run_event("[Enter Romeo and Juliet]")
+
+    s.run_sentence("Listen to your heart!", "Juliet")
+    assert s.state.character_by_name("Romeo").value == 4257
+    captured = capsys.readouterr()
+    assert captured.out == "Taking input number: "
+    assert captured.err == ""

@@ -2,7 +2,7 @@ from tatsu.exceptions import FailedParse
 from io import StringIO
 import pytest
 import pexpect
-from .utils import expect_interaction, expect_output_exactly
+from .utils import expect_interaction, expect_output_exactly, create_play_file
 from textwrap import dedent
 
 NO_BREAKPOINTS = """
@@ -1339,8 +1339,3 @@ def test_exit_loop_by_boolean_state(tmp_path):
     )
     expect_interaction(cli, "next", "Exeunt all", prompt=False)
     expect_output_exactly(cli, "", eof=True)
-
-
-def create_play_file(path, contents):
-    with open(path, "w") as f:
-        f.write(contents)
