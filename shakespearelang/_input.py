@@ -12,6 +12,16 @@ class BasicInputManager:
         except EOFError:
             raise ShakespeareRuntimeError("End of file encountered.") from None
 
+        number = self._consume_digits()
+        self._consume_newline_if_present()
+
+        return number
+
+    def _consume_newline_if_present(self):
+        if self._input_buffer and self._input_buffer[0] == "\n":
+            self._input_buffer = self._input_buffer[1:]
+
+    def _consume_digits(self):
         number_input = ""
         while self._input_buffer and self._input_buffer[0].isdigit():
             number_input += self._input_buffer[0]
@@ -19,9 +29,6 @@ class BasicInputManager:
 
         if len(number_input) == 0:
             raise ShakespeareRuntimeError("No numeric input was given.")
-
-        if self._input_buffer and self._input_buffer[0] == "\n":
-            self._input_buffer = self._input_buffer[1:]
 
         return int(number_input)
 

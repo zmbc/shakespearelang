@@ -18,18 +18,22 @@ class Expression:
     def evaluate(self, state):
         state.assert_character_on_stage(self.character)
 
-        if self.cacheable and self.cached_value is not None:
-            return self.cached_value
-
         try:
-            result = self._evaluate_logic(state)
+            return self._evaluate_logic_cached(state)
         except ShakespeareRuntimeError as exc:
             if not exc.parseinfo:
                 exc.parseinfo = self.ast_node.parseinfo
             raise exc
 
+    def _evaluate_logic_cached(self, state):
+        if self.cacheable and self.cached_value is not None:
+            return self.cached_value
+
+        result = self._evaluate_logic(state)
+
         if self.cacheable:
             self.cached_value = result
+
         return result
 
 
