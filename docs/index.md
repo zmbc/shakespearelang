@@ -141,7 +141,7 @@ Setting global boolean to False
 
 #### Inspecting the current state
 
-To see the who's on stage and the values of characters and of the global boolean,
+To see who's on stage and the values of characters and of the global boolean,
 type `state` into the console.
 
 ```
@@ -159,11 +159,11 @@ To see a single character only, you can enter their name.
 
 ```
 >> Hamlet
-Hamlet = -1 ()
+-1 ()
 >> Juliet: Remember thyself!
 Hamlet pushed -1
 >> Hamlet
-Hamlet = -1 (-1)
+-1 (-1)
 ```
 
 #### Commands
