@@ -3,6 +3,11 @@ from ._output import BasicOutputManager, VerboseOutputManager
 
 
 class Settings:
+    """
+    The settings of a Shakespeare interpreter. Controls how and when the interpreter
+    does input and output.
+    """
+
     _INPUT_MANAGERS = {
         "basic": BasicInputManager,
         "interactive": InteractiveInputManager,
@@ -20,6 +25,10 @@ class Settings:
 
     @property
     def input_style(self):
+        """
+        Input style of the interpreter. 'basic' is the best for piped input.
+            'interactive' is nicer when getting input from a human.
+        """
         return self._input_style
 
     @input_style.setter
@@ -32,6 +41,12 @@ class Settings:
 
     @property
     def output_style(self):
+        """
+        Output style of the interpreter. 'basic' outputs exactly what the SPL play generated.
+        'verbose' prefixes output and shows visible representations of
+        whitespace characters. 'debug' is like 'verbose' but with debug output
+        from the interpreter.
+        """
         return self._output_style
 
     @output_style.setter

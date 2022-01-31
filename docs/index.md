@@ -78,10 +78,10 @@ Outputting character: 'H'
 
 [A pause]
 
->>Juliet: Thou art the sum of thyself and a King. Speak your mind!
+Juliet: >>Thou art the sum of thyself and a King. Speak your mind!<<
 
         Thou art the sum of an amazing healthy honest hamster and a golden
-        chihuahua. Speak your mind!<<
+        chihuahua. Speak your mind!
 
 [Exeunt]
 

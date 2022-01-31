@@ -7,6 +7,8 @@ easier.
 
 ::: shakespearelang.Shakespeare
 
+::: shakespearelang.Settings
+
 ::: shakespearelang.ShakespeareError
 
 ::: shakespearelang.ShakespeareParseError

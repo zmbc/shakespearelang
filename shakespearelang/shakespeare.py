@@ -10,7 +10,7 @@ from .errors import ShakespeareRuntimeError, ShakespeareParseError
 from ._utils import parseinfo_context, normalize_name
 from ._state import State
 from ._preprocess import Play
-from ._settings import Settings
+from .settings import Settings
 from ._operation import operations_from_event, operation_from_sentence, Goto, Breakpoint
 from ._expression import expression_from_ast
 import math
@@ -35,12 +35,19 @@ class Shakespeare:
             play: The AST or source code of the SPL play to be interpreted. Must
                 be provided and cannot be changed after initialization of the
                 interpreter.
-            input_style: The input style to initialize the interpreter with. See
-                [set_input_style][shakespearelang.Shakespeare.set_input_style]
-                for more information about the options.
-            output_style: The output style to initialize the interpreter with. See
-                [set_output_style][shakespearelang.Shakespeare.set_output_style]
-                for more information about the options.
+            input_style: 'basic' is the default and best for piped input.
+                'interactive' is nicer when getting input from a human.
+                This is passed directly along to the [Settings][shakespearelang.Settings]
+                instance for this interpreter. To change after initialization,
+                modify that instance at the .settings property of the interpreter.
+            output_style: The output style to initialize the interpreter with.
+                'basic' is the default and outputs exactly what the SPL play generated.
+                'verbose' prefixes output and shows visible representations of
+                whitespace characters. 'debug' is like 'verbose' but with debug output
+                from the interpreter.
+                This is passed directly along to the [Settings][shakespearelang.Settings]
+                instance for this interpreter. To change after initialization,
+                modify that instance at the .settings property of the interpreter.
         """
         self.settings = Settings(input_style, output_style)
         self.parser = shakespeareParser()
@@ -136,8 +143,8 @@ class Shakespeare:
     def next_operation_text(self) -> str:
         """
         Returns:
-            The SPL source code of the next event to run in the play, with
-            context before and after.
+            The SPL source code of the next operation (sentence or event)
+            to run in the play, with context before and after.
         """
         current_operation = self._next_operation()
         return parseinfo_context(current_operation.ast_node.parseinfo)

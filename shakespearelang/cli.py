@@ -59,7 +59,7 @@ def console(characters):
 @click.option(
     "--output-style",
     default="basic",
-    help="Output style to use. 'basic' is the default and outputs exactly what the SPL play generated. 'verbose' prefixes output and shows visible representations of characters. 'debug' is like 'verbose' but with debug output from the interpreter.",
+    help="Output style to use. 'basic' is the default and outputs exactly what the SPL play generated. 'verbose' prefixes output and shows visible representations of whitespace characters. 'debug' is like 'verbose' but with debug output from the interpreter.",
 )
 @pretty_print_shakespeare_errors
 def run(file, input_style, output_style):
@@ -79,7 +79,7 @@ def run(file, input_style, output_style):
 @click.option(
     "--output-style",
     default="verbose",
-    help="Output style to use. 'verbose' is the default, prefixes output, and shows visible representations of characters. 'basic' outputs exactly what the SPL play generated. 'debug' is like 'verbose' but with debug output from the interpreter.",
+    help="Output style to use. 'verbose' is the default, prefixes output, and shows visible representations of whitespace characters. 'basic' outputs exactly what the SPL play generated. 'debug' is like 'verbose' but with debug output from the interpreter.",
 )
 @pretty_print_shakespeare_errors
 def debug(file, input_style, output_style):
