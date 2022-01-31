@@ -1,0 +1,1282 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-5.5.14">
+    
+    
+      
+        <title>Python API reference - shakespearelang</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.d3202873.min.css">
+      
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ff0a5ce4.min.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#009485">
+      
+    
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="teal" data-md-color-accent="">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#python-api-reference" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href=".." title="shakespearelang" class="md-header-nav__button md-logo" aria-label="shakespearelang">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            shakespearelang
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              Python API reference
+            
+          </span>
+        </div>
+      
+    </div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+        
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="shakespearelang" class="md-nav__button md-logo" aria-label="shakespearelang">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    shakespearelang
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." title="Getting started" class="md-nav__link">
+      Getting started
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../CLI/" title="Command line usage reference" class="md-nav__link">
+      Command line usage reference
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Python API reference
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="./" title="Python API reference" class="md-nav__link md-nav__link--active">
+      Python API reference
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#shakespearelang.shakespeare.Shakespeare" class="md-nav__link">
+    Shakespeare
+  </a>
+  
+    <nav class="md-nav" aria-label="Shakespeare">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#shakespearelang.shakespeare.Shakespeare.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shakespearelang.shakespeare.Shakespeare.run" class="md-nav__link">
+    run()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shakespearelang.shakespeare.Shakespeare.play_over" class="md-nav__link">
+    play_over()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shakespearelang.shakespeare.Shakespeare.step_forward" class="md-nav__link">
+    step_forward()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shakespearelang.shakespeare.Shakespeare.next_operation_text" class="md-nav__link">
+    next_operation_text()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shakespearelang.shakespeare.Shakespeare.run_event" class="md-nav__link">
+    run_event()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shakespearelang.shakespeare.Shakespeare.run_sentence" class="md-nav__link">
+    run_sentence()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shakespearelang.shakespeare.Shakespeare.evaluate_expression" class="md-nav__link">
+    evaluate_expression()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shakespearelang.settings.Settings" class="md-nav__link">
+    Settings
+  </a>
+  
+    <nav class="md-nav" aria-label="Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#shakespearelang.settings.Settings.input_style" class="md-nav__link">
+    input_style
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shakespearelang.settings.Settings.output_style" class="md-nav__link">
+    output_style
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shakespearelang.errors.ShakespeareError" class="md-nav__link">
+    ShakespeareError
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shakespearelang.errors.ShakespeareParseError" class="md-nav__link">
+    ShakespeareParseError
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shakespearelang.errors.ShakespeareRuntimeError" class="md-nav__link">
+    ShakespeareRuntimeError
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#shakespearelang.shakespeare.Shakespeare" class="md-nav__link">
+    Shakespeare
+  </a>
+  
+    <nav class="md-nav" aria-label="Shakespeare">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#shakespearelang.shakespeare.Shakespeare.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shakespearelang.shakespeare.Shakespeare.run" class="md-nav__link">
+    run()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shakespearelang.shakespeare.Shakespeare.play_over" class="md-nav__link">
+    play_over()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shakespearelang.shakespeare.Shakespeare.step_forward" class="md-nav__link">
+    step_forward()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shakespearelang.shakespeare.Shakespeare.next_operation_text" class="md-nav__link">
+    next_operation_text()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shakespearelang.shakespeare.Shakespeare.run_event" class="md-nav__link">
+    run_event()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shakespearelang.shakespeare.Shakespeare.run_sentence" class="md-nav__link">
+    run_sentence()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shakespearelang.shakespeare.Shakespeare.evaluate_expression" class="md-nav__link">
+    evaluate_expression()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shakespearelang.settings.Settings" class="md-nav__link">
+    Settings
+  </a>
+  
+    <nav class="md-nav" aria-label="Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#shakespearelang.settings.Settings.input_style" class="md-nav__link">
+    input_style
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shakespearelang.settings.Settings.output_style" class="md-nav__link">
+    output_style
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shakespearelang.errors.ShakespeareError" class="md-nav__link">
+    ShakespeareError
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shakespearelang.errors.ShakespeareParseError" class="md-nav__link">
+    ShakespeareParseError
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shakespearelang.errors.ShakespeareRuntimeError" class="md-nav__link">
+    ShakespeareRuntimeError
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  
+                
+                
+                <h1 id="python-api-reference">Python API reference<a class="headerlink" href="#python-api-reference" title="Permanent link">#</a></h1>
+<p>If you want to interact with the interpreter programmatically from
+Python, you can do so using the public interfaces of the classes below. If you
+just want to write and execute SPL plays, the command line interface is likely
+easier.</p>
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="shakespearelang.shakespeare.Shakespeare" class="doc doc-heading">
+        <code>
+shakespearelang.shakespeare.Shakespeare        </code>
+
+
+
+<a href="#shakespearelang.shakespeare.Shakespeare" class="headerlink" title="Permanent link">#</a></h2>
+
+    <div class="doc doc-contents first">
+
+      <p>Interpreter for the Shakespeare Programming Language.</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="shakespearelang.shakespeare.Shakespeare.__init__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">play</span><span class="p">,</span> <span class="n">input_style</span><span class="o">=</span><span class="s1">&#39;basic&#39;</span><span class="p">,</span> <span class="n">output_style</span><span class="o">=</span><span class="s1">&#39;basic&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+<a href="#shakespearelang.shakespeare.Shakespeare.__init__" class="headerlink" title="Permanent link">#</a></h3>
+
+    <div class="doc doc-contents ">
+
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>play</code></td>
+        <td><code>Union[str, tatsu.ast.AST]</code></td>
+        <td><p>The AST or source code of the SPL play to be interpreted. Must
+be provided and cannot be changed after initialization of the
+interpreter.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>input_style</code></td>
+        <td><code>Literal[&#39;basic&#39;, &#39;interactive&#39;]</code></td>
+        <td><p>'basic' is the default and best for piped input.
+'interactive' is nicer when getting input from a human.
+This is passed directly along to the <a href="#shakespearelang.settings.Settings">Settings</a>
+instance for this interpreter. To change after initialization,
+modify that instance at the .settings property of the interpreter.</p></td>
+        <td><code>&#39;basic&#39;</code></td>
+      </tr>
+      <tr>
+        <td><code>output_style</code></td>
+        <td><code>Literal[&#39;basic&#39;, &#39;verbose&#39;, &#39;debug&#39;]</code></td>
+        <td><p>The output style to initialize the interpreter with.
+'basic' is the default and outputs exactly what the SPL play generated.
+'verbose' prefixes output and shows visible representations of
+whitespace characters. 'debug' is like 'verbose' but with debug output
+from the interpreter.
+This is passed directly along to the <a href="#shakespearelang.settings.Settings">Settings</a>
+instance for this interpreter. To change after initialization,
+modify that instance at the .settings property of the interpreter.</p></td>
+        <td><code>&#39;basic&#39;</code></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>shakespearelang/shakespeare.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">play</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AST</span><span class="p">],</span>
+    <span class="n">input_style</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;basic&quot;</span><span class="p">,</span> <span class="s2">&quot;interactive&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;basic&quot;</span><span class="p">,</span>
+    <span class="n">output_style</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;basic&quot;</span><span class="p">,</span> <span class="s2">&quot;verbose&quot;</span><span class="p">,</span> <span class="s2">&quot;debug&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;basic&quot;</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Arguments:</span>
+<span class="sd">        play: The AST or source code of the SPL play to be interpreted. Must</span>
+<span class="sd">            be provided and cannot be changed after initialization of the</span>
+<span class="sd">            interpreter.</span>
+<span class="sd">        input_style: &#39;basic&#39; is the default and best for piped input.</span>
+<span class="sd">            &#39;interactive&#39; is nicer when getting input from a human.</span>
+<span class="sd">            This is passed directly along to the [Settings][shakespearelang.Settings]</span>
+<span class="sd">            instance for this interpreter. To change after initialization,</span>
+<span class="sd">            modify that instance at the .settings property of the interpreter.</span>
+<span class="sd">        output_style: The output style to initialize the interpreter with.</span>
+<span class="sd">            &#39;basic&#39; is the default and outputs exactly what the SPL play generated.</span>
+<span class="sd">            &#39;verbose&#39; prefixes output and shows visible representations of</span>
+<span class="sd">            whitespace characters. &#39;debug&#39; is like &#39;verbose&#39; but with debug output</span>
+<span class="sd">            from the interpreter.</span>
+<span class="sd">            This is passed directly along to the [Settings][shakespearelang.Settings]</span>
+<span class="sd">            instance for this interpreter. To change after initialization,</span>
+<span class="sd">            modify that instance at the .settings property of the interpreter.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">(</span><span class="n">input_style</span><span class="p">,</span> <span class="n">output_style</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">shakespeareParser</span><span class="p">()</span>
+    <span class="n">ast</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_if_necessary</span><span class="p">(</span><span class="n">play</span><span class="p">,</span> <span class="s2">&quot;play&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">play</span> <span class="o">=</span> <span class="n">Play</span><span class="p">(</span><span class="n">ast</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">State</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">dramatis_personae</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">current_position</span> <span class="o">=</span> <span class="mi">0</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="shakespearelang.shakespeare.Shakespeare.run" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">breakpoint_callback</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">Shakespeare</span><span class="o">.&lt;</span><span class="k">lambda</span><span class="o">&gt;</span> <span class="n">at</span> <span class="mh">0x7f0a30a811f0</span><span class="o">&gt;</span><span class="p">)</span></code>
+
+
+<a href="#shakespearelang.shakespeare.Shakespeare.run" class="headerlink" title="Permanent link">#</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Execute the entire SPL play, optionally pausing at breakpoints.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>breakpoint_callback</code></td>
+        <td><code>Callable[[], NoneType]</code></td>
+        <td><p>An optional callback, to be called if a debug
+breakpoint is hit. After the callback returns, execution
+continues. The default is to do nothing.</p></td>
+        <td><code>&lt;function Shakespeare.&lt;lambda&gt; at 0x7f0a30a811f0&gt;</code></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>shakespearelang/shakespeare.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@_add_interpreter_context_to_errors</span>
+<span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">breakpoint_callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Execute the entire SPL play, optionally pausing at breakpoints.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        breakpoint_callback: An optional callback, to be called if a debug</span>
+<span class="sd">            breakpoint is hit. After the callback returns, execution</span>
+<span class="sd">            continues. The default is to do nothing.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">play_over</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_next_operation</span><span class="p">(),</span> <span class="n">Breakpoint</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_advance_position</span><span class="p">()</span>
+            <span class="n">breakpoint_callback</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">step_forward</span><span class="p">()</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="shakespearelang.shakespeare.Shakespeare.play_over" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">play_over</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+<a href="#shakespearelang.shakespeare.Shakespeare.play_over" class="headerlink" title="Permanent link">#</a></h3>
+
+    <div class="doc doc-contents ">
+
+
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>bool</code></td>
+      <td><p>Whether the play has finished.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>shakespearelang/shakespeare.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@_add_interpreter_context_to_errors</span>
+<span class="k">def</span> <span class="nf">play_over</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Whether the play has finished.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_position</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">play</span><span class="o">.</span><span class="n">operations</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="shakespearelang.shakespeare.Shakespeare.step_forward" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">step_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+<a href="#shakespearelang.shakespeare.Shakespeare.step_forward" class="headerlink" title="Permanent link">#</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Run the next event in the play.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>shakespearelang/shakespeare.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@_add_interpreter_context_to_errors</span>
+<span class="k">def</span> <span class="nf">step_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run the next event in the play.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">operation_to_run</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_next_operation</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operation_to_run</span><span class="p">,</span> <span class="n">Breakpoint</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_advance_position</span><span class="p">()</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">output_style</span> <span class="o">==</span> <span class="s2">&quot;debug&quot;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;----------</span><span class="se">\n</span><span class="s2">at line </span><span class="si">{</span><span class="n">operation_to_run</span><span class="o">.</span><span class="n">ast_node</span><span class="o">.</span><span class="n">parseinfo</span><span class="o">.</span><span class="n">line</span><span class="si">}</span><span class="se">\n</span><span class="s2">-----</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="o">+</span> <span class="n">parseinfo_context</span><span class="p">(</span><span class="n">operation_to_run</span><span class="o">.</span><span class="n">ast_node</span><span class="o">.</span><span class="n">parseinfo</span><span class="p">)</span>
+            <span class="o">+</span> <span class="s2">&quot;-----</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>
+            <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">----------&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">pos_before_operation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_position</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_run_operation</span><span class="p">(</span><span class="n">operation_to_run</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_position</span> <span class="o">==</span> <span class="n">pos_before_operation</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_advance_position</span><span class="p">()</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="shakespearelang.shakespeare.Shakespeare.next_operation_text" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">next_operation_text</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+<a href="#shakespearelang.shakespeare.Shakespeare.next_operation_text" class="headerlink" title="Permanent link">#</a></h3>
+
+    <div class="doc doc-contents ">
+
+
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>str</code></td>
+      <td><p>The SPL source code of the next operation (sentence or event)
+to run in the play, with context before and after.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>shakespearelang/shakespeare.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@_add_interpreter_context_to_errors</span>
+<span class="k">def</span> <span class="nf">next_operation_text</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The SPL source code of the next operation (sentence or event)</span>
+<span class="sd">        to run in the play, with context before and after.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">current_operation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_next_operation</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">parseinfo_context</span><span class="p">(</span><span class="n">current_operation</span><span class="o">.</span><span class="n">ast_node</span><span class="o">.</span><span class="n">parseinfo</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="shakespearelang.shakespeare.Shakespeare.run_event" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">run_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span></code>
+
+
+<a href="#shakespearelang.shakespeare.Shakespeare.run_event" class="headerlink" title="Permanent link">#</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Run an event in the current execution context.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>event</code></td>
+        <td><code>Union[str, tatsu.ast.AST]</code></td>
+        <td><p>A string or AST representation of an event (line, entrance,
+exit, etc).</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>shakespearelang/shakespeare.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@_add_interpreter_context_to_errors</span>
+<span class="nd">@_parse_first_argument</span><span class="p">(</span><span class="s2">&quot;event&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">run_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AST</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run an event in the current execution context.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        event: A string or AST representation of an event (line, entrance,</span>
+<span class="sd">            exit, etc).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">operations</span> <span class="o">=</span> <span class="n">operations_from_event</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">operation</span> <span class="ow">in</span> <span class="n">operations</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_run_operation</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="shakespearelang.shakespeare.Shakespeare.run_sentence" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">run_sentence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sentence</span><span class="p">,</span> <span class="n">character</span><span class="p">)</span></code>
+
+
+<a href="#shakespearelang.shakespeare.Shakespeare.run_sentence" class="headerlink" title="Permanent link">#</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Run a sentence in the current execution context.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>sentence</code></td>
+        <td><code>Union[str, tatsu.ast.AST]</code></td>
+        <td><p>A string or AST representation of a sentence.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>character</code></td>
+        <td><code>str</code></td>
+        <td><p>The name of the character speaking the sentence.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>shakespearelang/shakespeare.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@_add_interpreter_context_to_errors</span>
+<span class="nd">@_parse_first_argument</span><span class="p">(</span><span class="s2">&quot;sentence&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">run_sentence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sentence</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AST</span><span class="p">],</span> <span class="n">character</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run a sentence in the current execution context.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        sentence: A string or AST representation of a sentence.</span>
+<span class="sd">        character: The name of the character speaking the sentence.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">operation</span> <span class="o">=</span> <span class="n">operation_from_sentence</span><span class="p">(</span><span class="n">sentence</span><span class="p">,</span> <span class="n">character</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_run_operation</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="shakespearelang.shakespeare.Shakespeare.evaluate_expression" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">evaluate_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">,</span> <span class="n">character</span><span class="p">)</span></code>
+
+
+<a href="#shakespearelang.shakespeare.Shakespeare.evaluate_expression" class="headerlink" title="Permanent link">#</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Evaluate an expression in the current execution context.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>expression</code></td>
+        <td><code>Union[str, tatsu.ast.AST]</code></td>
+        <td><p>A string or AST representation of an expression.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>character</code></td>
+        <td><code>str</code></td>
+        <td><p>The name of the character speaking the expression.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>int</code></td>
+      <td><p>The integer value of the expression.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>shakespearelang/shakespeare.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@_add_interpreter_context_to_errors</span>
+<span class="nd">@_parse_first_argument</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">evaluate_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AST</span><span class="p">],</span> <span class="n">character</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Evaluate an expression in the current execution context.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        expression: A string or AST representation of an expression.</span>
+<span class="sd">        character: The name of the character speaking the expression.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The integer value of the expression.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">expression</span> <span class="o">=</span> <span class="n">expression_from_ast</span><span class="p">(</span><span class="n">expression</span><span class="p">,</span> <span class="n">character</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">expression</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="shakespearelang.settings.Settings" class="doc doc-heading">
+        <code>
+shakespearelang.settings.Settings        </code>
+
+
+
+<a href="#shakespearelang.settings.Settings" class="headerlink" title="Permanent link">#</a></h2>
+
+    <div class="doc doc-contents first">
+
+      <p>The settings of a Shakespeare interpreter. Controls how and when the interpreter
+does input and output.</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="shakespearelang.settings.Settings.input_style" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">input_style</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-writable"><code>writable</code></small>
+  </span>
+
+<a href="#shakespearelang.settings.Settings.input_style" class="headerlink" title="Permanent link">#</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Input style of the interpreter. 'basic' is the best for piped input.
+    'interactive' is nicer when getting input from a human.</p>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="shakespearelang.settings.Settings.output_style" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">output_style</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-writable"><code>writable</code></small>
+  </span>
+
+<a href="#shakespearelang.settings.Settings.output_style" class="headerlink" title="Permanent link">#</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Output style of the interpreter. 'basic' outputs exactly what the SPL play generated.
+'verbose' prefixes output and shows visible representations of
+whitespace characters. 'debug' is like 'verbose' but with debug output
+from the interpreter.</p>
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="shakespearelang.errors.ShakespeareError" class="doc doc-heading">
+        <code>
+shakespearelang.errors.ShakespeareError        </code>
+
+
+
+<a href="#shakespearelang.errors.ShakespeareError" class="headerlink" title="Permanent link">#</a></h2>
+
+    <div class="doc doc-contents first">
+
+      <p>The base class for errors caused by problems in Shakespeare Programming
+Language code.</p>
+
+
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="shakespearelang.errors.ShakespeareParseError" class="doc doc-heading">
+        <code>
+shakespearelang.errors.ShakespeareParseError        </code>
+
+
+
+<a href="#shakespearelang.errors.ShakespeareParseError" class="headerlink" title="Permanent link">#</a></h2>
+
+    <div class="doc doc-contents first">
+
+      <p>An error caused by malformed Shakespeare Programming Language code. Inherits
+from <a href="#shakespearelang.errors.ShakespeareError">ShakespeareError</a>.</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="shakespearelang.errors.ShakespeareRuntimeError" class="doc doc-heading">
+        <code>
+shakespearelang.errors.ShakespeareRuntimeError        </code>
+
+
+
+<a href="#shakespearelang.errors.ShakespeareRuntimeError" class="headerlink" title="Permanent link">#</a></h2>
+
+    <div class="doc doc-contents first">
+
+      <p>An error caused by Shakespeare Programming Language code that is well-formed
+but does some illegal operation at runtime. Inherits from
+<a href="#shakespearelang.errors.ShakespeareError">ShakespeareError</a>.</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../CLI/" title="Command line usage reference" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Command line usage reference
+              </div>
+            </div>
+          </a>
+        
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/vendor.2d1db4bd.min.js"></script>
+      <script src="../assets/javascripts/bundle.6627ddf3.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      
+      <script>
+        app = initialize({
+          base: "..",
+          features: [],
+          search: Object.assign({
+            worker: "../assets/javascripts/worker/search.5eca75d3.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>
