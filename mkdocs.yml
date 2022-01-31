@@ -1,4 +1,12 @@
+# Project information
 site_name: shakespearelang
+site_url: https://shakespearelang.com
+site_author: Zeb Burke-Conte
+
+# Repository
+repo_url: https://github.com/zmbc/shakespearelang
+repo_name: zmbc/shakespearelang
+edit_uri: edit/main/docs/
 nav:
   - Getting started: index.md
   - Command line usage reference: CLI.md
