@@ -84,12 +84,6 @@ class State:
         else:
             raise ShakespeareRuntimeError(f"{name} was not initialized!")
 
-    def character_by_name_if_necessary(self, character):
-        if isinstance(character, str):
-            return self.character_by_name(character)
-        else:
-            return character
-
     def assert_character_on_stage(self, character_name):
         if character_name not in self._characters_on_stage:
             if character_name not in self.characters:
