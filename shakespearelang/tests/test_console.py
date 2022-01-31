@@ -291,7 +291,7 @@ def test_display_character():
             Romeo pushed 2"""
         ),
     )
-    expect_interaction(cli, "Romeo", "Romeo = -1 (2 -2 0)")
+    expect_interaction(cli, "Romeo", "-1 (2 -2 0)")
     expect_interaction(cli, "exit", "", prompt=False)
     expect_output_exactly(cli, "", eof=True)
 

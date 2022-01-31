@@ -141,10 +141,11 @@ class Assignment(SentenceOperation):
 
     def _run_logic(self, state, settings):
         character_opposite = state.character_opposite(self.character)
-        character_opposite.value = self.value.evaluate(state)
+        value = self.value.evaluate(state)
+        state.character_by_name(character_opposite).value = value
 
         if settings.output_style in ["verbose", "debug"]:
-            print(f"{character_opposite.name} set to {character_opposite.value}")
+            print(f"{character_opposite} set to {value}")
 
 
 class Input(SentenceOperation):
@@ -159,9 +160,9 @@ class Input(SentenceOperation):
             value = settings.input_manager.consume_character_input()
 
         if settings.output_style in ["verbose", "debug"]:
-            print(f"Setting {character_to_set.name} to input value {repr(value)}")
+            print(f"Setting {character_to_set} to input value {repr(value)}")
 
-        character_to_set.value = value
+        state.character_by_name(character_to_set).value = value
 
 
 class Output(SentenceOperation):
@@ -170,9 +171,9 @@ class Output(SentenceOperation):
 
     def _run_logic(self, state, settings):
         character_to_output = state.character_opposite(self.character)
+        value = state.character_by_name(character_to_output).value
         if settings.output_style in ["verbose", "debug"]:
-            print(f"Outputting {character_to_output.name}")
-        value = character_to_output.value
+            print(f"Outputting {character_to_output}")
         if self.output_type == "number":
             settings.output_manager.output_number(value)
         else:
@@ -186,17 +187,19 @@ class Push(SentenceOperation):
     def _run_logic(self, state, settings):
         pushing_character = state.character_opposite(self.character)
         value = self.value.evaluate(state)
+        state.character_by_name(pushing_character).push(value)
+
         if settings.output_style in ["verbose", "debug"]:
-            print(f"{pushing_character.name} pushed {value}")
-        pushing_character.push(value)
+            print(f"{pushing_character} pushed {value}")
 
 
 class Pop(SentenceOperation):
     def _run_logic(self, state, settings):
         popping_character = state.character_opposite(self.character)
+        state.character_by_name(popping_character).pop()
+
         if settings.output_style in ["verbose", "debug"]:
-            print(f"Popping stack of {popping_character.name}")
-        popping_character.pop()
+            print(f"Popping stack of {popping_character}")
 
 
 class Goto(SentenceOperation):

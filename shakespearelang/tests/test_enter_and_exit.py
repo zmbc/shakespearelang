@@ -275,9 +275,7 @@ def test_errors_on_partial_exeunt_before_entrance():
 
 
 def assert_on_stage(s, l):
-    assert sorted(
-        [c for c in s.state._characters_on_stage]
-    ) == sorted(l)
+    assert sorted([c for c in s.state._characters_on_stage]) == sorted(l)
 
 
 def assert_off_stage(s, l):

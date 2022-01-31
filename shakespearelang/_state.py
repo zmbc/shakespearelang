@@ -10,21 +10,25 @@ class State:
         self.global_boolean = False
         self.characters = {}
         for persona in personae:
-            character = Character.from_dramatis_persona(persona)
-            if character.name in self.characters:
+            name = normalize_name(persona.character)
+            if name in self.characters:
                 raise ShakespeareRuntimeError(
-                    f"{character.name} already initialized", parseinfo=persona.parseinfo
+                    f"{name} already initialized", parseinfo=persona.parseinfo
                 )
-            self.characters[character.name] = character
+            self.characters[name] = Character()
         self._characters_on_stage = {}
         self._characters_opposite = {}
 
     def __str__(self):
         return "\n".join(
             [f"global boolean = {self.global_boolean}", "on stage:"]
-            + [f"  {c}" for _, c in self._characters_on_stage.items()]
+            + [f"  {n} = {c}" for n, c in self._characters_on_stage.items()]
             + ["off stage:"]
-            + [f"  {c}" for n, c in self.characters.items() if not n in self._characters_on_stage]
+            + [
+                f"  {n} = {c}"
+                for n, c in self.characters.items()
+                if n not in self._characters_on_stage
+            ]
         )
 
     def enter_characters(self, characters):
@@ -65,16 +69,16 @@ class State:
             self._characters_opposite[names[0]] = names[1]
             self._characters_opposite[names[1]] = names[0]
 
-    def character_opposite(self, character):
-        if character in self._characters_opposite:
-            return self.characters[self._characters_opposite[character]]
+    def character_opposite(self, character_name):
+        if character_name in self._characters_opposite:
+            return self._characters_opposite[character_name]
 
-        if character not in self._characters_on_stage:
-            raise ShakespeareRuntimeError(f"{character.name} is not on stage!")
+        if character_name not in self._characters_on_stage:
+            raise ShakespeareRuntimeError(f"{character_name} is not on stage!")
         elif len(self._characters_on_stage) > 2:
             raise ShakespeareRuntimeError("Ambiguous second-person pronoun")
         else:
-            raise ShakespeareRuntimeError(f"{character} is talking to nobody!")
+            raise ShakespeareRuntimeError(f"{character_name} is talking to nobody!")
 
     def character_by_name(self, name):
         if name in self.characters:

@@ -30,7 +30,7 @@ def test_full_error_format():
         s.run()
     assert str(exc.value) == textwrap.dedent(
         """\
-        SPL runtime error: Tried to pop from an empty stack. Character: Juliet
+        SPL runtime error: Tried to pop from an empty stack.
           at line 13
         ----- context -----
                             Scene I: A Stage.

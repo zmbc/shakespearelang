@@ -201,8 +201,8 @@ def test_breakpoint_console(tmp_path):
             >> """
         ),
     )
-    expect_interaction(cli, "Juliet", "Juliet = 0 ()")
-    expect_interaction(cli, "Hamlet", "Hamlet = 72 ()")
+    expect_interaction(cli, "Juliet", "0 ()")
+    expect_interaction(cli, "Hamlet", "72 ()")
     expect_interaction(cli, "exit", "", prompt=False)
     expect_output_exactly(cli, "", eof=True)
 
@@ -325,7 +325,7 @@ def test_step_through(tmp_path):
             >> """
         ),
     )
-    expect_interaction(cli, "Hamlet", "Hamlet = 0 ()")
+    expect_interaction(cli, "Hamlet", "0 ()")
     expect_interaction(
         cli,
         "next",
@@ -348,7 +348,7 @@ def test_step_through(tmp_path):
             """
         ),
     )
-    expect_interaction(cli, "Hamlet", "Hamlet = 0 ()")
+    expect_interaction(cli, "Hamlet", "0 ()")
     expect_interaction(
         cli,
         "next",
@@ -371,7 +371,7 @@ def test_step_through(tmp_path):
             """
         ),
     )
-    expect_interaction(cli, "Hamlet", "Hamlet = 1 ()")
+    expect_interaction(cli, "Hamlet", "1 ()")
     expect_interaction(
         cli,
         "next",
@@ -417,7 +417,7 @@ def test_step_through(tmp_path):
             """
         ),
     )
-    expect_interaction(cli, "Hamlet", "Hamlet = 2 ()")
+    expect_interaction(cli, "Hamlet", "2 ()")
     expect_interaction(
         cli,
         "next",
@@ -788,7 +788,7 @@ def test_exit_loop_by_character_state(tmp_path):
             >> """
         ),
     )
-    expect_interaction(cli, "Hamlet", "Hamlet = 0 ()")
+    expect_interaction(cli, "Hamlet", "0 ()")
     expect_interaction(
         cli,
         "next",
@@ -811,7 +811,7 @@ def test_exit_loop_by_character_state(tmp_path):
             """
         ),
     )
-    expect_interaction(cli, "Hamlet", "Hamlet = 0 ()")
+    expect_interaction(cli, "Hamlet", "0 ()")
     expect_interaction(
         cli,
         "next",
@@ -834,7 +834,7 @@ def test_exit_loop_by_character_state(tmp_path):
             """
         ),
     )
-    expect_interaction(cli, "Hamlet", "Hamlet = 1 ()")
+    expect_interaction(cli, "Hamlet", "1 ()")
     expect_interaction(
         cli,
         "next",
@@ -880,7 +880,7 @@ def test_exit_loop_by_character_state(tmp_path):
             """
         ),
     )
-    expect_interaction(cli, "Hamlet", "Hamlet = 2 ()")
+    expect_interaction(cli, "Hamlet", "2 ()")
     expect_interaction(
         cli,
         "next",
@@ -1078,7 +1078,7 @@ def test_exit_loop_by_boolean_state(tmp_path):
             >> """
         ),
     )
-    expect_interaction(cli, "Hamlet", "Hamlet = 0 ()")
+    expect_interaction(cli, "Hamlet", "0 ()")
     expect_interaction(
         cli,
         "next",
@@ -1101,7 +1101,7 @@ def test_exit_loop_by_boolean_state(tmp_path):
             """
         ),
     )
-    expect_interaction(cli, "Hamlet", "Hamlet = 0 ()")
+    expect_interaction(cli, "Hamlet", "0 ()")
     expect_interaction(
         cli,
         "next",
@@ -1124,7 +1124,7 @@ def test_exit_loop_by_boolean_state(tmp_path):
             """
         ),
     )
-    expect_interaction(cli, "Hamlet", "Hamlet = 1 ()")
+    expect_interaction(cli, "Hamlet", "1 ()")
     expect_interaction(
         cli,
         "next",
@@ -1170,7 +1170,7 @@ def test_exit_loop_by_boolean_state(tmp_path):
             """
         ),
     )
-    expect_interaction(cli, "Hamlet", "Hamlet = 2 ()")
+    expect_interaction(cli, "Hamlet", "2 ()")
     expect_interaction(
         cli,
         "next",

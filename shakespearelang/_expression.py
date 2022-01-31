@@ -40,7 +40,8 @@ class FirstPersonValue(Expression):
 
 class SecondPersonValue(Expression):
     def _evaluate_logic(self, state):
-        return state.character_opposite(self.character).value
+        character_opposite = state.character_opposite(self.character)
+        return state.character_by_name(character_opposite).value
 
 
 class CharacterName(Expression):
