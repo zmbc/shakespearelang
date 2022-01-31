@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "shakespearelang"
-version = "0.3.1"
+version = "1.0.0rc1"
 description = "An interpreter for the Shakespeare Programming Language."
 authors = ["Zeb Burke-Conte <zebburkeconte@gmail.com>"]
 readme = "README.rst"
