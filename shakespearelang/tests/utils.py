@@ -16,7 +16,9 @@ def expect_output_exactly(cli, output, eof=False):
         output_received = cli.read_nonblocking(len(output) - output_index).decode(
             "utf-8"
         )
-        expected_output_batch = output[output_index : (output_index + len(output_received))]
+        expected_output_batch = output[
+            output_index : (output_index + len(output_received))
+        ]
         assert output_received == expected_output_batch
         output_index = output_index + len(output_received)
 

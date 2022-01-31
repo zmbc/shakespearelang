@@ -149,3 +149,34 @@ def test_errors_on_invalid_code(capsys):
     captured = capsys.readouterr()
     assert captured.out == ""
     assert captured.err == ""
+
+
+def test_conditional(capsys):
+    s = Shakespeare("Foo. Juliet, a test. Romeo, a test. Act I: One. Scene I: One.")
+    s.run_event("[Enter Romeo and Juliet]")
+
+    s.state.character_by_name("Romeo").value = 97
+    s.state.global_boolean = False
+    s.run_sentence("If so, speak your mind!", "Juliet")
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert captured.err == ""
+
+    s.state.global_boolean = True
+    s.run_sentence("If not, speak your mind!", "Juliet")
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert captured.err == ""
+
+    s.state.global_boolean = False
+    s.run_sentence("If not, speak your mind!", "Juliet")
+    captured = capsys.readouterr()
+    assert captured.out == "a"
+    assert captured.err == ""
+
+    s.state.character_by_name("Romeo").value = 98
+    s.state.global_boolean = True
+    s.run_sentence("If so, speak your mind!", "Juliet")
+    captured = capsys.readouterr()
+    assert captured.out == "b"
+    assert captured.err == ""

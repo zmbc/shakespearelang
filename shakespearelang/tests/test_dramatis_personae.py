@@ -1,4 +1,6 @@
 from shakespearelang import Shakespeare
+from shakespearelang.errors import ShakespeareRuntimeError
+import pytest
 
 MANY_CHARACTERS_PLAY = """
 A lot of people.
@@ -20,7 +22,7 @@ Vincentio, a test.
 
 def test_correct_characters():
     s = Shakespeare("Foo. Juliet, a test. Romeo, a test. The Ghost, a test.")
-    assert sorted([c.name for c in s.state.characters]) == [
+    assert sorted(s.state.characters.keys()) == [
         "Juliet",
         "Romeo",
         "The Ghost",
@@ -29,12 +31,12 @@ def test_correct_characters():
 
 def test_no_characters():
     s = Shakespeare("Foo. Act I: The beginning.")
-    assert s.state.characters == []
+    assert s.state.characters == {}
 
 
 def test_many_characters():
     s = Shakespeare(MANY_CHARACTERS_PLAY)
-    assert sorted([c.name for c in s.state.characters]) == [
+    assert sorted(s.state.characters.keys()) == [
         "Achilles",
         "Christopher Sly",
         "Demetrius",
@@ -48,3 +50,11 @@ def test_many_characters():
         "Titania",
         "Vincentio",
     ]
+
+
+def test_duplicate_characters():
+    with pytest.raises(ShakespeareRuntimeError) as exc:
+        Shakespeare("Foo. Juliet, a test. Juliet, also a test.")
+    assert "already initialized" in str(exc.value).lower()
+    assert ">>Juliet, also a test.<<" in str(exc.value)
+    assert exc.value.interpreter == None

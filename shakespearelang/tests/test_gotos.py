@@ -44,91 +44,95 @@ SAMPLE_PLAY = """
 """
 
 
-def test_goto_current(monkeypatch, capsys):
+def test_goto_current(capsys):
     s = Shakespeare(SAMPLE_PLAY)
 
-    assert s.current_position == {"act": 0, "scene": 0, "event": 0}
+    assert s.current_position == 0
     s.step_forward()
-    assert s.current_position == {"act": 0, "scene": 0, "event": 1}
+    assert s.current_position == 1
     s.run_sentence("Let us proceed to scene I.", "Juliet")
-    assert s.current_position == {"act": 0, "scene": 0, "event": 0}
+    assert s.current_position == 0
 
     captured = capsys.readouterr()
     assert captured.out == ""
     assert captured.err == ""
 
 
-def test_goto_next(monkeypatch, capsys):
+def test_goto_next(capsys):
     s = Shakespeare(SAMPLE_PLAY)
 
-    assert s.current_position == {"act": 0, "scene": 0, "event": 0}
+    assert s.current_position == 0
     s.step_forward()
-    assert s.current_position == {"act": 0, "scene": 0, "event": 1}
+    assert s.current_position == 1
     s.run_sentence("Let us proceed to scene II.", "Juliet")
-    assert s.current_position == {"act": 0, "scene": 1, "event": 0}
+    assert s.current_position == 2
 
     captured = capsys.readouterr()
     assert captured.out == ""
     assert captured.err == ""
 
 
-def test_goto_prev(monkeypatch, capsys):
+def test_goto_prev(capsys):
     s = Shakespeare(SAMPLE_PLAY)
 
-    assert s.current_position == {"act": 0, "scene": 0, "event": 0}
+    assert s.current_position == 0
     s.step_forward()
-    assert s.current_position == {"act": 0, "scene": 0, "event": 1}
+    assert s.current_position == 1
+    s.step_forward()
+    assert s.current_position == 2
+    s.step_forward()
+    assert s.current_position == 3
     s.run_sentence("Let us return to scene I.", "Juliet")
-    assert s.current_position == {"act": 0, "scene": 0, "event": 0}
+    assert s.current_position == 0
 
     captured = capsys.readouterr()
     assert captured.out == ""
     assert captured.err == ""
 
 
-def test_goto_without_opposite_character(monkeypatch, capsys):
+def test_goto_without_opposite_character(capsys):
     s = Shakespeare(SAMPLE_PLAY)
 
-    assert s.current_position == {"act": 0, "scene": 0, "event": 0}
+    assert s.current_position == 0
     s.step_forward()
-    assert s.current_position == {"act": 0, "scene": 0, "event": 1}
+    assert s.current_position == 1
     s.run_event("[Exit Romeo]")
     s.run_sentence("Let us proceed to scene II.", "Juliet")
-    assert s.current_position == {"act": 0, "scene": 1, "event": 0}
+    assert s.current_position == 2
     s.run_event("[Enter Romeo and Macbeth]")
     s.run_sentence("Let us proceed to scene I.", "Juliet")
-    assert s.current_position == {"act": 0, "scene": 0, "event": 0}
+    assert s.current_position == 0
 
     captured = capsys.readouterr()
     assert captured.out == ""
     assert captured.err == ""
 
 
-def test_goto_conditionals(monkeypatch, capsys):
+def test_goto_conditionals(capsys):
     s = Shakespeare(SAMPLE_PLAY)
 
-    assert s.current_position == {"act": 0, "scene": 0, "event": 0}
+    assert s.current_position == 0
     s.step_forward()
-    assert s.current_position == {"act": 0, "scene": 0, "event": 1}
+    assert s.current_position == 1
     s.state.global_boolean = True
     s.run_sentence("If so, let us proceed to scene II.", "Juliet")
-    assert s.current_position == {"act": 0, "scene": 1, "event": 0}
+    assert s.current_position == 2
     s.state.global_boolean = True
     s.run_sentence("If not, let us proceed to scene I.", "Juliet")
-    assert s.current_position == {"act": 0, "scene": 1, "event": 0}
+    assert s.current_position == 2
     s.state.global_boolean = False
     s.run_sentence("If so, let us proceed to scene I.", "Juliet")
-    assert s.current_position == {"act": 0, "scene": 1, "event": 0}
+    assert s.current_position == 2
     s.state.global_boolean = False
     s.run_sentence("If not, let us proceed to scene I.", "Juliet")
-    assert s.current_position == {"act": 0, "scene": 0, "event": 0}
+    assert s.current_position == 0
 
     captured = capsys.readouterr()
     assert captured.out == ""
     assert captured.err == ""
 
 
-def test_goto_based_on_numeral_not_order(monkeypatch, capsys):
+def test_goto_based_on_numeral_not_order(capsys):
     s = Shakespeare(
         """
         Test.
@@ -153,75 +157,96 @@ def test_goto_based_on_numeral_not_order(monkeypatch, capsys):
     """
     )
 
-    assert s.current_position == {"act": 0, "scene": 0, "event": 0}
+    assert s.current_position == 0
     s.step_forward()
-    assert s.current_position == {"act": 0, "scene": 0, "event": 1}
+    assert s.current_position == 1
     s.run_sentence("Let us return to scene I.", "Juliet")
-    assert s.current_position == {"act": 0, "scene": 1, "event": 0}
+    assert s.current_position == 2
     s.run_sentence("Let us return to scene III.", "Juliet")
-    assert s.current_position == {"act": 0, "scene": 0, "event": 0}
+    assert s.current_position == 0
     s.run_sentence("Let us return to scene II.", "Juliet")
-    assert s.current_position == {"act": 0, "scene": 2, "event": 0}
+    assert s.current_position == 3
 
     captured = capsys.readouterr()
     assert captured.out == ""
     assert captured.err == ""
 
 
-def test_errors_on_goto_nonexistent(monkeypatch, capsys):
+def test_errors_on_goto_nonexistent(capsys):
     s = Shakespeare(SAMPLE_PLAY)
 
-    assert s.current_position == {"act": 0, "scene": 0, "event": 0}
+    assert s.current_position == 0
     s.step_forward()
-    assert s.current_position == {"act": 0, "scene": 0, "event": 1}
+    assert s.current_position == 1
     with pytest.raises(ShakespeareRuntimeError) as exc:
         s.run_sentence("Let us proceed to scene IV.", "Juliet")
     assert "does not exist" in str(exc.value).lower()
     assert ">>Let us proceed to scene IV.<<" in str(exc.value)
     assert exc.value.interpreter == s
-    assert s.current_position == {"act": 0, "scene": 0, "event": 1}
+    assert s.current_position == 1
 
     captured = capsys.readouterr()
     assert captured.out == ""
     assert captured.err == ""
 
 
-def test_skips_empty_scenes_and_acts(monkeypatch, capsys):
-    s = Shakespeare(
+def test_duplicate_scene_numbers(capsys):
+    with pytest.raises(ShakespeareRuntimeError) as exc:
+        s = Shakespeare(
+            """
+            Test.
+
+            Romeo, a test.
+            Juliet, a test.
+
+            Act I: Nothing to see here.
+            Scene III: These are not the actors you're looking for.
+
+            [Enter Romeo and Juliet]
+
+            Juliet: Are you as good as nothing?
+
+            Scene I: Still nothing.
+
+            [A pause]
+
+            Scene III: Nothing strikes back.
+
+            [A pause]
         """
-        Test.
+        )
+    assert "is not unique" in str(exc.value).lower()
+    assert "Scene >>III<<: Nothing strikes back." in str(exc.value)
+    assert exc.value.interpreter == None
 
-        Romeo, a test.
-        Juliet, a test.
 
-        Act I: Nothing to see here.
-        Scene IV: Empty up front.
+def test_duplicate_act_numbers(capsys):
+    with pytest.raises(ShakespeareRuntimeError) as exc:
+        s = Shakespeare(
+            """
+            Test.
 
-        Scene III: These are not the actors you're looking for.
+            Romeo, a test.
+            Juliet, a test.
 
-        [Enter Romeo and Juliet]
+            Act I: Nothing to see here.
+            Scene III: These are not the actors you're looking for.
 
-        Juliet: Are you as good as nothing?
+            [Enter Romeo and Juliet]
 
-        Scene I: Still nothing.
-        Scene II: Nothing strikes back.
+            Juliet: Are you as good as nothing?
 
-        Act II: This is empty.
-        Act III: Not empty, kinda.
-        Scene I: Empty.
-        Scene II: Empty.
-        Act IV: Empty again.
-    """
-    )
+            Scene I: Still nothing.
 
-    assert s.current_position == {"act": 0, "scene": 1, "event": 0}
-    s.step_forward()
-    assert s.current_position == {"act": 0, "scene": 1, "event": 1}
-    s.run_sentence("Let us return to scene IV.", "Juliet")
-    assert s.current_position == {"act": 0, "scene": 1, "event": 0}
-    s.run_sentence("Let us return to scene I.", "Juliet")
-    assert s.current_position == {"act": 4, "scene": 0, "event": 0}
+            [A pause]
 
-    captured = capsys.readouterr()
-    assert captured.out == ""
-    assert captured.err == ""
+            Act I: Nothing strikes back.
+
+            Scene I: This doesn't matter.
+
+            [A pause]
+        """
+        )
+    assert "is not unique" in str(exc.value).lower()
+    assert "Act >>I<<: Nothing strikes back." in str(exc.value)
+    assert exc.value.interpreter == None

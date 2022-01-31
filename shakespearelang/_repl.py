@@ -1,24 +1,10 @@
 from .shakespeare import Shakespeare
 from .errors import ShakespeareError
+from ._utils import normalize_name
 from tatsu.exceptions import FailedParse
 
 import readline
 import sys
-
-
-def _print_character(character_name, interpreter):
-    character = interpreter.state.character_by_name(character_name)
-    print(character)
-
-
-def _run_sentences(sentences, speaking_character, opposite_character, interpreter):
-    for sentence in sentences:
-        if sentence.parseinfo.rule == "goto":
-            print("Control flow isn't allowed in REPL.")
-            # Stop this entire line of sentences
-            return
-
-        interpreter.run_sentence(sentence, speaking_character)
 
 
 DEFAULT_PLAY_TEMPLATE = """
@@ -58,21 +44,22 @@ def debug_play(text, input_style="interactive", output_style="verbose"):
     interpreter = Shakespeare(text, input_style=input_style, output_style=output_style)
 
     def on_breakpoint():
-        print("-----\n" + interpreter.next_event_text() + "\n-----\n")
+        print("-----\n" + interpreter.next_operation_text() + "\n-----\n")
         run_repl(interpreter)
 
     interpreter.run(on_breakpoint)
 
 
 def run_repl(interpreter):
-    previous_input_style = interpreter.get_input_style()
-    previous_output_style = interpreter.get_output_style()
-    interpreter.set_input_style("interactive")
-    interpreter.set_output_style("verbose")
+    previous_input_style = interpreter.settings.input_style
+    previous_output_style = interpreter.settings.output_style
+    interpreter.settings.input_style = "interactive"
+    interpreter.settings.output_style = "verbose"
     current_character = None
 
     while True:
         try:
+            pos_before = interpreter.current_position
             repl_input = input(">> ")
             if repl_input in ["exit", "quit"]:
                 sys.exit()
@@ -82,9 +69,6 @@ def run_repl(interpreter):
                 if interpreter.play_over():
                     break
                 interpreter.step_forward()
-                if interpreter.play_over():
-                    break
-                print("\n-----\n" + interpreter.next_event_text() + "\n-----\n")
             elif repl_input == "state":
                 print(str(interpreter.state))
             else:
@@ -92,11 +76,16 @@ def run_repl(interpreter):
                 current_character = _run_repl_input(
                     interpreter, repl_input, current_character
                 )
+
+            if interpreter.current_position != pos_before:
+                if interpreter.play_over():
+                    break
+                print("\n-----\n" + interpreter.next_operation_text() + "\n-----\n")
         except ShakespeareError as e:
             print(str(e), file=sys.stderr)
 
-    interpreter.set_input_style(previous_input_style)
-    interpreter.set_output_style(previous_output_style)
+    interpreter.input_style = previous_input_style
+    interpreter.output_style = previous_output_style
 
 
 def _run_repl_input(interpreter, repl_input, current_character):
@@ -104,12 +93,10 @@ def _run_repl_input(interpreter, repl_input, current_character):
 
     event = ast.event
     sentences = ast.sentences
-    character = ast.character
-    value = ast.value
 
     # Events that are lines should be considered sets of sentences.
     if event and event.parseinfo.rule == "line":
-        current_character = event.character
+        current_character = normalize_name(event.character)
         sentences = event.contents
         event = None
 
@@ -122,21 +109,14 @@ def _run_repl_input(interpreter, repl_input, current_character):
             print("Who's saying this?")
             return
 
-        speaking_character = interpreter.state.character_by_name(current_character)
-        interpreter.state.assert_character_on_stage(speaking_character)
-        opposite_character = interpreter.state.character_opposite(speaking_character)
+        for sentence in sentences:
+            interpreter.run_sentence(sentence, current_character)
+    elif ast.value:
+        if ast.expression_character:
+            current_character = normalize_name(ast.expression_character)
 
-        _run_sentences(sentences, speaking_character, opposite_character, interpreter)
-    elif value:
-        if character:
-            current_character = character
-
-        speaking_character = interpreter.state.character_by_name(current_character)
-        interpreter.state.assert_character_on_stage(speaking_character)
-        result = interpreter.evaluate_expression(value, speaking_character)
-
-        print(result)
-    elif character:
-        _print_character(character, interpreter)
+        print(interpreter.evaluate_expression(ast.value, current_character))
+    elif ast.display_character:
+        print(interpreter.state.character_by_name(normalize_name(ast.display_character)))
 
     return current_character

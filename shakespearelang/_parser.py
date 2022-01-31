@@ -1582,17 +1582,11 @@ class shakespeareParser(Parser):
     @tatsumasu()
     def _roman_numeral_(self):  # noqa
         self._pattern("(?i)M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})")
+        self.name_last_node("value")
+        self._define(["value"], [])
 
     @tatsumasu()
     def _goto_(self):  # noqa
-        with self._optional():
-            with self._choice():
-                with self._option():
-                    self._negative_if_()
-                with self._option():
-                    self._positive_if_()
-                self._error("expecting one of: " "<negative_if> <positive_if>")
-        self.name_last_node("condition")
         self._let_us_()
         self._proceed_to_()
         self._token("scene")
@@ -1605,7 +1599,7 @@ class shakespeareParser(Parser):
                 with self._option():
                     self._token(".")
                 self._error("expecting one of: " "'!' '.'")
-        self._define(["condition", "destination"], [])
+        self._define(["destination"], [])
 
     @tatsumasu()
     def _output_(self):  # noqa
@@ -1690,42 +1684,56 @@ class shakespeareParser(Parser):
 
     @tatsumasu()
     def _sentence_(self):  # noqa
-        with self._choice():
-            with self._option():
-                self._question_()
-            with self._option():
-                self._assignment_()
-            with self._option():
-                self._goto_()
-            with self._option():
-                self._output_()
-            with self._option():
-                self._input_()
-            with self._option():
-                self._push_()
-            with self._option():
-                self._pop_()
-            self._error(
-                "expecting one of: "
-                "'am' 'are' 'art' 'be' 'is' <question>"
-                "'thee' 'thou' 'you' <second_person>"
-                "<assignment> 'Let' 'We' <let_us> 'If'"
-                "<negative_if> <positive_if> <goto>"
-                "'open' 'speak' <output> 'listen' <input>"
-                "'Remember' <push> 'Recall' <pop>"
-            )
+        with self._optional():
+            with self._choice():
+                with self._option():
+                    self._negative_if_()
+                with self._option():
+                    self._positive_if_()
+                self._error("expecting one of: " "<negative_if> <positive_if>")
+        self.name_last_node("condition")
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._question_()
+                with self._option():
+                    self._assignment_()
+                with self._option():
+                    self._goto_()
+                with self._option():
+                    self._output_()
+                with self._option():
+                    self._input_()
+                with self._option():
+                    self._push_()
+                with self._option():
+                    self._pop_()
+                self._error(
+                    "expecting one of: "
+                    "<question> <assignment> <goto> <output>"
+                    "<input> <push> <pop>"
+                )
+        self.name_last_node("operation")
+        self._define(["condition", "operation"], [])
+
+    @tatsumasu()
+    def _line_contents_(self):  # noqa
+        self._sentence_()
+        self.add_last_node_to_name("@")
+
+        def block1():
+            self._pattern("\\s*")
+            self._sentence_()
+            self.add_last_node_to_name("@")
+
+        self._closure(block1)
 
     @tatsumasu()
     def _line_(self):  # noqa
         self._character_()
         self.name_last_node("character")
         self._token(":")
-        with self._group():
-
-            def block2():
-                self._sentence_()
-
-            self._positive_closure(block2)
+        self._line_contents_()
         self.name_last_node("contents")
         self._define(["character", "contents"], [])
 
@@ -1893,7 +1901,7 @@ class shakespeareParser(Parser):
                         self._character_()
                         self._token(":")
                 self._character_()
-                self.name_last_node("character")
+                self.name_last_node("display_character")
                 self._check_eof()
             with self._option():
                 with self._ifnot():
@@ -1903,7 +1911,7 @@ class shakespeareParser(Parser):
                         self._pattern(".*\\.")
                 with self._optional():
                     self._character_()
-                    self.name_last_node("character")
+                    self.name_last_node("expression_character")
                     self._token(":")
                 self._value_()
                 self.name_last_node("value")
@@ -2026,12 +2034,21 @@ class shakespeareParser(Parser):
                 "<breakpoint> <entrance> <exit> <exeunt>"
                 "<event> 'am' 'are' 'art' 'be' 'is'"
                 "<question> <assignment> 'Let' 'We'"
-                "<let_us> 'If' <negative_if>"
-                "<positive_if> <goto> 'open' 'speak'"
-                "<output> 'listen' <input> 'Remember'"
-                "<push> 'Recall' <pop> <sentence>"
+                "<let_us> <goto> 'open' 'speak' <output>"
+                "'listen' <input> 'Remember' <push>"
+                "'Recall' <pop> 'If' <negative_if>"
+                "<positive_if> <sentence>"
             )
-        self._define(["character", "event", "sentences", "value"], [])
+        self._define(
+            [
+                "display_character",
+                "event",
+                "expression_character",
+                "sentences",
+                "value",
+            ],
+            [],
+        )
 
     @tatsumasu()
     def _text_before_punctuation_(self):  # noqa
@@ -2040,6 +2057,7 @@ class shakespeareParser(Parser):
     @tatsumasu()
     def _scene_(self):  # noqa
         self._token("Scene")
+        self._pattern("\\s*")
         self._roman_numeral_()
         self.name_last_node("number")
         self._token(":")
@@ -2064,6 +2082,7 @@ class shakespeareParser(Parser):
     @tatsumasu()
     def _act_(self):  # noqa
         self._token("Act")
+        self._pattern("\\s*")
         self._roman_numeral_()
         self.name_last_node("number")
         self._token(":")
@@ -2103,7 +2122,9 @@ class shakespeareParser(Parser):
     @tatsumasu()
     def _dramatis_personae_(self):  # noqa
         def block0():
+            self._pattern("\\s*")
             self._dramatis_persona_()
+            self.add_last_node_to_name("@")
 
         self._closure(block0)
 
@@ -2274,6 +2295,9 @@ class shakespeareSemantics(object):
         return ast
 
     def sentence(self, ast):  # noqa
+        return ast
+
+    def line_contents(self, ast):  # noqa
         return ast
 
     def line(self, ast):  # noqa

@@ -421,9 +421,9 @@ let_us = "Let" "us" | "We" "shall" | "We" "must";
 
 proceed_to = "proceed" "to" | "return" "to";
 
-roman_numeral = ?/(?i)M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})/?;
+roman_numeral = value:?/(?i)M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})/?;
 
-goto = condition:[negative_if | positive_if] let_us proceed_to "scene" destination:roman_numeral ("!" | ".");
+goto = let_us proceed_to "scene" destination:roman_numeral ("!" | ".");
 
 output = (output_number:("open" second_person_possessive "heart") | output_char:("speak" second_person_possessive "mind")) ("!" | ".");
 
@@ -433,9 +433,11 @@ push = "Remember" value:value ("!" | ".");
 
 pop = "Recall" recall_string:text_before_punctuation ("!" | ".");
 
-sentence = question | assignment | goto | output | input | push | pop;
+sentence = condition:[negative_if | positive_if] operation:(question | assignment | goto | output | input | push | pop);
 
-line = character:character ":" contents:({sentence}+);
+line_contents = @+:sentence {?"\s*" @+:sentence};
+
+line = character:character ":" contents:line_contents;
 
 character_list = @+:character {"," @+:character}* "and" @+:character | @+:character;
 
@@ -449,16 +451,16 @@ exeunt = "[" action:"Exeunt" [characters:character_list] "]";
 
 event = line | breakpoint | entrance | exit | exeunt;
 
-repl_input =  !(character ":") character:character $ | !(character ":" /.*\./) [character:character ":"] value:value $ | event:event $ | sentences:({sentence}+) $;
+repl_input =  !(character ":") display_character:character $ | !(character ":" /.*\./) [expression_character:character ":"] value:value $ | event:event $ | sentences:({sentence}+) $;
 
 text_before_punctuation = ?/[^!\.]*/?;
 
-scene = "Scene" number:roman_numeral ":" name:text_before_punctuation ("!" | ".") events:({event}*);
+scene = "Scene" ?"\s*" number:roman_numeral ":" name:text_before_punctuation ("!" | ".") events:({event}*);
 
-act = "Act" number:roman_numeral ":" name:text_before_punctuation ("!" | ".") scenes:({scene}*);
+act = "Act" ?"\s*" number:roman_numeral ":" name:text_before_punctuation ("!" | ".") scenes:({scene}*);
 
 dramatis_persona = character:character ',' text_before_punctuation ("!" | ".");
 
-dramatis_personae = {dramatis_persona}*;
+dramatis_personae = {?"\s*" @+:dramatis_persona}*;
 
 play = title:text_before_punctuation ("!" | ".") dramatis_personae:dramatis_personae acts:({act}*) $;

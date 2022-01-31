@@ -110,3 +110,29 @@ def test_past_eof(monkeypatch, capsys):
 
     assert captured.out == ""
     assert captured.err == ""
+
+
+def test_conditional(monkeypatch, capsys):
+    monkeypatch.setattr("sys.stdin", StringIO("ab"))
+    s = Shakespeare("Foo. Juliet, a test. Romeo, a test.")
+    s.run_event("[Enter Romeo and Juliet]")
+
+    s.state.global_boolean = False
+    s.run_sentence("If so, open your mind!", "Juliet")
+    assert s.state.character_by_name("Romeo").value == 0
+
+    s.state.global_boolean = True
+    s.run_sentence("If not, open your mind!", "Juliet")
+    assert s.state.character_by_name("Romeo").value == 0
+
+    s.state.global_boolean = True
+    s.run_sentence("If so, open your mind!", "Juliet")
+    assert s.state.character_by_name("Romeo").value == 97
+
+    s.state.global_boolean = False
+    s.run_sentence("If not, open your mind!", "Juliet")
+    assert s.state.character_by_name("Romeo").value == 98
+
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert captured.err == ""

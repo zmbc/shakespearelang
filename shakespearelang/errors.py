@@ -20,7 +20,7 @@ class ShakespeareParseError(ShakespeareError):
     # the display more consistent with runtime errors, and hide the Python stack
     # traces.
     def __init__(self, failed_parse_exception):
-        self.message = failed_parse_exception.item
+        self.message = failed_parse_exception.message
         self.tokenizer = failed_parse_exception.tokenizer
         self.pos = failed_parse_exception.pos
         self.stack = failed_parse_exception.stack
@@ -36,8 +36,13 @@ class ShakespeareParseError(ShakespeareError):
         )
 
     def _context_str_lines(self):
+        # TatSu reports lines zero-indexed
+        line = self.tokenizer.posline(self.pos) + 1
+        if self.pos == 0:
+            # TatSu still says line 1 in this case
+            line = 1
         return [
-            f"  at line {self.tokenizer.posline(self.pos) + 1}",
+            f"  at line {line}",
             "----- context -----",
             pos_context(self.pos, self.tokenizer),
         ]

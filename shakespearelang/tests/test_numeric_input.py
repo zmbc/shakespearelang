@@ -79,3 +79,29 @@ def test_errors_on_eof(monkeypatch, capsys):
     captured = capsys.readouterr()
     assert captured.out == ""
     assert captured.err == ""
+
+
+def test_conditional(monkeypatch, capsys):
+    monkeypatch.setattr("sys.stdin", StringIO("4257\n3211"))
+    s = Shakespeare("Foo. Juliet, a test. Romeo, a test.")
+    s.run_event("[Enter Romeo and Juliet]")
+
+    s.state.global_boolean = False
+    s.run_sentence("If so, listen to your heart!", "Juliet")
+    assert s.state.character_by_name("Romeo").value == 0
+
+    s.state.global_boolean = True
+    s.run_sentence("If not, listen to your heart!", "Juliet")
+    assert s.state.character_by_name("Romeo").value == 0
+
+    s.state.global_boolean = True
+    s.run_sentence("If so, listen to your heart!", "Juliet")
+    assert s.state.character_by_name("Romeo").value == 4257
+
+    s.state.global_boolean = False
+    s.run_sentence("If not, listen to your heart!", "Juliet")
+    assert s.state.character_by_name("Romeo").value == 3211
+
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert captured.err == ""

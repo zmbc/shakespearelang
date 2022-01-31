@@ -1,6 +1,5 @@
 from shakespearelang import Shakespeare
 from shakespearelang.errors import ShakespeareRuntimeError
-from io import StringIO
 import pytest
 import textwrap
 
@@ -31,25 +30,25 @@ def test_full_error_format():
         s.run()
     assert str(exc.value) == textwrap.dedent(
         """\
-    SPL runtime error: Tried to pop from an empty stack. Character: Juliet
-      at line 13
-    ----- context -----
-                        Scene I: A Stage.
+        SPL runtime error: Tried to pop from an empty stack. Character: Juliet
+          at line 13
+        ----- context -----
+                            Scene I: A Stage.
 
-    [Enter Romeo and Juliet]
+        [Enter Romeo and Juliet]
 
-    Romeo: You are a pig. >>Recall your mind!<<
+        Romeo: You are a pig. >>Recall your mind!<<
 
-    Recall your mind!
+        Recall your mind!
 
-    [Exeunt]
+        [Exeunt]
 
-    ----- state -----
-    global boolean = False
-    on stage:
-      Romeo = 0 ()
-      Juliet = -1 ()
-    off stage:"""
+        ----- state -----
+        global boolean = False
+        on stage:
+          Romeo = 0 ()
+          Juliet = -1 ()
+        off stage:"""
     )
 
 

@@ -1,7 +1,7 @@
 def normalize_name(name):
     if not isinstance(name, str):
         name = " ".join(name)
-    return name
+    return name.title().replace(" Of ", " of ")
 
 
 def pos_context(pos, tokenizer, context_amount=3):
@@ -52,17 +52,30 @@ def _parsed_item_lines(parseinfo):
 
 
 def _pos_highlighted_lines(tokenizer, line, col):
+    line_list = tokenizer.get_lines(line, line + 1)
+    if len(line_list) == 0:
+        line_str = ''
+    else:
+        line_str = line_list[0]
+
     return [
         (" " * col) + "∨\n",
-        tokenizer.get_line(line),
+        _ensure_ends_with_newline(line_str),
         (" " * col) + "∧\n",
     ]
 
 
 def _before_context_lines(tokenizer, line, context_amount=3):
     context_start_line = max(line - 1 - context_amount, 0)
-    return tokenizer.get_lines(context_start_line, line - 1)
-
+    lines = tokenizer.get_lines(context_start_line, line - 1)
+    return [_ensure_ends_with_newline(l) for l in lines]
 
 def _after_context_lines(tokenizer, endline, context_amount=3):
-    return tokenizer.get_lines(endline + 1, endline + 1 + context_amount)
+    lines = tokenizer.get_lines(endline + 1, endline + 1 + context_amount)
+    return [_ensure_ends_with_newline(l) for l in lines]
+
+def _ensure_ends_with_newline(line_str):
+    if not line_str.endswith('\n'):
+        return line_str + '\n'
+    else:
+        return line_str
