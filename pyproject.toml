@@ -18,8 +18,8 @@ click = "^7.1.2"
 tatsu = "~5.6.1"
 
 [tool.poetry.dev-dependencies]
-mkdocs = "^1.1.2"
-mkdocs-material = "^5.2.0"
+mkdocs = "^1.2.3"
+mkdocs-material = "^8.0.0"
 mkdocstrings = "^0.16.2"
 pytest = "^6.2.1"
 tox = "^3.20.1"
@@ -28,6 +28,7 @@ black = "^21.9b0"
 snakeviz = "^2.1.1"
 pexpect = "^4.8.0"
 mkdocs-click = "^0.5.0"
+mike = "^1.1.2"
 
 [tool.poetry.scripts]
 shakespeare = "shakespearelang.cli:main"

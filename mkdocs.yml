@@ -5,6 +5,7 @@ nav:
   - Python API reference: API.md
 theme:
   name: material
+  custom_dir: mkdocs_overrides
   palette:
     primary: teal
 plugins:
@@ -17,6 +18,9 @@ plugins:
             members_order: source
       watch:
         - shakespearelang
+extra:
+  version:
+    provider: mike
 markdown_extensions:
   - mkdocs-click
   - toc:
