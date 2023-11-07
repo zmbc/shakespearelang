@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "shakespearelang"
-version = "1.0.0rc1"
+version = "1.0.0"
 description = "An interpreter for the Shakespeare Programming Language."
 authors = ["Zeb Burke-Conte <zebburkeconte@gmail.com>"]
 readme = "README.rst"
@@ -8,7 +8,7 @@ repository = "http://github.com/zmbc/shakespearelang"
 homepage = "http://shakespearelang.com"
 license = "MIT"
 classifiers = [
-  "Development Status :: 3 - Alpha",
+  "Development Status :: 5 - Production/Stable",
   "Topic :: Software Development :: Interpreters",
 ]
 
