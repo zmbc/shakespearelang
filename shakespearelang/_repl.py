@@ -6,7 +6,7 @@ from tatsu.exceptions import FailedParse
 try:
     import readline
 except ModuleNotFoundError:
-  print("readline module is not supported in Windows, continuing without it.")
+    print("readline module is not supported in Windows, continuing without it.")
 
 import sys
 
