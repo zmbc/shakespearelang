@@ -3,7 +3,11 @@ from .errors import ShakespeareError
 from ._utils import normalize_name
 from tatsu.exceptions import FailedParse
 
-import readline
+try:
+    import readline
+except ModuleNotFoundError:
+    print("readline module is not supported in Windows, continuing without it.")
+
 import sys
 
 
