@@ -1,5 +1,6 @@
+from collections import deque
+
 from .errors import ShakespeareRuntimeError
-from ._utils import normalize_name
 
 
 class Character:
@@ -7,7 +8,7 @@ class Character:
 
     def __init__(self):
         self.value = 0
-        self.stack = []
+        self.stack = deque()
 
     def __str__(self):
         return f'{self.value} ({" ".join([str(v) for v in self.stack][::-1])})'
