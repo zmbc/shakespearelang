@@ -10,6 +10,19 @@ def test_correctly_parses_number(monkeypatch, capsys):
     s.run_event("[Enter Romeo and Juliet]")
     s.run_sentence("Listen to your heart!", "Juliet")
     assert s.state.character_by_name("Romeo").value == 4257
+
+    monkeypatch.setattr("sys.stdin", StringIO("-3211"))
+    s = Shakespeare("Foo. Juliet, a test. Romeo, a test.")
+    s.run_event("[Enter Romeo and Juliet]")
+    s.run_sentence("Listen to your heart!", "Juliet")
+    assert s.state.character_by_name("Romeo").value == -3211
+
+    monkeypatch.setattr("sys.stdin", StringIO("+2"))
+    s = Shakespeare("Foo. Juliet, a test. Romeo, a test.")
+    s.run_event("[Enter Romeo and Juliet]")
+    s.run_sentence("Listen to your heart!", "Juliet")
+    assert s.state.character_by_name("Romeo").value == 2
+
     captured = capsys.readouterr()
     assert captured.out == ""
     assert captured.err == ""
@@ -42,39 +55,24 @@ def test_consumes_trailing_newline(monkeypatch, capsys):
     assert s.state.character_by_name("Romeo").value == -1
 
 
-def test_errors_without_digits(monkeypatch, capsys):
+def test_no_digits_consumed(monkeypatch, capsys):
     monkeypatch.setattr("sys.stdin", StringIO("a123"))
     s = Shakespeare("Foo. Juliet, a test. Romeo, a test.")
     s.run_event("[Enter Romeo and Juliet]")
-
-    with pytest.raises(ShakespeareRuntimeError) as exc:
-        s.run_sentence("Listen to your heart!", "Juliet")
-    assert "no numeric input" in str(exc.value).lower()
-    assert ">>Listen to your heart!<<" in str(exc.value)
-    assert exc.value.interpreter == s
-    assert s.state.character_by_name("Romeo").value == 0
-
-    monkeypatch.setattr("sys.stdin", StringIO("a123"))
-    with pytest.raises(ShakespeareRuntimeError) as exc:
-        s.run_sentence("Listen to your heart!", "Juliet")
-    assert "no numeric input" in str(exc.value).lower()
-    assert ">>Listen to your heart!<<" in str(exc.value)
-    assert exc.value.interpreter == s
+    s.state.character_by_name("Romeo").value = 24
+    s.run_sentence("Listen to your heart!", "Juliet")
     assert s.state.character_by_name("Romeo").value == 0
     captured = capsys.readouterr()
     assert captured.out == ""
     assert captured.err == ""
 
 
-def test_errors_on_eof(monkeypatch, capsys):
+def test_eof(monkeypatch, capsys):
     monkeypatch.setattr("sys.stdin", StringIO(""))
     s = Shakespeare("Foo. Juliet, a test. Romeo, a test.")
     s.run_event("[Enter Romeo and Juliet]")
-    with pytest.raises(ShakespeareRuntimeError) as exc:
-        s.run_sentence("Listen to your heart!", "Juliet")
-    assert "end of file" in str(exc.value).lower()
-    assert ">>Listen to your heart!<<" in str(exc.value)
-    assert exc.value.interpreter == s
+    s.state.character_by_name("Romeo").value = 42
+    s.run_sentence("Listen to your heart!", "Juliet")
     assert s.state.character_by_name("Romeo").value == 0
     captured = capsys.readouterr()
     assert captured.out == ""
@@ -105,6 +103,7 @@ def test_conditional(monkeypatch, capsys):
     captured = capsys.readouterr()
     assert captured.out == ""
     assert captured.err == ""
+
 
 def test_interactive_style(monkeypatch, capsys):
     monkeypatch.setattr("sys.stdin", StringIO("4257\n3211"))
