@@ -10,7 +10,7 @@ class BasicInputManager:
         try:
             self._ensure_input_buffer()
         except EOFError:
-            return 0
+            return -2
 
         sign = self._consume_sign_if_present()
         number = self._consume_digits()
@@ -18,7 +18,7 @@ class BasicInputManager:
         if number is None:
             if sign:
                 self._input_buffer = sign + self._input_buffer
-            return 0
+            return -1
 
         self._consume_newline_if_present()
 
