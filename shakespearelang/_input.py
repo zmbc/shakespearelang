@@ -10,16 +10,30 @@ class BasicInputManager:
         try:
             self._ensure_input_buffer()
         except EOFError:
-            raise ShakespeareRuntimeError("End of file encountered.") from None
+            return -2
 
+        sign = self._consume_sign_if_present()
         number = self._consume_digits()
+
+        if number is None:
+            if sign:
+                self._input_buffer = sign + self._input_buffer
+            return -1
+
         self._consume_newline_if_present()
 
-        return number
+        return -number if sign == "-" else number
 
     def _consume_newline_if_present(self):
         if self._input_buffer and self._input_buffer[0] == "\n":
             self._input_buffer = self._input_buffer[1:]
+
+    def _consume_sign_if_present(self):
+        if self._input_buffer and (sign := self._input_buffer[0]) in ["+", "-"]:
+            self._input_buffer = self._input_buffer[1:]
+            return sign
+
+        return ""
 
     def _consume_digits(self):
         number_input = ""
@@ -28,7 +42,7 @@ class BasicInputManager:
             self._input_buffer = self._input_buffer[1:]
 
         if len(number_input) == 0:
-            raise ShakespeareRuntimeError("No numeric input was given.")
+            return None
 
         return int(number_input)
 
