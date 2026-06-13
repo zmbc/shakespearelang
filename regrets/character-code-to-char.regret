@@ -1,0 +1,13 @@
+cluster: character-code-to-char
+version: 1
+fingerprint: 45tqus6
+captured: 2026-06-13T16:10:36.367515+00:00
+watches: [character_code_to_char]
+entry: character_code_to_char
+stack: python
+fingerprintLevel: entry
+module: shakespearelang.pure_logic
+---
+INPUT  65
+OUTPUT "A"
+HASH   45tqus6

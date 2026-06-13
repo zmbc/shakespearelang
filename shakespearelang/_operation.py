@@ -1,10 +1,26 @@
+"""
+Operations for the Shakespeare Programming Language.
+
+This module implements the operation system that executes SPL statements.
+Operations are the "verbs" of SPL — they modify state, perform I/O, and
+control execution flow. Each operation corresponds to an SPL construct
+like entrance/exit, assignment, question, output, push/pop, or goto.
+
+The Question class uses the comparison module's evaluate_comparison
+function for its comparison logic, and the comparative type handlers
+are now mapped to the same comparison types used in the comparison module.
+"""
+
 from ._utils import normalize_name
 from ._expression import expression_from_ast
+from .comparison import evaluate_comparison
 from .errors import ShakespeareRuntimeError, ShakespeareParseError
 from tatsu.ast import AST
 
 
 class Operation:
+    """Base class for all SPL operations."""
+
     def __init__(self, ast_node: AST):
         self.ast_node = ast_node
         self._setup(ast_node)
@@ -25,6 +41,8 @@ class Operation:
 
 
 class Entrance(Operation):
+    """Bring characters onto the stage."""
+
     def _setup(self, ast_node: AST):
         self.characters = [normalize_name(c) for c in ast_node.characters]
 
@@ -35,6 +53,8 @@ class Entrance(Operation):
 
 
 class Exit(Operation):
+    """Remove a character from the stage."""
+
     def _setup(self, ast_node: AST):
         self.character = normalize_name(ast_node.character)
 
@@ -45,6 +65,8 @@ class Exit(Operation):
 
 
 class Exeunt(Operation):
+    """Remove characters from the stage (or all characters if none specified)."""
+
     def _setup(self, ast_node: AST):
         if ast_node.characters:
             self.characters = [normalize_name(c) for c in ast_node.characters]
@@ -63,10 +85,18 @@ class Exeunt(Operation):
 
 
 class Breakpoint(Operation):
+    """A debug breakpoint that pauses execution."""
     pass
 
 
 class SentenceOperation(Operation):
+    """Base class for operations that are part of a character's dialogue sentence.
+
+    SentenceOperations support conditional execution based on the global boolean,
+    which is set by Question operations. If a condition is present and doesn't
+    match the global boolean, the operation is skipped.
+    """
+
     def __init__(self, ast_node: AST, character: str):
         self.ast_node = ast_node
         self.op_ast_node = ast_node.operation
@@ -101,10 +131,18 @@ class SentenceOperation(Operation):
 
 
 class Question(SentenceOperation):
-    _COMPARATIVE_TYPE_HANDLERS = {
-        "positive_comparative": lambda a, b: a > b,
-        "negative_comparative": lambda a, b: a < b,
-        "neutral_comparative": lambda a, b: a == b,
+    """A comparison question that sets the global boolean.
+
+    Maps comparative types to the comparison module's evaluate_comparison:
+    - positive_comparative → "positive" (greater than)
+    - negative_comparative → "negative" (less than)
+    - neutral_comparative → "neutral" (equal to)
+    """
+
+    _COMPARATIVE_TYPE_MAP = {
+        "positive_comparative": "positive",
+        "negative_comparative": "negative",
+        "neutral_comparative": "neutral",
     }
 
     def _setup(self):
@@ -115,11 +153,11 @@ class Question(SentenceOperation):
             self.op_ast_node.second_value, self.character
         )
         comparative_rule = self.op_ast_node.comparative.parseinfo.rule
-        if comparative_rule not in self._COMPARATIVE_TYPE_HANDLERS:
+        if comparative_rule not in self._COMPARATIVE_TYPE_MAP:
             raise ShakespeareRuntimeError(
                 f"Unknown comparative type: {comparative_rule}"
             )
-        self.comparison = self._COMPARATIVE_TYPE_HANDLERS[comparative_rule]
+        self.comparison_type = self._COMPARATIVE_TYPE_MAP[comparative_rule]
 
     def _run_logic(self, state, settings):
         result = self._evaluate(state)
@@ -130,12 +168,16 @@ class Question(SentenceOperation):
         state.global_boolean = result
 
     def _evaluate(self, state) -> bool:
-        return self.comparison(
-            self.first_value.evaluate(state), self.second_value.evaluate(state)
+        return evaluate_comparison(
+            self.first_value.evaluate(state),
+            self.second_value.evaluate(state),
+            self.comparison_type,
         )
 
 
 class Assignment(SentenceOperation):
+    """Assign an expression value to the opposite character."""
+
     def _setup(self):
         self.value = expression_from_ast(self.op_ast_node.value, self.character)
 
@@ -149,6 +191,8 @@ class Assignment(SentenceOperation):
 
 
 class Input(SentenceOperation):
+    """Read input (number or character) and assign to the opposite character."""
+
     def _setup(self):
         self.input_type = "number" if self.op_ast_node.input_number else "char"
 
@@ -166,6 +210,8 @@ class Input(SentenceOperation):
 
 
 class Output(SentenceOperation):
+    """Output a value (as number or character) from the opposite character."""
+
     def _setup(self):
         self.output_type = "number" if self.op_ast_node.output_number else "char"
 
@@ -181,6 +227,8 @@ class Output(SentenceOperation):
 
 
 class Push(SentenceOperation):
+    """Push an expression value onto the opposite character's stack."""
+
     def _setup(self):
         self.value = expression_from_ast(self.op_ast_node.value, self.character)
 
@@ -194,6 +242,8 @@ class Push(SentenceOperation):
 
 
 class Pop(SentenceOperation):
+    """Pop a value from the opposite character's stack."""
+
     def _run_logic(self, state, settings):
         popping_character = state.character_opposite(self.character)
         state.character_by_name(popping_character).pop()
@@ -203,6 +253,8 @@ class Pop(SentenceOperation):
 
 
 class Goto(SentenceOperation):
+    """Jump to a different scene, optionally conditionally."""
+
     def _setup(self):
         self.destination = self.op_ast_node.destination.value
 
@@ -241,6 +293,7 @@ _OPERATIONS_CONSTRUCTORS = {
 
 
 def operations_from_event(event: AST):
+    """Construct operations from an event AST node."""
     rule = event.parseinfo.rule
     if rule == "line":
         return [operation_from_sentence(s, event.character) for s in event.contents]
@@ -249,5 +302,6 @@ def operations_from_event(event: AST):
 
 
 def operation_from_sentence(sentence: AST, character: str):
+    """Construct a SentenceOperation from a sentence AST node and character name."""
     sentence_operation_rule = sentence.operation.parseinfo.rule
     return _OPERATIONS_CONSTRUCTORS[sentence_operation_rule](sentence, character)

@@ -1,0 +1,13 @@
+cluster: normalize-character-name
+version: 1
+fingerprint: 2re56mf
+captured: 2026-06-13T16:10:36.367175+00:00
+watches: [normalize_character_name]
+entry: normalize_character_name
+stack: python
+fingerprintLevel: entry
+module: shakespearelang.pure_logic
+---
+INPUT  "the ghost of king hamlet"
+OUTPUT "The Ghost of King Hamlet"
+HASH   2re56mf

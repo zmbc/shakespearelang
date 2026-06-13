@@ -1,0 +1,114 @@
+{
+  "character-code-to-char": {
+    "fingerprint": "45tqus6",
+    "entry": "character_code_to_char",
+    "watches": "[character_code_to_char]",
+    "stack": "python",
+    "input": 65,
+    "output": "A",
+    "goldenHash": "45tqus6"
+  },
+  "character-push-pop-sequence": {
+    "fingerprint": "onnbwby",
+    "entry": "character_push_pop_sequence",
+    "watches": "[character_push_pop_sequence]",
+    "stack": "python",
+    "input": [
+      1,
+      2,
+      3
+    ],
+    "output": {
+      "final_value": 1,
+      "final_stack": [],
+      "pop_sequence": [
+        3,
+        2,
+        1
+      ]
+    },
+    "goldenHash": "onnbwby"
+  },
+  "compare-values": {
+    "fingerprint": "diuu4tq",
+    "entry": "compare_values",
+    "watches": "[compare_values]",
+    "stack": "python",
+    "input": [
+      5,
+      3,
+      "positive"
+    ],
+    "output": true,
+    "goldenHash": "diuu4tq"
+  },
+  "compute-factorial": {
+    "fingerprint": "6dnasqq",
+    "entry": "compute_factorial",
+    "watches": "[compute_factorial]",
+    "stack": "python",
+    "input": 0,
+    "output": 1,
+    "goldenHash": "6dnasqq"
+  },
+  "compute-negative-noun-value": {
+    "fingerprint": "55wmkjd",
+    "entry": "compute_negative_noun_value",
+    "watches": "[compute_negative_noun_value]",
+    "stack": "python",
+    "input": 0,
+    "output": -1,
+    "goldenHash": "55wmkjd"
+  },
+  "compute-positive-noun-value": {
+    "fingerprint": "6dnasqq",
+    "entry": "compute_positive_noun_value",
+    "watches": "[compute_positive_noun_value]",
+    "stack": "python",
+    "input": 0,
+    "output": 1,
+    "goldenHash": "6dnasqq"
+  },
+  "compute-quotient": {
+    "fingerprint": "2bh4lop",
+    "entry": "compute_quotient",
+    "watches": "[compute_quotient]",
+    "stack": "python",
+    "input": [
+      10,
+      3
+    ],
+    "output": 3,
+    "goldenHash": "2bh4lop"
+  },
+  "compute-remainder": {
+    "fingerprint": "4jutxop",
+    "entry": "compute_remainder",
+    "watches": "[compute_remainder]",
+    "stack": "python",
+    "input": [
+      10,
+      3
+    ],
+    "output": 1,
+    "goldenHash": "4jutxop"
+  },
+  "compute-square-root": {
+    "fingerprint": "5m8e79v",
+    "entry": "compute_square_root",
+    "watches": "[compute_square_root]",
+    "stack": "python",
+    "input": 0,
+    "output": 0,
+    "goldenHash": "5m8e79v"
+  },
+  "normalize-character-name": {
+    "fingerprint": "2re56mf",
+    "entry": "normalize_character_name",
+    "watches": "[normalize_character_name]",
+    "stack": "python",
+    "input": "the ghost of king hamlet",
+    "output": "The Ghost of King Hamlet",
+    "goldenHash": "2re56mf"
+  }
+}

@@ -1,0 +1,13 @@
+cluster: character-push-pop-sequence
+version: 1
+fingerprint: onnbwby
+captured: 2026-06-13T16:10:36.369010+00:00
+watches: [character_push_pop_sequence]
+entry: character_push_pop_sequence
+stack: python
+fingerprintLevel: entry
+module: shakespearelang.pure_logic
+---
+INPUT  [1, 2, 3]
+OUTPUT {"final_value": 1, "final_stack": [], "pop_sequence": [3, 2, 1]}
+HASH   onnbwby

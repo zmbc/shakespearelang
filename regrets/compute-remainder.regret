@@ -1,0 +1,14 @@
+cluster: compute-remainder
+version: 1
+fingerprint: 4jutxop
+captured: 2026-06-13T16:10:36.368749+00:00
+watches: [compute_remainder]
+entry: compute_remainder
+stack: python
+fingerprintLevel: entry
+multiArgs: True
+module: shakespearelang.pure_logic
+---
+INPUT  [10, 3]
+OUTPUT 1
+HASH   4jutxop

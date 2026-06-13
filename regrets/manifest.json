@@ -1,0 +1,171 @@
+{
+  "clusters": [
+    {
+      "id": "normalize-character-name",
+      "entry": "normalize_character_name",
+      "watches": ["normalize_character_name"],
+      "module": "shakespearelang.pure_logic",
+      "pythonPath": ".",
+      "stack": "python",
+      "fingerprintLevel": "entry",
+      "description": "Normalize character names to title case with 'of' exception",
+      "inputs": [
+        "the ghost of king hamlet",
+        "romeo",
+        ["the", "lady", "of", "the", "lake"],
+        "",
+        "A"
+      ]
+    },
+    {
+      "id": "character-code-to-char",
+      "entry": "character_code_to_char",
+      "watches": ["character_code_to_char"],
+      "module": "shakespearelang.pure_logic",
+      "pythonPath": ".",
+      "stack": "python",
+      "fingerprintLevel": "entry",
+      "description": "Convert integer character code to its string representation",
+      "inputs": [
+        65,
+        72,
+        10,
+        48,
+        122
+      ]
+    },
+    {
+      "id": "compute-positive-noun-value",
+      "entry": "compute_positive_noun_value",
+      "watches": ["compute_positive_noun_value"],
+      "module": "shakespearelang.pure_logic",
+      "pythonPath": ".",
+      "stack": "python",
+      "fingerprintLevel": "entry",
+      "description": "Compute 2^adjective_count for positive noun phrases",
+      "inputs": [
+        0,
+        1,
+        3,
+        5
+      ]
+    },
+    {
+      "id": "compute-negative-noun-value",
+      "entry": "compute_negative_noun_value",
+      "watches": ["compute_negative_noun_value"],
+      "module": "shakespearelang.pure_logic",
+      "pythonPath": ".",
+      "stack": "python",
+      "fingerprintLevel": "entry",
+      "description": "Compute -(2^adjective_count) for negative noun phrases",
+      "inputs": [
+        0,
+        1,
+        3,
+        5
+      ]
+    },
+    {
+      "id": "compute-factorial",
+      "entry": "compute_factorial",
+      "watches": ["compute_factorial"],
+      "module": "shakespearelang.pure_logic",
+      "pythonPath": ".",
+      "stack": "python",
+      "fingerprintLevel": "entry",
+      "description": "Compute factorial of a non-negative integer",
+      "inputs": [
+        0,
+        1,
+        5,
+        10
+      ]
+    },
+    {
+      "id": "compute-square-root",
+      "entry": "compute_square_root",
+      "watches": ["compute_square_root"],
+      "module": "shakespearelang.pure_logic",
+      "pythonPath": ".",
+      "stack": "python",
+      "fingerprintLevel": "entry",
+      "description": "Compute truncated integer square root (C-style cast)",
+      "inputs": [
+        0,
+        1,
+        16,
+        100,
+        2
+      ]
+    },
+    {
+      "id": "compute-quotient",
+      "entry": "compute_quotient",
+      "watches": ["compute_quotient"],
+      "module": "shakespearelang.pure_logic",
+      "pythonPath": ".",
+      "stack": "python",
+      "fingerprintLevel": "entry",
+      "description": "Compute truncated integer division matching C behavior",
+      "inputs": [
+        [10, 3],
+        [7, 2],
+        [-7, 2],
+        [0, 1]
+      ],
+      "multiArgs": true
+    },
+    {
+      "id": "compute-remainder",
+      "entry": "compute_remainder",
+      "watches": ["compute_remainder"],
+      "module": "shakespearelang.pure_logic",
+      "pythonPath": ".",
+      "stack": "python",
+      "fingerprintLevel": "entry",
+      "description": "Compute integer remainder using truncated division (C behavior via math.fmod)",
+      "inputs": [
+        [10, 3],
+        [7, 2],
+        [-7, 2],
+        [0, 1]
+      ],
+      "multiArgs": true
+    },
+    {
+      "id": "character-push-pop-sequence",
+      "entry": "character_push_pop_sequence",
+      "watches": ["character_push_pop_sequence"],
+      "module": "shakespearelang.pure_logic",
+      "pythonPath": ".",
+      "stack": "python",
+      "fingerprintLevel": "entry",
+      "description": "Simulate push/pop operations on a Character and return final state",
+      "inputs": [
+        [1, 2, 3],
+        [42],
+        [],
+        [10, 20, 30, 40, 50]
+      ]
+    },
+    {
+      "id": "compare-values",
+      "entry": "compare_values",
+      "watches": ["compare_values"],
+      "module": "shakespearelang.pure_logic",
+      "pythonPath": ".",
+      "stack": "python",
+      "fingerprintLevel": "entry",
+      "description": "Compare two values using positive/negative/neutral comparison types",
+      "inputs": [
+        [5, 3, "positive"],
+        [3, 5, "negative"],
+        [5, 5, "neutral"],
+        [0, 0, "neutral"],
+        [-1, 1, "negative"]
+      ],
+      "multiArgs": true
+    }
+  ]
+}
