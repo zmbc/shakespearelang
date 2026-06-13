@@ -1,0 +1,13 @@
+cluster: compute-square-root
+version: 1
+fingerprint: 5m8e79v
+captured: 2026-06-13T16:10:36.368351+00:00
+watches: [compute_square_root]
+entry: compute_square_root
+stack: python
+fingerprintLevel: entry
+module: shakespearelang.pure_logic
+---
+INPUT  0
+OUTPUT 0
+HASH   5m8e79v

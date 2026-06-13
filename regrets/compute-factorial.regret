@@ -1,0 +1,13 @@
+cluster: compute-factorial
+version: 1
+fingerprint: 6dnasqq
+captured: 2026-06-13T16:10:36.368140+00:00
+watches: [compute_factorial]
+entry: compute_factorial
+stack: python
+fingerprintLevel: entry
+module: shakespearelang.pure_logic
+---
+INPUT  0
+OUTPUT 1
+HASH   6dnasqq

@@ -1,10 +1,36 @@
+"""
+Expression evaluation for the Shakespeare Programming Language.
+
+This module implements the expression evaluation system that computes
+integer values from SPL expressions. Expressions are the computational
+core of SPL — they include noun phrases, arithmetic operations, and
+character value references.
+
+The arithmetic operations (factorial, square root, quotient, remainder)
+are now delegated to the arithmetic module for separation of concerns.
+This module focuses on the Expression class hierarchy and the AST-to-
+expression mapping.
+"""
+
 from ._utils import normalize_name
 from .errors import ShakespeareRuntimeError, ShakespeareParseError
+from .arithmetic import (
+    factorial,
+    truncated_square_root,
+    truncated_quotient,
+    truncated_remainder,
+)
 from tatsu.ast import AST
-import math
 
 
 class Expression:
+    """Base class for all SPL expressions.
+
+    Provides the evaluation framework with caching support and error
+    context propagation. Subclasses implement _setup() and
+    _evaluate_logic() to define specific expression behaviors.
+    """
+
     def __init__(self, ast_node: AST, character: str):
         self.ast_node = ast_node
         self.character = normalize_name(character)
@@ -38,17 +64,23 @@ class Expression:
 
 
 class FirstPersonValue(Expression):
+    """Evaluates to the speaking character's own value."""
+
     def _evaluate_logic(self, state):
         return state.character_by_name(self.character).value
 
 
 class SecondPersonValue(Expression):
+    """Evaluates to the opposite character's value."""
+
     def _evaluate_logic(self, state):
         character_opposite = state.character_opposite(self.character)
         return state.character_by_name(character_opposite).value
 
 
 class CharacterName(Expression):
+    """Evaluates to the named character's value."""
+
     def _setup(self):
         self.name = normalize_name(self.ast_node.name)
 
@@ -57,45 +89,41 @@ class CharacterName(Expression):
 
 
 class NegativeNounPhrase(Expression):
+    """A negative noun phrase: value = -(2^adjective_count)."""
+
     def _setup(self):
         self.cacheable = True
         self.cached_value = -pow(2, len(self.ast_node.adjectives))
 
 
 class PositiveNounPhrase(Expression):
+    """A positive noun phrase: value = 2^adjective_count."""
+
     def _setup(self):
         self.cacheable = True
         self.cached_value = pow(2, len(self.ast_node.adjectives))
 
 
 class Nothing(Expression):
+    """The 'nothing' expression: always evaluates to 0."""
+
     def _setup(self):
         self.cacheable = True
         self.cached_value = 0
 
 
 class UnaryOperation(Expression):
-    def _evaluate_factorial(operand):
-        if operand < 0:
-            raise ShakespeareRuntimeError(
-                "Cannot take the factorial of a negative number: " + str(operand)
-            )
-        return math.factorial(operand)
+    """A unary arithmetic operation on a single operand.
 
-    def _evaluate_square_root(operand):
-        if operand < 0:
-            raise ShakespeareRuntimeError(
-                "Cannot take the square root of a negative number: " + str(operand)
-            )
-        # Truncates (does not round) result -- this is equivalent to C
-        # implementation's cast.
-        return int(math.sqrt(operand))
+    Delegates arithmetic computation to the arithmetic module for
+    factorial and square root operations.
+    """
 
     _UNARY_OPERATION_HANDLERS = {
         ("the", "cube", "of"): lambda x: pow(x, 3),
-        ("the", "factorial", "of"): _evaluate_factorial,
+        ("the", "factorial", "of"): factorial,
         ("the", "square", "of"): lambda x: pow(x, 2),
-        ("the", "square", "root", "of"): _evaluate_square_root,
+        ("the", "square", "root", "of"): truncated_square_root,
         "twice": lambda x: x * 2,
     }
 
@@ -109,25 +137,17 @@ class UnaryOperation(Expression):
 
 
 class BinaryOperation(Expression):
-    def _evaluate_quotient(first_operand, second_operand):
-        if second_operand == 0:
-            raise ShakespeareRuntimeError("Cannot divide by zero")
-        # Python's built-in integer division operator does not behave the
-        # same as C for negative numbers, using floor instead of truncated
-        # division
-        return int(first_operand / second_operand)
+    """A binary arithmetic operation on two operands.
 
-    def _evaluate_remainder(first_operand, second_operand):
-        if second_operand == 0:
-            raise ShakespeareRuntimeError("Cannot divide by zero")
-        # See note above. math.fmod replicates C behavior.
-        return int(math.fmod(first_operand, second_operand))
+    Delegates division operations to the arithmetic module for
+    C-style truncated quotient and remainder computation.
+    """
 
     _BINARY_OPERATION_HANDLERS = {
         ("the", "difference", "between"): lambda a, b: a - b,
         ("the", "product", "of"): lambda a, b: a * b,
-        ("the", "quotient", "between"): _evaluate_quotient,
-        ("the", "remainder", "of", "the", "quotient", "between"): _evaluate_remainder,
+        ("the", "quotient", "between"): truncated_quotient,
+        ("the", "remainder", "of", "the", "quotient", "between"): truncated_remainder,
         ("the", "sum", "of"): lambda a, b: a + b,
     }
 
@@ -160,4 +180,5 @@ _EXPRESSION_CONSTRUCTORS = {
 
 
 def expression_from_ast(ast_node: AST, character: str):
+    """Construct the appropriate Expression subclass from an AST node."""
     return _EXPRESSION_CONSTRUCTORS[ast_node.parseinfo.rule](ast_node, character)

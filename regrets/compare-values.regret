@@ -1,0 +1,14 @@
+cluster: compare-values
+version: 1
+fingerprint: diuu4tq
+captured: 2026-06-13T16:10:36.369247+00:00
+watches: [compare_values]
+entry: compare_values
+stack: python
+fingerprintLevel: entry
+multiArgs: True
+module: shakespearelang.pure_logic
+---
+INPUT  [5, 3, "positive"]
+OUTPUT true
+HASH   diuu4tq

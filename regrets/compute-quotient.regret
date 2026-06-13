@@ -1,0 +1,14 @@
+cluster: compute-quotient
+version: 1
+fingerprint: 2bh4lop
+captured: 2026-06-13T16:10:36.368551+00:00
+watches: [compute_quotient]
+entry: compute_quotient
+stack: python
+fingerprintLevel: entry
+multiArgs: True
+module: shakespearelang.pure_logic
+---
+INPUT  [10, 3]
+OUTPUT 3
+HASH   2bh4lop

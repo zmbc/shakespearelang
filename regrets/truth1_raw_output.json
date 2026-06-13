@@ -1,0 +1,240 @@
+{
+  "normalize_character_name": {
+    "inputs": [
+      "the ghost of king hamlet",
+      "romeo",
+      [
+        "the",
+        "lady",
+        "of",
+        "the",
+        "lake"
+      ],
+      "",
+      "A"
+    ],
+    "outputs": [
+      "The Ghost of King Hamlet",
+      "Romeo",
+      "The Lady of The Lake",
+      "",
+      "A"
+    ]
+  },
+  "character_code_to_char": {
+    "inputs": [
+      65,
+      72,
+      10,
+      48,
+      122
+    ],
+    "outputs": [
+      "A",
+      "H",
+      "\n",
+      "0",
+      "z"
+    ]
+  },
+  "compute_positive_noun_value": {
+    "inputs": [
+      0,
+      1,
+      3,
+      5
+    ],
+    "outputs": [
+      1,
+      2,
+      8,
+      32
+    ]
+  },
+  "compute_negative_noun_value": {
+    "inputs": [
+      0,
+      1,
+      3,
+      5
+    ],
+    "outputs": [
+      -1,
+      -2,
+      -8,
+      -32
+    ]
+  },
+  "compute_factorial": {
+    "inputs": [
+      0,
+      1,
+      5,
+      10
+    ],
+    "outputs": [
+      1,
+      1,
+      120,
+      3628800
+    ]
+  },
+  "compute_square_root": {
+    "inputs": [
+      0,
+      1,
+      16,
+      100,
+      2
+    ],
+    "outputs": [
+      0,
+      1,
+      4,
+      10,
+      1
+    ]
+  },
+  "compute_quotient": {
+    "inputs": [
+      [
+        10,
+        3
+      ],
+      [
+        7,
+        2
+      ],
+      [
+        -7,
+        2
+      ],
+      [
+        0,
+        1
+      ]
+    ],
+    "outputs": [
+      3,
+      3,
+      -3,
+      0
+    ]
+  },
+  "compute_remainder": {
+    "inputs": [
+      [
+        10,
+        3
+      ],
+      [
+        7,
+        2
+      ],
+      [
+        -7,
+        2
+      ],
+      [
+        0,
+        1
+      ]
+    ],
+    "outputs": [
+      1,
+      1,
+      -1,
+      0
+    ]
+  },
+  "character_push_pop_sequence": {
+    "inputs": [
+      [
+        1,
+        2,
+        3
+      ],
+      [
+        42
+      ],
+      [],
+      [
+        10,
+        20,
+        30,
+        40,
+        50
+      ]
+    ],
+    "outputs": [
+      {
+        "final_value": 1,
+        "final_stack": [],
+        "pop_sequence": [
+          3,
+          2,
+          1
+        ]
+      },
+      {
+        "final_value": 42,
+        "final_stack": [],
+        "pop_sequence": [
+          42
+        ]
+      },
+      {
+        "final_value": 0,
+        "final_stack": [],
+        "pop_sequence": []
+      },
+      {
+        "final_value": 10,
+        "final_stack": [],
+        "pop_sequence": [
+          50,
+          40,
+          30,
+          20,
+          10
+        ]
+      }
+    ]
+  },
+  "compare_values": {
+    "inputs": [
+      [
+        5,
+        3,
+        "positive"
+      ],
+      [
+        3,
+        5,
+        "negative"
+      ],
+      [
+        5,
+        5,
+        "neutral"
+      ],
+      [
+        0,
+        0,
+        "neutral"
+      ],
+      [
+        -1,
+        1,
+        "negative"
+      ]
+    ],
+    "outputs": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
+  }
+}

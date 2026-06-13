@@ -1,0 +1,13 @@
+cluster: compute-negative-noun-value
+version: 1
+fingerprint: 55wmkjd
+captured: 2026-06-13T16:10:36.367944+00:00
+watches: [compute_negative_noun_value]
+entry: compute_negative_noun_value
+stack: python
+fingerprintLevel: entry
+module: shakespearelang.pure_logic
+---
+INPUT  0
+OUTPUT -1
+HASH   55wmkjd
