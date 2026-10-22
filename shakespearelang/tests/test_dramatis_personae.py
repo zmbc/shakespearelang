@@ -8,6 +8,7 @@ A lot of people.
 Achilles, a test.
 Christopher Sly, a test.
 Demetrius, a test.
+Iago, a test.
 John of Lancaster, a test.
 Juliet, a test.
 Mistress Overdone, a test.
@@ -40,6 +41,7 @@ def test_many_characters():
         "Achilles",
         "Christopher Sly",
         "Demetrius",
+        "Iago",
         "John of Lancaster",
         "Juliet",
         "Mistress Overdone",

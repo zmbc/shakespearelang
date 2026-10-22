@@ -801,6 +801,8 @@ class shakespeareParser(Parser):
             with self._option():
                 self._token("Horatio")
             with self._option():
+                self._token("Iago")
+            with self._option():
                 self._token("Imogen")
             with self._option():
                 self._token("Isabella")
@@ -1024,7 +1026,7 @@ class shakespeareParser(Parser):
                 "'Fortinbras' 'Francisca' 'Friar'"
                 "'Gertrude' 'Goneril' 'Hamlet' 'Hecate'"
                 "'Hector' 'Helen' 'Helena' 'Hermia'"
-                "'Hermonie' 'Hippolyta' 'Horatio'"
+                "'Hermonie' 'Hippolyta' 'Horatio' 'Iago'"
                 "'Imogen' 'Isabella' 'John' 'Julia'"
                 "'Juliet' 'Julius' 'King' 'Lady' 'Lennox'"
                 "'Leonato' 'Luciana' 'Lucio' 'Lychorida'"
@@ -1373,7 +1375,7 @@ class shakespeareParser(Parser):
                 "'Fortinbras' 'Francisca' 'Friar'"
                 "'Gertrude' 'Goneril' 'Hamlet' 'Hecate'"
                 "'Hector' 'Helen' 'Helena' 'Hermia'"
-                "'Hermonie' 'Hippolyta' 'Horatio'"
+                "'Hermonie' 'Hippolyta' 'Horatio' 'Iago'"
                 "'Imogen' 'Isabella' 'John' 'Julia'"
                 "'Juliet' 'Julius' 'Lady' 'Lennox'"
                 "'Leonato' 'Luciana' 'Lucio' 'Lychorida'"
@@ -1776,7 +1778,7 @@ class shakespeareParser(Parser):
                 "'Fortinbras' 'Francisca' 'Friar'"
                 "'Gertrude' 'Goneril' 'Hamlet' 'Hecate'"
                 "'Hector' 'Helen' 'Helena' 'Hermia'"
-                "'Hermonie' 'Hippolyta' 'Horatio'"
+                "'Hermonie' 'Hippolyta' 'Horatio' 'Iago'"
                 "'Imogen' 'Isabella' 'John' 'Julia'"
                 "'Juliet' 'Julius' 'King' 'Lady' 'Lennox'"
                 "'Leonato' 'Luciana' 'Lucio' 'Lychorida'"
@@ -1869,7 +1871,7 @@ class shakespeareParser(Parser):
                 "'Fortinbras' 'Francisca' 'Friar'"
                 "'Gertrude' 'Goneril' 'Hamlet' 'Hecate'"
                 "'Hector' 'Helen' 'Helena' 'Hermia'"
-                "'Hermonie' 'Hippolyta' 'Horatio'"
+                "'Hermonie' 'Hippolyta' 'Horatio' 'Iago'"
                 "'Imogen' 'Isabella' 'John' 'Julia'"
                 "'Juliet' 'Julius' 'King' 'Lady' 'Lennox'"
                 "'Leonato' 'Luciana' 'Lucio' 'Lychorida'"
@@ -1949,7 +1951,7 @@ class shakespeareParser(Parser):
                 "'Fortinbras' 'Francisca' 'Friar'"
                 "'Gertrude' 'Goneril' 'Hamlet' 'Hecate'"
                 "'Hector' 'Helen' 'Helena' 'Hermia'"
-                "'Hermonie' 'Hippolyta' 'Horatio'"
+                "'Hermonie' 'Hippolyta' 'Horatio' 'Iago'"
                 "'Imogen' 'Isabella' 'John' 'Julia'"
                 "'Juliet' 'Julius' 'King' 'Lady' 'Lennox'"
                 "'Leonato' 'Luciana' 'Lucio' 'Lychorida'"
