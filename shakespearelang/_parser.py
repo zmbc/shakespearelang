@@ -1589,7 +1589,14 @@ class shakespeareParser(Parser):
     def _goto_(self):  # noqa
         self._let_us_()
         self._proceed_to_()
-        self._token("scene")
+        with self._group():
+            with self._choice():
+                with self._option():
+                    self._token("scene")
+                with self._option():
+                    self._token("act")
+                self._error("expecting one of: " "'scene' 'act'")
+        self.name_last_node("destination_type")
         self._roman_numeral_()
         self.name_last_node("destination")
         with self._group():
@@ -1599,7 +1606,7 @@ class shakespeareParser(Parser):
                 with self._option():
                     self._token(".")
                 self._error("expecting one of: " "'!' '.'")
-        self._define(["destination"], [])
+        self._define(["destination", "destination_type"], [])
 
     @tatsumasu()
     def _output_(self):  # noqa

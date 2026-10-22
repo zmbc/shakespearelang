@@ -204,6 +204,7 @@ class Pop(SentenceOperation):
 
 class Goto(SentenceOperation):
     def _setup(self):
+        self.destination_type = self.op_ast_node.destination_type.capitalize()
         self.destination = self.op_ast_node.destination.value
 
     def run(self, state, interpreter, play, settings):
@@ -212,16 +213,25 @@ class Goto(SentenceOperation):
         if self.has_condition and self.condition_type_positive != state.global_boolean:
             if settings.output_style in ["verbose", "debug"]:
                 print(
-                    f"Not jumping to Scene {self.destination} because global boolean is {state.global_boolean}"
+                    f"Not jumping to {self.destination_type} {self.destination} because global boolean is {state.global_boolean}"
                 )
             return
 
         if settings.output_style in ["verbose", "debug"]:
-            print(f"Jumping to Scene {self.destination}")
-        act = play.get_act(interpreter.current_position)
-        if self.destination not in play.scene_indices[act]:
-            raise ShakespeareRuntimeError(f"Scene {self.destination} does not exist.")
-        new_position = play.scene_indices[act][self.destination]
+            print(f"Jumping to {self.destination_type} {self.destination}")
+        if self.destination_type == "Act":
+            # As in the original SPL, jumping to an act goes to its beginning.
+            act_positions = dict(play.act_indices)
+            if self.destination not in act_positions:
+                raise ShakespeareRuntimeError(f"Act {self.destination} does not exist.")
+            new_position = act_positions[self.destination]
+        else:
+            act = play.get_act(interpreter.current_position)
+            if self.destination not in play.scene_indices[act]:
+                raise ShakespeareRuntimeError(
+                    f"Scene {self.destination} does not exist."
+                )
+            new_position = play.scene_indices[act][self.destination]
         interpreter.current_position = new_position
 
 

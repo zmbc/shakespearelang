@@ -250,3 +250,114 @@ def test_duplicate_act_numbers(capsys):
     assert "is not unique" in str(exc.value).lower()
     assert "Act >>I<<: Nothing strikes back." in str(exc.value)
     assert exc.value.interpreter == None
+
+
+def test_goto_act(capsys):
+    s = Shakespeare(SAMPLE_PLAY)
+
+    assert s.current_position == 0
+    s.step_forward()
+    assert s.current_position == 1
+    s.run_sentence("Let us proceed to act II.", "Juliet")
+    assert s.current_position == 4
+    s.run_sentence("Let us proceed to scene III.", "Juliet")
+    assert s.current_position == 6
+    s.run_sentence("Let us return to act I.", "Juliet")
+    assert s.current_position == 0
+
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert captured.err == ""
+
+
+def test_goto_act_conditionals(capsys):
+    s = Shakespeare(SAMPLE_PLAY)
+
+    assert s.current_position == 0
+    s.step_forward()
+    assert s.current_position == 1
+    s.state.global_boolean = False
+    s.run_sentence("If so, let us proceed to act II.", "Juliet")
+    assert s.current_position == 1
+    s.state.global_boolean = True
+    s.run_sentence("If so, let us proceed to act II.", "Juliet")
+    assert s.current_position == 4
+
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert captured.err == ""
+
+
+def test_errors_on_goto_nonexistent_act(capsys):
+    s = Shakespeare(SAMPLE_PLAY)
+
+    assert s.current_position == 0
+    s.step_forward()
+    assert s.current_position == 1
+    with pytest.raises(ShakespeareRuntimeError) as exc:
+        s.run_sentence("Let us proceed to act III.", "Juliet")
+    assert "does not exist" in str(exc.value).lower()
+    assert ">>Let us proceed to act III.<<" in str(exc.value)
+    assert exc.value.interpreter == s
+    assert s.current_position == 1
+
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert captured.err == ""
+
+
+def test_goto_act_as_subroutine(capsys):
+    s = Shakespeare(
+        """
+        Test.
+
+        Romeo, a test.
+        Juliet, a test.
+
+        Act I: Setup.
+        Scene I: Everyone arrives.
+
+        [Enter Romeo and Juliet]
+
+        Act II: The caller.
+        Scene I: First call.
+
+        Romeo: Are you as good as nothing?
+        If not, let us proceed to scene II.
+        You are a cat.
+
+        Juliet: You are as good as the sum of a big big big big big big cat
+        and a big big big cat.
+        Let us proceed to act III.
+
+        Scene II: Second call.
+
+        Romeo: Are you as good as a cat?
+        If not, let us proceed to scene III.
+        You are a big cat.
+
+        Juliet: You are as good as the sum of yourself and the sum of
+        a big big big big big cat and a cat.
+        Let us proceed to act III.
+
+        Scene III: Done.
+
+        Romeo: Let us proceed to act IV.
+
+        Act III: The subroutine.
+        Scene I: Print and return.
+
+        Juliet: Speak your mind!
+        Let us return to act II.
+
+        Act IV: The end.
+        Scene I: Curtain.
+
+        [Exeunt]
+    """
+    )
+    s.run()
+
+    captured = capsys.readouterr()
+    assert captured.out == "Hi"
+    assert captured.err == ""
