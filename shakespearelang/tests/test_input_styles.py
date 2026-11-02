@@ -44,11 +44,14 @@ CHARACTER_INPUT = """
 def test_piped_input_numeric(tmp_path):
     file_path = tmp_path / "play.spl"
     create_play_file(file_path, NUMERIC_INPUT)
-    cli = pexpect.spawn(f'/bin/bash -c "printf \'1234\\n3112\' | shakespeare run {file_path} --input-style=basic"')
+    cli = pexpect.spawn(
+        f"/bin/bash -c \"printf '1234\\n3112' | shakespeare run {file_path} --input-style=basic\""
+    )
     cli.setecho(False)
     cli.waitnoecho()
 
     expect_output_exactly(cli, "12343112", eof=True)
+
 
 def test_interactive_input_numeric(tmp_path):
     file_path = tmp_path / "play.spl"
@@ -63,14 +66,18 @@ def test_interactive_input_numeric(tmp_path):
     cli.sendline("3112")
     expect_output_exactly(cli, "3112", eof=True)
 
+
 def test_piped_input_character(tmp_path):
     file_path = tmp_path / "play.spl"
     create_play_file(file_path, CHARACTER_INPUT)
-    cli = pexpect.spawn(f'/bin/bash -c "echo c | shakespeare run {file_path} --input-style=basic"')
+    cli = pexpect.spawn(
+        f'/bin/bash -c "echo c | shakespeare run {file_path} --input-style=basic"'
+    )
     cli.setecho(False)
     cli.waitnoecho()
 
     expect_output_exactly(cli, "9910", eof=True)
+
 
 def test_interactive_input_character(tmp_path):
     file_path = tmp_path / "play.spl"

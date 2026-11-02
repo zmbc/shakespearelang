@@ -19,7 +19,6 @@ from tatsu.parsing import tatsumasu
 from tatsu.parsing import leftrec, nomemo, isname  # noqa
 from tatsu.util import re, generic_main  # noqa
 
-
 KEYWORDS = {}  # type: ignore
 
 
@@ -33,7 +32,7 @@ class shakespeareBuffer(Buffer):
         eol_comments_re=None,
         ignorecase=True,
         namechars="",
-        **kwargs
+        **kwargs,
     ):
         super().__init__(
             text,
@@ -43,7 +42,7 @@ class shakespeareBuffer(Buffer):
             eol_comments_re=eol_comments_re,
             ignorecase=ignorecase,
             namechars=namechars,
-            **kwargs
+            **kwargs,
         )
 
 
@@ -60,7 +59,7 @@ class shakespeareParser(Parser):
         keywords=None,
         namechars="",
         tokenizercls=shakespeareBuffer,
-        **kwargs
+        **kwargs,
     ):
         if keywords is None:
             keywords = KEYWORDS
@@ -75,7 +74,7 @@ class shakespeareParser(Parser):
             keywords=keywords,
             namechars=namechars,
             tokenizercls=tokenizercls,
-            **kwargs
+            **kwargs,
         )
 
     @tatsumasu()

@@ -21,11 +21,11 @@ plugins:
       default_handler: python
       handlers:
         python:
-          rendering:
+          options:
             show_root_heading: true
             members_order: source
-      watch:
-        - shakespearelang
+watch:
+  - shakespearelang
 extra:
   version:
     provider: mike

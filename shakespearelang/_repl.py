@@ -10,7 +10,6 @@ except ModuleNotFoundError:
 
 import sys
 
-
 DEFAULT_PLAY_TEMPLATE = """
 A REPL-tastic Adventure.
 
