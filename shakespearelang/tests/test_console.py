@@ -26,8 +26,7 @@ def test_errors_on_nonsense_characters():
 
     expect_output_exactly(
         cli,
-        dedent(
-            """
+        dedent("""
             A REPL-tastic Adventure.
 
             Foobar, a player.
@@ -56,8 +55,7 @@ def test_errors_on_nonsense_characters():
             parsing stack: character, dramatis_persona, dramatis_personae, play
             full error message:
                 expecting one of: 'Achilles' 'Adonis' 'Adriana' 'Aegeon''Aemilia' 'Agamemnon' 'Agrippa' 'Ajax''Alonso' 'Andromache' 'Angelo''Antiochus' 'Antonio' 'Arthur''Autolycus' 'Balthazar' 'Banquo''Beatrice' 'Benedick' 'Benvolio''Bianca' 'Brabantio' 'Brutus' 'Capulet''Cassandra' 'Cassius' 'Christopher''Cicero' 'Claudio' 'Claudius''Cleopatra' 'Cordelia' 'Cornelius''Cressida' 'Cymberline' 'Demetrius''Desdemona' 'Dionyza' 'Doctor''Dogberry' 'Don' 'Donalbain' 'Dorcas''Duncan' 'Egeus' 'Emilia' 'Escalus''Falstaff' 'Fenton' 'Ferdinand' 'Ford''Fortinbras' 'Francisca' 'Friar''Gertrude' 'Goneril' 'Hamlet' 'Hecate''Hector' 'Helen' 'Helena' 'Hermia''Hermonie' 'Hippolyta' 'Horatio''Imogen' 'Isabella' 'John' 'Julia''Juliet' 'Julius' 'King' 'Lady' 'Lennox''Leonato' 'Luciana' 'Lucio' 'Lychorida''Lysander' 'Macbeth' 'Macduff' 'Malcolm''Mariana' 'Mark' 'Mercutio' 'Miranda''Mistress' 'Montague' 'Mopsa' 'Oberon''Octavia' 'Octavius' 'Olivia' 'Ophelia''Orlando' 'Orsino' 'Othello' 'Page''Pantino' 'Paris' 'Pericles' 'Pinch''Polonius' 'Pompeius' 'Portia' 'Priam''Prince' 'Prospero' 'Proteus' 'Publius''Puck' 'Queen' 'Regan' 'Robin' 'Romeo''Rosalind' 'Sebastian' 'Shallow''Shylock' 'Slender' 'Solinus' 'Stephano''Thaisa' 'The' 'Theseus' 'Thurio''Timon' 'Titania' 'Titus' 'Troilus''Tybalt' 'Ulysses' 'Valentine' 'Venus''Vincentio' 'Viola'
-            """
-        ),
+            """),
         eof=True,
     )
 
@@ -69,8 +67,7 @@ def test_works_with_arbitrary_characters():
 
     expect_output_exactly(
         cli,
-        dedent(
-            """
+        dedent("""
             A REPL-tastic Adventure.
 
             Lady Capulet, a player.
@@ -82,8 +79,7 @@ def test_works_with_arbitrary_characters():
 
             [Enter Lady Capulet, The Ghost and Horatio]
 
-            >> """
-        ),
+            >> """),
     )
     expect_interaction(cli, "[Exeunt]", "Exeunt all")
     expect_interaction(cli, "[Enter Lady Capulet]", "Enter Lady Capulet")
@@ -159,8 +155,7 @@ def test_display_runtime_error():
     expect_interaction(
         cli,
         "Juliet: You are as good as the quotient between a pig and nothing.",
-        dedent(
-            """\
+        dedent("""\
             SPL runtime error: Cannot divide by zero
               at line 1
             ----- context -----
@@ -171,8 +166,7 @@ def test_display_runtime_error():
             on stage:
               Romeo = 0 ()
               Juliet = 0 ()
-            off stage:"""
-        ),
+            off stage:"""),
     )
     expect_interaction(cli, "exit", "", prompt=False)
     expect_output_exactly(cli, "", eof=True)
@@ -216,13 +210,11 @@ def test_detailed_logging():
     )
     expect_output_exactly(
         cli,
-        dedent(
-            """\
+        dedent("""\
             Romeo set to 64
             Outputting Romeo
             Outputting character: '@'
-            Taking input number: """
-        ),
+            Taking input number: """),
     )
     cli.sendline("10")
     expect_output_exactly(cli, "Setting Romeo to input value 10\n>> ")
@@ -255,8 +247,7 @@ def test_expression():
     expect_interaction(
         cli,
         "Romeo: The sum of a furry animal and a pig",
-        dedent(
-            """\
+        dedent("""\
             SPL runtime error: Romeo is not on stage!
               at line 1
             ----- context -----
@@ -267,8 +258,7 @@ def test_expression():
             on stage:
               Juliet = 0 ()
             off stage:
-              Romeo = 0 ()"""
-        ),
+              Romeo = 0 ()"""),
     )
     expect_interaction(cli, "exit", "", prompt=False)
     expect_output_exactly(cli, "", eof=True)
@@ -283,13 +273,11 @@ def test_display_character():
     expect_interaction(
         cli,
         "Juliet: Remember thyself! You are a pig! Remember bad Hell! Remember a good animal!",
-        dedent(
-            """\
+        dedent("""\
             Romeo pushed 0
             Romeo set to -1
             Romeo pushed -2
-            Romeo pushed 2"""
-        ),
+            Romeo pushed 2"""),
     )
     expect_interaction(cli, "Romeo", "-1 (2 -2 0)")
     expect_interaction(cli, "exit", "", prompt=False)
@@ -310,14 +298,12 @@ def test_display_state():
     expect_interaction(
         cli,
         "state",
-        dedent(
-            """\
+        dedent("""\
             global boolean = False
             on stage:
               Romeo = -1 (0)
               Juliet = 0 ()
-            off stage:"""
-        ),
+            off stage:"""),
     )
     expect_interaction(cli, "exit", "", prompt=False)
     expect_output_exactly(cli, "", eof=True)

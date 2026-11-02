@@ -13,26 +13,29 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8"
-click = "^7.1.2"
+python = "^3.11"
+click = "^8.5.0"
+# TatSu 5.13+ changes the generated parser API and the format of parse errors,
+# which _parser.py and the error formatting tests rely on. Keep 5.6.x until the
+# parser is regenerated.
 tatsu = "~5.6.1"
 
-[tool.poetry.dev-dependencies]
-mkdocs = "^1.2.3"
-mkdocs-material = "^8.0.0"
-mkdocstrings = "^0.16.2"
-pytest = "^6.2.1"
-tox = "^3.20.1"
-coverage = "^5.3.1"
-black = "^21.9b0"
-snakeviz = "^2.1.1"
-pexpect = "^4.8.0"
-mkdocs-click = "^0.5.0"
-mike = "^1.1.2"
+[tool.poetry.group.dev.dependencies]
+mkdocs = "^1.6.1"
+mkdocs-material = "^9.8.0"
+mkdocstrings = { version = "^1.0.8", extras = ["python"] }
+pytest = "^9.2.0"
+tox = "^4.67.5"
+coverage = "^7.17.0"
+black = "^26.10.1"
+snakeviz = "^2.2.2"
+pexpect = "^4.9.0"
+mkdocs-click = "^0.9.0"
+mike = "^2.2.0"
 
 [tool.poetry.scripts]
 shakespeare = "shakespearelang.cli:main"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=2.0.1"]
 build-backend = "poetry.core.masonry.api"

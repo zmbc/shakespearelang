@@ -44,6 +44,7 @@ def test_output_basic(tmp_path):
 
     expect_output_exactly(cli, "1234", eof=True)
 
+
 def test_output_verbose(tmp_path):
     file_path = tmp_path / "play.spl"
     create_play_file(file_path, LOOP)
@@ -53,8 +54,7 @@ def test_output_verbose(tmp_path):
 
     expect_output_exactly(
         cli,
-        dedent(
-            """\
+        dedent("""\
             Enter Hamlet, Juliet
             Hamlet set to 1
             Outputting Hamlet
@@ -83,10 +83,10 @@ def test_output_verbose(tmp_path):
             Not jumping to Scene II because global boolean is True
             Hamlet pushed 2
             Exeunt all
-            """
-        ),
-        eof=True
+            """),
+        eof=True,
     )
+
 
 def test_output_debug(tmp_path):
     file_path = tmp_path / "play.spl"
@@ -97,8 +97,7 @@ def test_output_debug(tmp_path):
 
     expect_output_exactly(
         cli,
-        dedent(
-            """\
+        dedent("""\
             ----------
             at line 12
             -----
@@ -577,7 +576,6 @@ def test_output_debug(tmp_path):
             off stage:
             ----------
             Exeunt all
-            """
-        ),
-        eof=True
+            """),
+        eof=True,
     )

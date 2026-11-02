@@ -133,8 +133,7 @@ def test_goto_conditionals(capsys):
 
 
 def test_goto_based_on_numeral_not_order(capsys):
-    s = Shakespeare(
-        """
+    s = Shakespeare("""
         Test.
 
         Romeo, a test.
@@ -154,8 +153,7 @@ def test_goto_based_on_numeral_not_order(capsys):
         Scene II: Nothing strikes back.
 
         [A pause]
-    """
-    )
+    """)
 
     assert s.current_position == 0
     s.step_forward()
@@ -192,8 +190,7 @@ def test_errors_on_goto_nonexistent(capsys):
 
 def test_duplicate_scene_numbers(capsys):
     with pytest.raises(ShakespeareRuntimeError) as exc:
-        s = Shakespeare(
-            """
+        s = Shakespeare("""
             Test.
 
             Romeo, a test.
@@ -213,8 +210,7 @@ def test_duplicate_scene_numbers(capsys):
             Scene III: Nothing strikes back.
 
             [A pause]
-        """
-        )
+        """)
     assert "is not unique" in str(exc.value).lower()
     assert "Scene >>III<<: Nothing strikes back." in str(exc.value)
     assert exc.value.interpreter == None
@@ -222,8 +218,7 @@ def test_duplicate_scene_numbers(capsys):
 
 def test_duplicate_act_numbers(capsys):
     with pytest.raises(ShakespeareRuntimeError) as exc:
-        s = Shakespeare(
-            """
+        s = Shakespeare("""
             Test.
 
             Romeo, a test.
@@ -245,8 +240,7 @@ def test_duplicate_act_numbers(capsys):
             Scene I: This doesn't matter.
 
             [A pause]
-        """
-        )
+        """)
     assert "is not unique" in str(exc.value).lower()
     assert "Act >>I<<: Nothing strikes back." in str(exc.value)
     assert exc.value.interpreter == None

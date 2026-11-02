@@ -28,8 +28,7 @@ def test_full_error_format():
     s = Shakespeare(ERROR_PLAY)
     with pytest.raises(ShakespeareRuntimeError) as exc:
         s.run()
-    assert str(exc.value) == textwrap.dedent(
-        """\
+    assert str(exc.value) == textwrap.dedent("""\
         SPL runtime error: Tried to pop from an empty stack.
           at line 13
         ----- context -----
@@ -48,8 +47,7 @@ def test_full_error_format():
         on stage:
           Romeo = 0 ()
           Juliet = -1 ()
-        off stage:"""
-    )
+        off stage:""")
 
 
 def test_error_format_without_anything():

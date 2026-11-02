@@ -7,8 +7,7 @@ import textwrap
 def test_full_error_format_empty():
     with pytest.raises(ShakespeareParseError) as exc:
         Shakespeare("")
-    assert str(exc.value) == textwrap.dedent(
-        """\
+    assert str(exc.value) == textwrap.dedent("""\
         SPL parse error: failed to parse play
           at line 1
         ----- context -----
@@ -19,15 +18,13 @@ def test_full_error_format_empty():
         ----- details -----
         parsing stack: play
         full error message:
-            expecting one of: '!' '.'"""
-    )
+            expecting one of: '!' '.'""")
 
 
 def test_full_error_format_title():
     with pytest.raises(ShakespeareParseError) as exc:
         Shakespeare("Foobar")
-    assert str(exc.value) == textwrap.dedent(
-        """\
+    assert str(exc.value) == textwrap.dedent("""\
         SPL parse error: failed to parse play
           at line 2
         ----- context -----
@@ -39,15 +36,13 @@ def test_full_error_format_title():
         ----- details -----
         parsing stack: play
         full error message:
-            expecting one of: '!' '.'"""
-    )
+            expecting one of: '!' '.'""")
 
 
 def test_full_error_format_realistic():
     with pytest.raises(ShakespeareParseError) as exc:
         Shakespeare(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 Foobar. Juliet, a test. Romeo, a test.
 
                 Act I: The first act.
@@ -56,11 +51,9 @@ def test_full_error_format_realistic():
 
                 [Enter Juliet and Romeo]
 
-                Juliet: Thou art a pig."""
-            ),
+                Juliet: Thou art a pig."""),
         )
-    assert str(exc.value) == textwrap.dedent(
-        """\
+    assert str(exc.value) == textwrap.dedent("""\
         SPL parse error: failed to parse scene
           at line 5
         ----- context -----
@@ -79,15 +72,13 @@ def test_full_error_format_realistic():
         ----- details -----
         parsing stack: scene, act, play
         full error message:
-            expecting ':'"""
-    )
+            expecting ':'""")
 
 
 def test_full_error_format_long():
     with pytest.raises(ShakespeareParseError) as exc:
         Shakespeare(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 Foobar. Baz, a test. Romeo, a test.
 
                 Act I: The first act.
@@ -96,8 +87,7 @@ def test_full_error_format_long():
 
                 [Enter Juliet and Romeo]
 
-                Juliet: Thou art a pig."""
-            ),
+                Juliet: Thou art a pig."""),
         )
     assert str(exc.value) == textwrap.dedent(
         """\

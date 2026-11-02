@@ -122,8 +122,7 @@ def test_defaults_to_verbose_output(tmp_path):
 
     expect_output_exactly(
         cli,
-        dedent(
-            """\
+        dedent("""\
             Enter Hamlet, Juliet
             Hamlet set to 72
             Outputting Hamlet
@@ -134,8 +133,7 @@ def test_defaults_to_verbose_output(tmp_path):
             Hamlet set to 10
             Outputting Hamlet
             Outputting character: '\\n'
-            Exeunt all\n"""
-        ),
+            Exeunt all\n"""),
         eof=True,
     )
 
@@ -179,8 +177,7 @@ def test_breakpoint_console(tmp_path):
 
     expect_output_exactly(
         cli,
-        dedent(
-            """\
+        dedent("""\
             Enter Hamlet, Juliet
             Hamlet set to 72
             Outputting Hamlet
@@ -198,8 +195,7 @@ def test_breakpoint_console(tmp_path):
 
             -----
 
-            >> """
-        ),
+            >> """),
     )
     expect_interaction(cli, "Juliet", "0 ()")
     expect_interaction(cli, "Hamlet", "72 ()")
@@ -216,8 +212,7 @@ def test_goto(tmp_path):
 
     expect_output_exactly(
         cli,
-        dedent(
-            """\
+        dedent("""\
             -----
                                     Scene I: The Initial Statement.
 
@@ -231,14 +226,12 @@ def test_goto(tmp_path):
 
             -----
 
-            >> """
-        ),
+            >> """),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Enter Hamlet, Juliet
 
             -----
@@ -253,14 +246,12 @@ def test_goto(tmp_path):
                 Juliet: Open your heart! Thou art the sum of thyself and a stone wall.
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "Hamlet: Let us proceed to Scene III.",
-        dedent(
-            """\
+        dedent("""\
             Jumping to Scene III
 
             -----
@@ -273,14 +264,12 @@ def test_goto(tmp_path):
                 [Exeunt]
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Hamlet pushed 0
 
             -----
@@ -291,8 +280,7 @@ def test_goto(tmp_path):
                 >>[Exeunt]<<
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(cli, "next", "Exeunt all", prompt=False)
     expect_output_exactly(cli, "", eof=True)
@@ -307,8 +295,7 @@ def test_step_through(tmp_path):
 
     expect_output_exactly(
         cli,
-        dedent(
-            """\
+        dedent("""\
             -----
                                     Scene I: The Initial Statement.
 
@@ -322,15 +309,13 @@ def test_step_through(tmp_path):
 
             -----
 
-            >> """
-        ),
+            >> """),
     )
     expect_interaction(cli, "Hamlet", "0 ()")
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Enter Hamlet, Juliet
 
             -----
@@ -345,15 +330,13 @@ def test_step_through(tmp_path):
                 Juliet: Open your heart! Thou art the sum of thyself and a stone wall.
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(cli, "Hamlet", "0 ()")
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Hamlet set to 1
 
             -----
@@ -368,15 +351,13 @@ def test_step_through(tmp_path):
 
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(cli, "Hamlet", "1 ()")
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Outputting Hamlet
             Outputting number: 1
 
@@ -392,14 +373,12 @@ def test_step_through(tmp_path):
 
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Hamlet set to 2
 
             -----
@@ -414,15 +393,13 @@ def test_step_through(tmp_path):
                                     Scene III: Nothing occurs.
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(cli, "Hamlet", "2 ()")
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Setting global boolean to False
 
             -----
@@ -437,26 +414,22 @@ def test_step_through(tmp_path):
                                     Scene IV: The closing.
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "state",
-        dedent(
-            """\
+        dedent("""\
             global boolean = False
             on stage:
               Hamlet = 2 ()
               Juliet = 0 ()
-            off stage:"""
-        ),
+            off stage:"""),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Jumping to Scene II
 
             -----
@@ -471,14 +444,12 @@ def test_step_through(tmp_path):
 
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Outputting Hamlet
             Outputting number: 2
 
@@ -494,14 +465,12 @@ def test_step_through(tmp_path):
 
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Hamlet set to 3
 
             -----
@@ -516,14 +485,12 @@ def test_step_through(tmp_path):
                                     Scene III: Nothing occurs.
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Setting global boolean to False
 
             -----
@@ -538,14 +505,12 @@ def test_step_through(tmp_path):
                                     Scene IV: The closing.
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Jumping to Scene II
 
             -----
@@ -560,14 +525,12 @@ def test_step_through(tmp_path):
 
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Outputting Hamlet
             Outputting number: 3
 
@@ -583,14 +546,12 @@ def test_step_through(tmp_path):
 
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Hamlet set to 4
 
             -----
@@ -605,14 +566,12 @@ def test_step_through(tmp_path):
                                     Scene III: Nothing occurs.
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Setting global boolean to False
 
             -----
@@ -627,14 +586,12 @@ def test_step_through(tmp_path):
                                     Scene IV: The closing.
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Jumping to Scene II
 
             -----
@@ -649,14 +606,12 @@ def test_step_through(tmp_path):
 
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Outputting Hamlet
             Outputting number: 4
 
@@ -672,14 +627,12 @@ def test_step_through(tmp_path):
 
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Hamlet set to 5
 
             -----
@@ -694,14 +647,12 @@ def test_step_through(tmp_path):
                                     Scene III: Nothing occurs.
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Setting global boolean to True
 
             -----
@@ -716,14 +667,12 @@ def test_step_through(tmp_path):
                                     Scene IV: The closing.
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Not jumping to Scene II because global boolean is True
 
             -----
@@ -736,14 +685,12 @@ def test_step_through(tmp_path):
                 [Exeunt]
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Hamlet pushed 5
 
             -----
@@ -754,8 +701,7 @@ def test_step_through(tmp_path):
                 >>[Exeunt]<<
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(cli, "next", "Exeunt all", prompt=False)
     expect_output_exactly(cli, "", eof=True)
@@ -770,8 +716,7 @@ def test_exit_loop_by_character_state(tmp_path):
 
     expect_output_exactly(
         cli,
-        dedent(
-            """\
+        dedent("""\
             -----
                                     Scene I: The Initial Statement.
 
@@ -785,15 +730,13 @@ def test_exit_loop_by_character_state(tmp_path):
 
             -----
 
-            >> """
-        ),
+            >> """),
     )
     expect_interaction(cli, "Hamlet", "0 ()")
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Enter Hamlet, Juliet
 
             -----
@@ -808,15 +751,13 @@ def test_exit_loop_by_character_state(tmp_path):
                 Juliet: Open your heart! Thou art the sum of thyself and a stone wall.
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(cli, "Hamlet", "0 ()")
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Hamlet set to 1
 
             -----
@@ -831,15 +772,13 @@ def test_exit_loop_by_character_state(tmp_path):
 
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(cli, "Hamlet", "1 ()")
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Outputting Hamlet
             Outputting number: 1
 
@@ -855,14 +794,12 @@ def test_exit_loop_by_character_state(tmp_path):
 
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Hamlet set to 2
 
             -----
@@ -877,15 +814,13 @@ def test_exit_loop_by_character_state(tmp_path):
                                     Scene III: Nothing occurs.
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(cli, "Hamlet", "2 ()")
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Setting global boolean to False
 
             -----
@@ -900,26 +835,22 @@ def test_exit_loop_by_character_state(tmp_path):
                                     Scene IV: The closing.
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "state",
-        dedent(
-            """\
+        dedent("""\
             global boolean = False
             on stage:
               Hamlet = 2 ()
               Juliet = 0 ()
-            off stage:"""
-        ),
+            off stage:"""),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Jumping to Scene II
 
             -----
@@ -934,14 +865,12 @@ def test_exit_loop_by_character_state(tmp_path):
 
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Outputting Hamlet
             Outputting number: 2
 
@@ -957,14 +886,12 @@ def test_exit_loop_by_character_state(tmp_path):
 
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Hamlet set to 3
 
             -----
@@ -979,8 +906,7 @@ def test_exit_loop_by_character_state(tmp_path):
                                     Scene III: Nothing occurs.
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
@@ -990,8 +916,7 @@ def test_exit_loop_by_character_state(tmp_path):
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Setting global boolean to True
 
             -----
@@ -1006,14 +931,12 @@ def test_exit_loop_by_character_state(tmp_path):
                                     Scene IV: The closing.
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Not jumping to Scene II because global boolean is True
 
             -----
@@ -1026,14 +949,12 @@ def test_exit_loop_by_character_state(tmp_path):
                 [Exeunt]
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Hamlet pushed 5
 
             -----
@@ -1044,8 +965,7 @@ def test_exit_loop_by_character_state(tmp_path):
                 >>[Exeunt]<<
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(cli, "next", "Exeunt all", prompt=False)
     expect_output_exactly(cli, "", eof=True)
@@ -1060,8 +980,7 @@ def test_exit_loop_by_boolean_state(tmp_path):
 
     expect_output_exactly(
         cli,
-        dedent(
-            """\
+        dedent("""\
             -----
                                     Scene I: The Initial Statement.
 
@@ -1075,15 +994,13 @@ def test_exit_loop_by_boolean_state(tmp_path):
 
             -----
 
-            >> """
-        ),
+            >> """),
     )
     expect_interaction(cli, "Hamlet", "0 ()")
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Enter Hamlet, Juliet
 
             -----
@@ -1098,15 +1015,13 @@ def test_exit_loop_by_boolean_state(tmp_path):
                 Juliet: Open your heart! Thou art the sum of thyself and a stone wall.
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(cli, "Hamlet", "0 ()")
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Hamlet set to 1
 
             -----
@@ -1121,15 +1036,13 @@ def test_exit_loop_by_boolean_state(tmp_path):
 
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(cli, "Hamlet", "1 ()")
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Outputting Hamlet
             Outputting number: 1
 
@@ -1145,14 +1058,12 @@ def test_exit_loop_by_boolean_state(tmp_path):
 
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Hamlet set to 2
 
             -----
@@ -1167,15 +1078,13 @@ def test_exit_loop_by_boolean_state(tmp_path):
                                     Scene III: Nothing occurs.
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(cli, "Hamlet", "2 ()")
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Setting global boolean to False
 
             -----
@@ -1190,26 +1099,22 @@ def test_exit_loop_by_boolean_state(tmp_path):
                                     Scene IV: The closing.
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "state",
-        dedent(
-            """\
+        dedent("""\
             global boolean = False
             on stage:
               Hamlet = 2 ()
               Juliet = 0 ()
-            off stage:"""
-        ),
+            off stage:"""),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Jumping to Scene II
 
             -----
@@ -1224,14 +1129,12 @@ def test_exit_loop_by_boolean_state(tmp_path):
 
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Outputting Hamlet
             Outputting number: 2
 
@@ -1247,14 +1150,12 @@ def test_exit_loop_by_boolean_state(tmp_path):
 
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Hamlet set to 3
 
             -----
@@ -1269,14 +1170,12 @@ def test_exit_loop_by_boolean_state(tmp_path):
                                     Scene III: Nothing occurs.
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Setting global boolean to False
 
             -----
@@ -1291,8 +1190,7 @@ def test_exit_loop_by_boolean_state(tmp_path):
                                     Scene IV: The closing.
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
@@ -1302,8 +1200,7 @@ def test_exit_loop_by_boolean_state(tmp_path):
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Not jumping to Scene II because global boolean is True
 
             -----
@@ -1316,14 +1213,12 @@ def test_exit_loop_by_boolean_state(tmp_path):
                 [Exeunt]
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(
         cli,
         "next",
-        dedent(
-            """\
+        dedent("""\
             Hamlet pushed 3
 
             -----
@@ -1334,8 +1229,7 @@ def test_exit_loop_by_boolean_state(tmp_path):
                 >>[Exeunt]<<
 
             -----
-            """
-        ),
+            """),
     )
     expect_interaction(cli, "next", "Exeunt all", prompt=False)
     expect_output_exactly(cli, "", eof=True)
